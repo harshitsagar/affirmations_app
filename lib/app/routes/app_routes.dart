@@ -34,6 +34,7 @@ abstract class Routes {
   static const JOURNAL_REMINDER = _Paths.JOURNAL_REMINDER;
   static const APP_THEMES = _Paths.APP_THEMES;
   static const CONTACT_ADMIN = _Paths.CONTACT_ADMIN;
+  static const SIGNUP = _Paths.SIGNUP;
 }
 
 abstract class _Paths {
@@ -69,4 +70,5 @@ abstract class _Paths {
   static const JOURNAL_REMINDER = '/journal-reminder';
   static const APP_THEMES = '/app-themes';
   static const CONTACT_ADMIN = '/contact-admin';
+  static const SIGNUP = '/signup';
 }

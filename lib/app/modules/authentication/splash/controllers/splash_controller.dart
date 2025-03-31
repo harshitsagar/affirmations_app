@@ -1,23 +1,16 @@
+import 'package:affirmations_app/app/modules/screens/onboarding/views/onboarding_view.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {
-  //TODO: Implement SplashController
-
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   @override
   void onReady() {
     super.onReady();
+
+    Future.delayed(Duration(seconds: 2), () {
+      Get.off(() => OnboardingView());
+    });
+
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

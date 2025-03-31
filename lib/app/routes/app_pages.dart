@@ -1,5 +1,5 @@
-import 'package:affirmations_app/app/modules/screens/common/app_settings/contact_admin/bindings/contact_admin_binding.dart';
-import 'package:affirmations_app/app/modules/screens/common/app_settings/contact_admin/views/contact_admin_view.dart';
+import 'package:affirmations_app/app/modules/authentication/signup/bindings/signup_binding.dart';
+import 'package:affirmations_app/app/modules/authentication/signup/views/signup_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/authentication/forgot_password/bindings/forgot_password_binding.dart';
@@ -30,6 +30,8 @@ import '../modules/screens/common/app_settings/affirmation_types/bindings/affirm
 import '../modules/screens/common/app_settings/affirmation_types/views/affirmation_types_view.dart';
 import '../modules/screens/common/app_settings/app_themes/bindings/app_themes_binding.dart';
 import '../modules/screens/common/app_settings/app_themes/views/app_themes_view.dart';
+import '../modules/screens/common/app_settings/contact_admin/bindings/contact_admin_binding.dart';
+import '../modules/screens/common/app_settings/contact_admin/views/contact_admin_view.dart';
 import '../modules/screens/common/app_settings/reminders/bindings/reminders_binding.dart';
 import '../modules/screens/common/app_settings/reminders/views/reminders_view.dart';
 import '../modules/screens/common/app_settings/settings/bindings/settings_binding.dart';
@@ -211,6 +213,11 @@ class AppPages {
       name: _Paths.CONTACT_ADMIN,
       page: () => const ContactAdminView(),
       binding: ContactAdminBinding(),
+    ),
+    GetPage(
+      name: _Paths.SIGNUP,
+      page: () => const SignupView(),
+      binding: SignupBinding(),
     ),
   ];
 }
