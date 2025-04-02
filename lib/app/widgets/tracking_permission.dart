@@ -67,9 +67,8 @@ class TrackingPermissionDialog extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16),
-                    
                   ),
-                  border: Border.all(color: Colors.grey.shade300, width: 1.5),
+
                 ),
                 child: Row(
                   children: [
@@ -113,7 +112,12 @@ class TrackingPermissionDialog extends StatelessWidget {
                         style: TextButton.styleFrom(
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
+                              bottomLeft: Radius.zero,
+                              bottomRight: Radius.circular(12),
+                            ),
+                            side: BorderSide(
+                              color: Colors.grey,
+                              width: 0.5,
                             ),
                           ),
                           padding: EdgeInsets.all(20),

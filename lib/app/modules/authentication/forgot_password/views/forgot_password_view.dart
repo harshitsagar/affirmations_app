@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/helpers/utils/customAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,24 +11,6 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          "Forgot Password",
-          style: GoogleFonts.inter(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        centerTitle: true,
-      ),
 
       body: Container(
         width: double.infinity,
@@ -44,6 +27,8 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+
+                CustomAppBar(title: "Forgot Password"),
 
                 const SizedBox(height: 40),
 

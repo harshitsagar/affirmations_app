@@ -1,4 +1,4 @@
-import 'package:affirmations_app/app/modules/screens/tracking_permission.dart';
+import 'package:affirmations_app/app/widgets/tracking_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
