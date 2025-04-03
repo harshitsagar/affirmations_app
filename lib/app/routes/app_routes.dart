@@ -35,6 +35,7 @@ abstract class Routes {
   static const APP_THEMES = _Paths.APP_THEMES;
   static const CONTACT_ADMIN = _Paths.CONTACT_ADMIN;
   static const SIGNUP = _Paths.SIGNUP;
+  static const AFFIRMATION_REMINDER = _Paths.AFFIRMATION_REMINDER;
 }
 
 abstract class _Paths {
@@ -71,4 +72,5 @@ abstract class _Paths {
   static const APP_THEMES = '/app-themes';
   static const CONTACT_ADMIN = '/contact-admin';
   static const SIGNUP = '/signup';
+  static const AFFIRMATION_REMINDER = '/affirmation-reminder';
 }

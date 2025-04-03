@@ -1,5 +1,5 @@
-import 'package:affirmations_app/app/modules/authentication/signup/bindings/signup_binding.dart';
-import 'package:affirmations_app/app/modules/authentication/signup/views/signup_view.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/affirmation_reminder/bindings/affirmation_reminder_binding.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/affirmation_reminder/views/affirmation_reminder_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/authentication/forgot_password/bindings/forgot_password_binding.dart';
@@ -15,11 +15,13 @@ import '../modules/authentication/profile/journal_profile/views/journal_profile_
 import '../modules/authentication/profile/journal_reminder/bindings/journal_reminder_binding.dart';
 import '../modules/authentication/profile/journal_reminder/views/journal_reminder_view.dart';
 import '../modules/authentication/profile/profile_screen/bindings/profile_screen_binding.dart';
-import '../modules/authentication/profile/profile_screen/views/profile_screen_view.dart';
+import '../modules/authentication/profile/profile_screen/views/profile_screen_view1.dart';
 import '../modules/authentication/profile/subscription_screen/bindings/subscription_screen_binding.dart';
 import '../modules/authentication/profile/subscription_screen/views/subscription_screen_view.dart';
 import '../modules/authentication/profile/themes/bindings/themes_binding.dart';
 import '../modules/authentication/profile/themes/views/themes_view.dart';
+import '../modules/authentication/signup/bindings/signup_binding.dart';
+import '../modules/authentication/signup/views/signup_view.dart';
 import '../modules/authentication/splash/bindings/splash_binding.dart';
 import '../modules/authentication/splash/views/splash_view.dart';
 import '../modules/screens/common/add_entry/bindings/add_entry_binding.dart';
@@ -64,7 +66,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SPLASH;
+  static const INITIAL = Routes.AFFIRMATION_REMINDER;
 
   static final routes = [
     GetPage(
@@ -89,7 +91,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PROFILE_SCREEN,
-      page: () => const ProfileScreenView(),
+      page: () => const ProfileScreenView1(),
       binding: ProfileScreenBinding(),
     ),
     GetPage(
@@ -218,6 +220,11 @@ class AppPages {
       name: _Paths.SIGNUP,
       page: () => const SignupView(),
       binding: SignupBinding(),
+    ),
+    GetPage(
+      name: _Paths.AFFIRMATION_REMINDER,
+      page: () => const AffirmationReminderView(),
+      binding: AffirmationReminderBinding(),
     ),
   ];
 }

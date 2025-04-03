@@ -18,4 +18,12 @@ const apple = 'assets/socialbuttons/apple.png';
 const google = 'assets/socialbuttons/google.png';
 const facebook = 'assets/socialbuttons/facebook.png';
 
+// profile images .....
+const selectedIcon = 'assets/profileImages/selectedIcon.png';
+const unselectedIcon = 'assets/profileImages/unselectedIcon.png';
+
+// jorunal reminder images .....
+const minusIcon = 'assets/affirmation_reminder/minus_icon.svg';
+const plusIcon = 'assets/affirmation_reminder/plus_icon.svg';
+const clockIcon = 'assets/affirmation_reminder/clock_icon.svg';
 

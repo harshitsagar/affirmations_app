@@ -1,8 +1,10 @@
 import 'package:affirmations_app/app/data/api_service/models/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   var isPasswordHidden = true.obs;
@@ -21,12 +23,34 @@ class LoginController extends GetxController {
       return;
     }
 
-    bool success = await AuthService().login(email, password);
+    // bool success = await AuthService().login(email, password);
+    bool success = true;  // for just checking the flow ....
+
     if (success) {
-      Get.offAllNamed('/home');
+
+      bool isFirstLogin = await checkIfFirstLogin();
+
+      if (isFirstLogin) {
+        Get.offAllNamed('/home'); // Redirect to Setup Profile screen
+      } else {
+        Get.offAllNamed('/profile-screen'); // Redirect to Home screen
+      }
     } else {
       Get.snackbar("Error", "Invalid credentials or unverified email");
     }
+
+  }
+
+  // if the user is new .....
+  Future<bool> checkIfFirstLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool("isProfileSetup") ?? false; // Default is false (means first login)
+  }
+
+  // This function should be called when the user completes their profile setup  ....
+  void setProfileCompleted() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isProfileSetup", true); // Save that profile setup is done
   }
 
   void loginWithGoogle() {

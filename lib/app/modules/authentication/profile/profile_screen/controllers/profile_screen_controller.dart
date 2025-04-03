@@ -1,23 +1,16 @@
 import 'package:get/get.dart';
 
 class ProfileScreenController extends GetxController {
-  //TODO: Implement ProfileScreenController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  RxString selectedAgeGroup = ''.obs;
+  RxString selectedGender = ''.obs;
+
+  void selectAgeGroup(String age) {
+    selectedAgeGroup.value = age;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void selectGender(String gender) {
+    selectedGender.value = gender;
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }
