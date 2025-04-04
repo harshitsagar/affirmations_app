@@ -1,4 +1,4 @@
-import 'package:affirmations_app/app/helpers/utils/customAppbar.dart';
+import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -11,6 +11,9 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
 
   @override
   Widget build(BuildContext context) {
+
+    Get.put(AffirmationReminderController());
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -26,7 +29,7 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
           child: Column(
             children: [
               const CustomAppBar(title: ""),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
 
               // Title Section
               Column(

@@ -66,7 +66,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.AFFIRMATION_REMINDER;
+  static const INITIAL = Routes.THEMES;
 
   static final routes = [
     GetPage(
@@ -76,7 +76,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ONBOARDING,
-      page: () => const OnboardingView(),
+      page: () => OnboardingView(),
       binding: OnboardingBinding(),
     ),
     GetPage(

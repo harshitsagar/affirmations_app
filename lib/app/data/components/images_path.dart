@@ -9,7 +9,7 @@ const onboardingImage3 = 'assets/onboardingImages/onboarding_image3.png';
 // bg image .....
 const bgImage = 'assets/bgImage/bg_image.png';
 
-// passowrd icon ....
+// password icon ....
 const visible = 'assets/password/visible.png';
 const invisible = 'assets/password/invisible.png';
 
@@ -26,4 +26,15 @@ const unselectedIcon = 'assets/profileImages/unselectedIcon.png';
 const minusIcon = 'assets/affirmation_reminder/minus_icon.svg';
 const plusIcon = 'assets/affirmation_reminder/plus_icon.svg';
 const clockIcon = 'assets/affirmation_reminder/clock_icon.svg';
+
+// affirmation images .....
+const checkedIcon = 'assets/affirmations/checkedIcon.svg';
+const uncheckedIcon = 'assets/affirmations/uncheckedIcon.svg';
+
+// theme images .....
+const theme1 = 'assets/themes/Theme1.png';
+const theme2 = 'assets/themes/Theme2.png';
+const theme3 = 'assets/themes/Theme3.png';
+const tickIcon = 'assets/themes/tick_icon.png';
+
 

@@ -1,7 +1,10 @@
+import 'package:affirmations_app/app/routes/app_pages.dart';
+import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AffirmationReminderController extends GetxController {
+
   final affirmationCount = 10.obs;
   final startTime = TimeOfDay(hour: 0, minute: 0).obs;
   final endTime = TimeOfDay(hour: 0, minute: 0).obs;
@@ -56,17 +59,76 @@ class AffirmationReminderController extends GetxController {
   }
 
   bool _isValidTimeRange(TimeOfDay start, TimeOfDay end) {
-    final startHour = start.hour + start.minute / 60;
-    final endHour = end.hour + end.minute / 60;
-    return (endHour - startHour) >= minTimeSpan;
+    final startHour = start.hour + start.minute / 60.0;
+    final endHour = end.hour + end.minute / 60.0;
+
+    // Ensure start time is always before end time and the gap is at least 5 hours
+    return (endHour > startHour) && ((endHour - startHour) >= minTimeSpan);
   }
 
   void savePreferences() {
-    if (!_isValidTimeRange(startTime.value, endTime.value)) {
-      Get.snackbar('Invalid Time', 'Time span must be at least 5 hours');
+
+    if (startTime.value.hour > endTime.value.hour ||
+        (startTime.value.hour == endTime.value.hour &&
+            startTime.value.minute > endTime.value.minute)) {
+      Get.snackbar(
+        '❌ Invalid Time',
+        'End time cannot be earlier than Start time',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.black87,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+        margin: const EdgeInsets.all(12),
+        borderRadius: 12,
+      );
       return;
     }
-    Get.snackbar('Success', 'Reminder preferences saved');
-    // Add your navigation or API call here
+
+    if (!_isValidTimeRange(startTime.value, endTime.value)) {
+      Get.snackbar(
+        'Invalid Time',
+        'Time span must be at least 5 hours',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.black87,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+        margin: const EdgeInsets.all(12),
+        borderRadius: 12,
+        icon: const Icon(Icons.warning_amber_rounded, color: Colors.white),
+        messageText: Text(
+          'Time span must be at least 5 hours',
+          style: TextStyle(
+            fontSize: 14, // Slightly larger font
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // Darker shade of white
+          ),
+        ),
+      );
+      return;
+    }
+
+    // Navigate to the next screen here ......
+    Get.dialog(
+      CustomPopupDialog(
+        title: 'Notifications Permission',
+        description: 'Enable notifications to receive\ndaily affirmations.Without permission, you won’t get alerts to keep you motivated.',
+        // No need to specify button texts as they're now the defaults
+        onPrimaryPressed: () {
+          // Handle "Ask Not to Track" action
+          Get.back();
+          Get.offAllNamed(Routes.AFFIRMATIONS);
+        },
+        onSecondaryPressed: () {
+          // Handle "Allow" action
+          Get.back();
+          Get.offAllNamed(Routes.AFFIRMATIONS);
+        },
+        primaryButtonText: "Don't Allow" ,
+        secondaryButtonText: 'Allow',
+      ),
+      barrierDismissible: false,
+    );
+
   }
+
 }

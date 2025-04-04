@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/api_service/models/auth_service.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,9 +32,9 @@ class LoginController extends GetxController {
       bool isFirstLogin = await checkIfFirstLogin();
 
       if (isFirstLogin) {
-        Get.offAllNamed('/home'); // Redirect to Setup Profile screen
+        Get.offAllNamed(Routes.HOME); // Redirect to Setup Profile screen
       } else {
-        Get.offAllNamed('/profile-screen'); // Redirect to Home screen
+        Get.offAllNamed(Routes.PROFILE_SCREEN); // Redirect to Home screen
       }
     } else {
       Get.snackbar("Error", "Invalid credentials or unverified email");

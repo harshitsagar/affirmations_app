@@ -1,3 +1,5 @@
+import 'package:affirmations_app/app/routes/app_pages.dart';
+import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:affirmations_app/app/widgets/tracking_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,10 +19,31 @@ class OnboardingController extends GetxController {
         curve: Curves.easeInOut,
       );
     } else {
+      
+      // Get.dialog(
+      //   const TrackingPermissionDialog(),
+      //   barrierDismissible: false,
+      // );
+
       Get.dialog(
-        const TrackingPermissionDialog(),
+        CustomPopupDialog(
+          title: 'Tracking Permission',
+          description: 'Allow "Affirmations" to track your activity across other companies\' apps and websites?',
+          // No need to specify button texts as they're now the defaults
+          onPrimaryPressed: () {
+            // Handle "Ask Not to Track" action
+            Get.back();
+            Get.offAllNamed(Routes.LOGIN);
+          },
+          onSecondaryPressed: () {
+            // Handle "Allow" action
+            Get.back();
+            Get.offAllNamed(Routes.LOGIN);
+          },
+        ),
         barrierDismissible: false,
       );
+
     }
   }
 

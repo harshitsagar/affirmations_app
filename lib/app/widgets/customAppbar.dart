@@ -4,8 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final VoidCallback? onBackPressed;
 
-  const CustomAppBar({Key? key, required this.title}) : super(key: key);
+  const CustomAppBar({
+    Key? key,
+    required this.title,
+    this.onBackPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +18,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       children: [
         IconButton(
           icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black87
+            Icons.arrow_back_ios,
+            color: Colors.black87,
           ),
-          onPressed: () => Get.back(),
+          onPressed: onBackPressed ?? () => Get.back(), // Default back behavior
         ),
         const Spacer(),
         Text(

@@ -1,4 +1,5 @@
-import 'package:affirmations_app/app/widgets/mailSent.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
+import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,8 +24,17 @@ class ForgotPasswordController extends GetxController {
     }
 
     Get.dialog(
-      MailSent(),
-      barrierDismissible: false,
+      CustomPopupDialog(
+        title: 'Mail Sent',
+        description: 'A link has been sent to your registered email to reset your password.',
+        primaryButtonText: 'Okay',
+        singleButtonMode: true,
+        descriptionWidth: 300,
+        onPrimaryPressed: () {
+          Get.back();
+          Get.offAllNamed(Routes.LOGIN);
+        },
+      ),
     );
 
   }

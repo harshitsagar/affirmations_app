@@ -1,23 +1,18 @@
+import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:get/get.dart';
 
 class ThemesController extends GetxController {
-  //TODO: Implement ThemesController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  final List<String> themeImages = [
+    theme1,
+    theme2,
+    theme3,
+  ];
+
+  var selectedTheme = 0.obs;
+
+  void selectTheme(int index) {
+    selectedTheme.value = index;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

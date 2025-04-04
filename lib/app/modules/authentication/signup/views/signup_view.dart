@@ -1,5 +1,5 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
-import 'package:affirmations_app/app/helpers/utils/customAppbar.dart';
+import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:affirmations_app/app/widgets/detailsPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

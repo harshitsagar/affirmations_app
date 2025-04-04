@@ -1,4 +1,5 @@
 // profile_screen_view2.dart
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,7 +45,7 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                     // Skip button
                     TextButton(
                       onPressed: () {
-                        Get.toNamed('/affirmation-reminder');
+                        Get.toNamed(Routes.AFFIRMATION_REMINDER);
                       },
                       child: Text(
                         'Skip',
@@ -99,7 +100,16 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (controller.selectedGender.isNotEmpty) {
-                        Get.toNamed('/affirmation-reminder');
+                        Get.toNamed(Routes.AFFIRMATION_REMINDER);
+                      }
+                      else{
+                        Get.snackbar(
+                          'Note',
+                          'Please select gender',
+                          snackPosition: SnackPosition.TOP,
+                          backgroundColor: Colors.transparent,
+                          colorText: Colors.black,
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(

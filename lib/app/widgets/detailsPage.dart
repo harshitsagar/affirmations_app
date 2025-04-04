@@ -1,7 +1,6 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
-import 'package:affirmations_app/app/helpers/utils/customAppbar.dart';
+import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class InfoPage extends StatelessWidget {
