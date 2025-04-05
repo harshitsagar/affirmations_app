@@ -1,19 +1,19 @@
-import 'package:affirmations_app/app/modules/authentication/profile/affirmation_reminder/bindings/affirmation_reminder_binding.dart';
-import 'package:affirmations_app/app/modules/authentication/profile/affirmation_reminder/views/affirmation_reminder_view.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal/bindings/journal_binding.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal/views/journal_reminder.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal/views/journal_view1.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal/views/journal_view2.dart';
 import 'package:get/get.dart';
 
 import '../modules/authentication/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/authentication/forgot_password/views/forgot_password_view.dart';
 import '../modules/authentication/login/bindings/login_binding.dart';
 import '../modules/authentication/login/views/login_view.dart';
+import '../modules/authentication/profile/affirmation_reminder/bindings/affirmation_reminder_binding.dart';
+import '../modules/authentication/profile/affirmation_reminder/views/affirmation_reminder_view.dart';
 import '../modules/authentication/profile/affirmations/bindings/affirmations_binding.dart';
 import '../modules/authentication/profile/affirmations/views/affirmations_view.dart';
 import '../modules/authentication/profile/hear_about/bindings/hear_about_binding.dart';
 import '../modules/authentication/profile/hear_about/views/hear_about_view.dart';
-import '../modules/authentication/profile/journal_profile/bindings/journal_profile_binding.dart';
-import '../modules/authentication/profile/journal_profile/views/journal_profile_view.dart';
-import '../modules/authentication/profile/journal_reminder/bindings/journal_reminder_binding.dart';
-import '../modules/authentication/profile/journal_reminder/views/journal_reminder_view.dart';
 import '../modules/authentication/profile/profile_screen/bindings/profile_screen_binding.dart';
 import '../modules/authentication/profile/profile_screen/views/profile_screen_view1.dart';
 import '../modules/authentication/profile/subscription_screen/bindings/subscription_screen_binding.dart';
@@ -48,8 +48,6 @@ import '../modules/screens/user/home/bindings/home_binding.dart';
 import '../modules/screens/user/home/views/home_view.dart';
 import '../modules/screens/user/journal/filter/bindings/filter_binding.dart';
 import '../modules/screens/user/journal/filter/views/filter_view.dart';
-import '../modules/screens/user/journal/journal_home/bindings/journal_home_binding.dart';
-import '../modules/screens/user/journal/journal_home/views/journal_home_view.dart';
 import '../modules/screens/user/my_List/favorites/bindings/favorites_binding.dart';
 import '../modules/screens/user/my_List/favorites/views/favorites_view.dart';
 import '../modules/screens/user/my_List/myList/bindings/my_list_binding.dart';
@@ -66,7 +64,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.THEMES;
+  static var INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -145,23 +143,6 @@ class AppPages {
       binding: FreezeBinding(),
     ),
     GetPage(
-      name: _Paths.JOURNAL_HOME,
-      page: () => const JournalHomeView(),
-      binding: JournalHomeBinding(),
-      children: [
-        GetPage(
-          name: _Paths.JOURNAL_HOME,
-          page: () => const JournalHomeView(),
-          binding: JournalHomeBinding(),
-        ),
-      ],
-    ),
-    GetPage(
-      name: _Paths.JOURNAL_PROFILE,
-      page: () => const JournalProfileView(),
-      binding: JournalProfileBinding(),
-    ),
-    GetPage(
       name: _Paths.FILTER,
       page: () => const FilterView(),
       binding: FilterBinding(),
@@ -197,11 +178,6 @@ class AppPages {
       binding: AffirmationTypesBinding(),
     ),
     GetPage(
-      name: _Paths.JOURNAL_REMINDER,
-      page: () => const JournalReminderView(),
-      binding: JournalReminderBinding(),
-    ),
-    GetPage(
       name: _Paths.REMINDERS,
       page: () => const RemindersView(),
       binding: RemindersBinding(),
@@ -225,6 +201,21 @@ class AppPages {
       name: _Paths.AFFIRMATION_REMINDER,
       page: () => const AffirmationReminderView(),
       binding: AffirmationReminderBinding(),
+    ),
+    GetPage(
+      name: _Paths.JOURNAL1,
+      page: () => const JournalView1(),
+      binding: JournalBinding(),
+    ),
+    GetPage(
+      name: _Paths.JOURNAL2,
+      page: () => JournalView2(),
+      binding: JournalBinding(),
+    ),
+    GetPage(
+      name: _Paths.JOURNAL_REMINDER,
+      page: () => const JournalReminder(),
+      binding: JournalBinding(),
     ),
   ];
 }

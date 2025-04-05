@@ -37,4 +37,7 @@ const theme2 = 'assets/themes/Theme2.png';
 const theme3 = 'assets/themes/Theme3.png';
 const tickIcon = 'assets/themes/tick_icon.png';
 
+// journal images .....
+const journalHome = 'assets/journal/journal_home.png';
+
 

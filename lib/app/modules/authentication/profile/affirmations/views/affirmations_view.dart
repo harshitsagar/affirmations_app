@@ -25,66 +25,62 @@ class AffirmationsView extends GetView<AffirmationsController> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 60),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-
-              CustomAppBar(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomAppBar(
                   title: "",
                   onBackPressed: () => Get.off(() => AffirmationReminderView()),
-              ),
+                ),
+                const SizedBox(height: 20),
 
-              const SizedBox(height: 30),
-
-              // Title Section
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      'On which area you want to work though affirmations?',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Select minimum of 3 areas',
+                // Title Section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    'On which area you want to work though affirmations?',
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
                       color: Colors.black,
                     ),
                   ),
-                ],
-              ),
-
-              // Areas List
-              Flexible(
-                child: ListView.builder(
-                  itemCount: controller.areas.length,
-                  itemBuilder: (context, index) {
-                    final area = controller.areas[index];
-                    return Obx(() {
-                      final isSelected = controller.selectedAreas.contains(area);
-                      return _buildAreaItem(area, isSelected);
-                    });
-                  },
                 ),
-              ),
+                const SizedBox(height: 10),
+                Text(
+                  'Select minimum of 3 areas',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 20),
 
-              const SizedBox(height: 20),
+                // Areas List
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: controller.areas.length,
+                    itemBuilder: (context, index) {
+                      final area = controller.areas[index];
+                      return Obx(() {
+                        final isSelected = controller.selectedAreas.contains(area);
+                        return _buildAreaItem(area, isSelected);
+                      });
+                    },
+                  ),
+                ),
 
-              Padding(
-                padding: const EdgeInsets.only(bottom: 50),
-                child: SizedBox(
+                const SizedBox(height: 20),
+
+                // Next Button
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
@@ -100,7 +96,7 @@ class AffirmationsView extends GetView<AffirmationsController> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black, // Always black
+                      backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -116,9 +112,8 @@ class AffirmationsView extends GetView<AffirmationsController> {
                     ),
                   ),
                 ),
-              ),
-
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -126,7 +121,7 @@ class AffirmationsView extends GetView<AffirmationsController> {
   }
 
   Widget _buildAreaItem(String area, bool isSelected) {
-    // final controller = Get.find<AffirmationsController>();
+    final controller = Get.find<AffirmationsController>();
     return SizedBox(
       width: double.infinity,
       height: 70,

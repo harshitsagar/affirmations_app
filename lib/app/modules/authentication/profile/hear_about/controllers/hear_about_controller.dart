@@ -1,23 +1,32 @@
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class HearAboutController extends GetxController {
-  //TODO: Implement HearAboutController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  // Static list .....
+  final options = <String>[
+    'App Store',
+    'Google Play',
+    'Tiktok',
+    'Instagram',
+    'Friend/ Family',
+    'Web Search',
+    'Email',
+    'Others'
+  ].obs;
+
+  final selectedOptions = <String>[].obs;
+
+  void toggleOptionSelection(String option) {
+    if (selectedOptions.contains(option)) {
+      selectedOptions.remove(option);
+    } else {
+      selectedOptions.add(option);
+    }
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void navigateToSubscriptionScreen() {
+    Get.toNamed(Routes.SUBSCRIPTION_SCREEN);
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

@@ -1,3 +1,4 @@
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -101,7 +102,7 @@ class ThemesView extends GetView<ThemesController> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: ElevatedButton(
                   onPressed: () {
-                    // Implement your navigation or action here
+                    Get.offAllNamed(Routes.JOURNAL1);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
