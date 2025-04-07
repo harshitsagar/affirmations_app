@@ -85,7 +85,7 @@ class ThemesView extends GetView<ThemesController> {
                             top: 8,
                             right: 8,
                             child: Image.asset(
-                                tickIcon,
+                                greenTickIcon,
                                 width: 24,
                                 height: 24),
                           ),

@@ -64,7 +64,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static var INITIAL = Routes.SPLASH;
+  static var INITIAL = Routes.SUBSCRIPTION_SCREEN;
 
   static final routes = [
     GetPage(

@@ -18,13 +18,13 @@ class SignupView extends GetView<SignupController> {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(bgImage), // Background Image
+            image: AssetImage(bgImage2), // Background Image
             fit: BoxFit.cover,
           ),
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
             child: ListView(
               // mainAxisAlignment: MainAxisAlignment.center,
               // crossAxisAlignment: CrossAxisAlignment.center,

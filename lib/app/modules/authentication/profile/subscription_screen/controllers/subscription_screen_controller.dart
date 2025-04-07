@@ -1,23 +1,21 @@
+import 'package:affirmations_app/app/routes/app_pages.dart';
+import 'package:affirmations_app/app/widgets/detailsPage.dart';
 import 'package:get/get.dart';
 
 class SubscriptionScreenController extends GetxController {
-  //TODO: Implement SubscriptionScreenController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  // Handle cancel button press
+  void onCancelPressed() {
+    Get.offAllNamed(Routes.HOME); // Redirect to Home screen
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  // Handle go premium button press
+  void onGoPremiumPressed() {
+    Get.toNamed('/purchase-subscription'); // Redirect to Purchase Subscription screen
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+  // Handle terms & conditions press
+  void onTermsPressed() {
+    Get.to(() => const InfoPage(title: "Terms & Conditions"));
   }
-
-  void increment() => count.value++;
 }

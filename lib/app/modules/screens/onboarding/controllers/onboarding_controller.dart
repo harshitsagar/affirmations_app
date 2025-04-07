@@ -1,6 +1,5 @@
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
-import 'package:affirmations_app/app/widgets/tracking_permission.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

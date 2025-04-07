@@ -8,6 +8,7 @@ const onboardingImage3 = 'assets/onboardingImages/onboarding_image3.png';
 
 // bg image .....
 const bgImage = 'assets/bgImage/bg_image.png';
+const bgImage2 = 'assets/bgImage/bg_image2.png';
 
 // password icon ....
 const visible = 'assets/password/visible.png';
@@ -35,9 +36,15 @@ const uncheckedIcon = 'assets/affirmations/uncheckedIcon.svg';
 const theme1 = 'assets/themes/Theme1.png';
 const theme2 = 'assets/themes/Theme2.png';
 const theme3 = 'assets/themes/Theme3.png';
-const tickIcon = 'assets/themes/tick_icon.png';
+const greenTickIcon = 'assets/themes/tick_icon.png';
 
 // journal images .....
 const journalHome = 'assets/journal/journal_home.png';
+
+// subscription images .....
+const crossIcon = 'assets/subscriptionScreen/cross_button.png';
+const blackTickIcon = 'assets/subscriptionScreen/black_tickIcon.png';
+const crownIcon = 'assets/subscriptionScreen/crown_icon.png';
+
 
 

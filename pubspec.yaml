@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.5.3
   intl: ^0.20.2
   flutter_svg: ^2.0.17
+  in_app_purchase: ^3.2.1
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,7 @@ flutter:
     - assets/affirmations/
     - assets/themes/
     - assets/journal/
+    - assets/subscriptionScreen/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
