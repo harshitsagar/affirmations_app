@@ -46,5 +46,16 @@ const crossIcon = 'assets/subscriptionScreen/cross_button.png';
 const blackTickIcon = 'assets/subscriptionScreen/black_tickIcon.png';
 const crownIcon = 'assets/subscriptionScreen/crown_icon.png';
 
+// Home screen images .....
+const fireIcon = 'assets/home/fire_icon.png';
+const premiumIcon1 = 'assets/home/premium_icon1.png';
+const premiumIcon2 = 'assets/home/premium_icon2.png';
+const shareIcon = 'assets/home/share_icon.png';
+const favoriteIcon1 = 'assets/home/favorite1.png';
+const favoriteIcon2 = 'assets/home/favorite2.png';
+const muteIcon = 'assets/home/muteIcon.png';
+const unMuteIcon = 'assets/home/unmuteIcon.png';
 
-
+const mylistIcon = 'assets/home/myListIcon.png';
+const journalIcon = 'assets/home/journalIcon.png';
+const settingsIcon = 'assets/home/settingsIcon.png';
