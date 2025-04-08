@@ -1,6 +1,11 @@
+import 'package:affirmations_app/app/modules/screens/common/add_entry/controllers/add_entry_controller.dart';
+import 'package:affirmations_app/app/modules/screens/common/add_entry/views/add_entry_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeController extends GetxController {
 
@@ -25,7 +30,52 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     _initializeData();
+    _showInitialJournalPopup();
+
+    // Register AddEntryController if not registered
+    if (!Get.isRegistered<AddEntryController>()) {
+      Get.lazyPut(() => AddEntryController());
+    }
+
+    checkAndShowJournalBottomSheet();
   }
+
+  void _showInitialJournalPopup() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    Get.find<AddEntryController>().checkShouldShowSheet().then((shouldShow) {
+      if (shouldShow) {
+        _showJournalPopup();
+      }
+    });
+  }
+
+  void checkAndShowJournalBottomSheet() {
+    final now = DateTime.now();
+    final hour = now.hour;
+    final isMorning = hour < 12;
+    final isEvening = hour >= 12;
+
+    // Simulated persistent flags - Replace with shared prefs/storage
+    final prefs = GetStorage();
+    final dontAskAgain = prefs.read("dontAskAgain_${isMorning ? 'morning' : 'evening'}") ?? false;
+    final journalAdded = prefs.read("journalAdded_${DateFormat('yyyy-MM-dd').format(now)}_${isMorning ? 'morning' : 'evening'}") ?? false;
+
+    final isFirstTimeUser = prefs.read("isFirstTimeUser") ?? true;
+
+    if ((isFirstTimeUser || !journalAdded) && !dontAskAgain) {
+      Future.delayed(Duration.zero, () {
+        Get.bottomSheet(
+          const AddEntryView(),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          barrierColor: Colors.black.withOpacity(0.5),
+        );
+      });
+    }
+
+    prefs.write("isFirstTimeUser", false); // After first display
+  }
+
 
   void _initializeData() async {
     // Load affirmations
@@ -85,7 +135,27 @@ class HomeController extends GetxController {
     currentStreak.value++;
     updateProgress();
     showGoalCompleteDialog();
+    _showPostGoalJournalPopup();
   }
+
+  void _showPostGoalJournalPopup() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    Get.find<AddEntryController>().checkShouldShowSheet().then((shouldShow) {
+      if (shouldShow) {
+        _showJournalPopup();
+      }
+    });
+  }
+
+  void _showJournalPopup() {
+    Get.bottomSheet(
+      const AddEntryView(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black54,
+    );
+  }
+
 
   void toggleFavorite() {
     final current = currentAffirmation.value;

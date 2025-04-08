@@ -9,6 +9,7 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -54,7 +55,7 @@ class HomeView extends GetView<HomeController> {
                               Text(
                                 '${controller.currentStreak.value}',
                                 style: GoogleFonts.inter(
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
                               )),
@@ -62,7 +63,7 @@ class HomeView extends GetView<HomeController> {
 
                         // Fire icon
                         Positioned(
-                          right: 10,
+                          right: 9,
                           child: Image.asset(
                             fireIcon,
                             width: 14,
