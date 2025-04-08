@@ -46,6 +46,9 @@ const crossIcon = 'assets/subscriptionScreen/cross_button.png';
 const blackTickIcon = 'assets/subscriptionScreen/black_tickIcon.png';
 const crownIcon = 'assets/subscriptionScreen/crown_icon.png';
 
+// add entry images .....
+const addEntryImage = 'assets/add_entry/add_entryimage.png';
+
 // Home screen images .....
 const fireIcon = 'assets/home/fire_icon.png';
 const premiumIcon1 = 'assets/home/premium_icon1.png';
