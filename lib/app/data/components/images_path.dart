@@ -58,7 +58,26 @@ const favoriteIcon1 = 'assets/home/favorite1.png';
 const favoriteIcon2 = 'assets/home/favorite2.png';
 const muteIcon = 'assets/home/muteIcon.png';
 const unMuteIcon = 'assets/home/unmuteIcon.png';
-
 const mylistIcon = 'assets/home/myListIcon.png';
 const journalIcon = 'assets/home/journalIcon.png';
 const settingsIcon = 'assets/home/settingsIcon.png';
+
+// Settings screen images .....
+//1)
+const diamondIcon = 'assets/settingImages/diamond.png';
+const editIcon = 'assets/settingImages/edit_icon.png';
+//2)
+const affirmationTypesIcon = 'assets/settingImages/affirmation-types.png';
+const reminderIcon = 'assets/settingImages/reminders.png';
+const appthemeIcon = 'assets/settingImages/app-theme.png';
+const sharingIcon = 'assets/settingImages/sharing_icon.png';
+const reviewIcon = 'assets/settingImages/review.png';
+const aboutUsIcon = 'assets/settingImages/about_icon.png';
+const termsConditionsIcon = 'assets/settingImages/terms-condition.png';
+const privacyPolicyIcon = 'assets/settingImages/privacy-policy.png';
+const contactAdminIcon = 'assets/settingImages/contact-admin.png';
+const faqIcon = 'assets/settingImages/faqs.png';
+const logoutIcon = 'assets/settingImages/logout.png';
+const deleteIcon = 'assets/settingImages/delete.png';
+
+

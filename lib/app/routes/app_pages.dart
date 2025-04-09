@@ -58,7 +58,6 @@ import '../modules/screens/user/streak/restore/bindings/restore_binding.dart';
 import '../modules/screens/user/streak/restore/views/restore_view.dart';
 import '../modules/screens/user/streak/streak_screen/bindings/streak_screen_binding.dart';
 import '../modules/screens/user/streak/streak_screen/views/streak_screen_view.dart';
-
 part 'app_routes.dart';
 
 class AppPages {
