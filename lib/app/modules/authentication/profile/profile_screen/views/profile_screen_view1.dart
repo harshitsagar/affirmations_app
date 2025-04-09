@@ -135,7 +135,13 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
     return SizedBox(
       height: 45,
       child: Obx(() => GestureDetector(
-        onTap: () => controller.selectAgeGroup(ageGroup),
+        onTap: () {
+          if (controller.selectedAgeGroup.value == ageGroup) {
+            controller.selectAgeGroup('');
+          } else {
+            controller.selectAgeGroup(ageGroup);
+          }
+        },
         child: Container(
           height: 56,
           margin: const EdgeInsets.symmetric(horizontal: 0),
@@ -170,4 +176,5 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
       )),
     );
   }
+
 }
