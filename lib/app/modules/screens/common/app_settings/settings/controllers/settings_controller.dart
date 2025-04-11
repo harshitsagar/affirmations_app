@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -29,8 +30,10 @@ class SettingsController extends GetxController {
     switch (title) {
       case 'Affirmations Types':
       // Navigate or handle logic
+        Get.toNamed(Routes.AFFIRMATION_TYPES);
         break;
       case 'Reminders':
+        Get.toNamed(Routes.REMINDERS);
         break;
       case 'App Theme':
         break;
