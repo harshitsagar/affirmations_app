@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -72,7 +73,7 @@ class AddEntryView extends GetView<AddEntryController> {
                   onPressed: () {
                     controller.onAddEntry();
                     Get.back(); // Close sheet
-                    Get.toNamed('/journal');
+                    Get.toNamed(Routes.REMINDERS);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
