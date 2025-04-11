@@ -2,6 +2,7 @@ import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/settings_controller.dart';
@@ -23,7 +24,7 @@ class SettingsView extends GetView<SettingsController> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -31,16 +32,16 @@ class SettingsView extends GetView<SettingsController> {
                 // Custom AppBar....
                 CustomAppBar(title: "Settings"),
 
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
 
                 // Try Premium Now Container....
                 Container(
                   width: double.infinity,
-                  height: 104,
-                  padding: const EdgeInsets.all(16),
+                  height: 104.h,
+                  padding: EdgeInsets.all(16.r),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: const LinearGradient(
+                    borderRadius: BorderRadius.circular(16.r),
+                    gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
@@ -53,15 +54,15 @@ class SettingsView extends GetView<SettingsController> {
                     children: [
 
                       Padding(
-                        padding: const EdgeInsets.only(left: 5, top: 10),
+                        padding: EdgeInsets.only(left: 5.w, top: 10.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 5,
+                          spacing: 5.h,
                           children: [
                             Text(
                               'Try Premium Now',
                               style: GoogleFonts.inter(
-                                fontSize: 20,
+                                fontSize: 20.sp,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
@@ -69,7 +70,7 @@ class SettingsView extends GetView<SettingsController> {
                             Text(
                               'Removes Ads & unlock all themes',
                               style: GoogleFonts.inter(
-                                fontSize: 14,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),
@@ -78,19 +79,18 @@ class SettingsView extends GetView<SettingsController> {
                         ),
                       ),
                       Positioned(
-                        top: 0,
-                        right: 10,
+                        right: 10.w,
                         child: Image.asset(
                           diamondIcon, // Replace with your asset path
-                          width: 70,
-                          height: 70,
+                          width: 70.w,
+                          height: 70.h,
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 34),
+                SizedBox(height: 34.h),
 
                 // About You Row
                 Row(
@@ -99,86 +99,87 @@ class SettingsView extends GetView<SettingsController> {
                     Text(
                       'About You',
                       style: GoogleFonts.inter(
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.black,
                       ),
                     ),
                     GestureDetector(
                       onTap: () => Get.toNamed(Routes.ABOUT_EDIT),
-                      child: Image.asset(editIcon, height: 24, width: 24,)
+                      child: Image.asset(editIcon, height: 24.h, width: 24.w)
                     ), // your icon here
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // User Info Container
                 Obx(() => Container(
-                  padding: const EdgeInsets.only(left: 24, right: 24, top: 16, bottom: 16),
+                  padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 16.h, bottom: 16.h),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   child: Column(
                     children: [
                       _buildUserInfoRow('Name', controller.name.value),
-                      const Divider(color: Color(0xFFF3F4F6), height: 16),
+                      Divider(color: Color(0xFFF3F4F6), height: 16.h),
                       _buildUserInfoRow('Email', controller.email.value.isNotEmpty ? controller.email.value : '--'),
-                      const Divider(color: Color(0xFFF3F4F6), height: 16),
+                      Divider(color: Color(0xFFF3F4F6), height: 16.h),
                       _buildUserInfoRow('Age', controller.age.value.isNotEmpty ? controller.age.value : '--'),
-                      const Divider(color: Color(0xFFF3F4F6), height: 16),
+                      Divider(color: Color(0xFFF3F4F6), height: 16.h),
                       _buildUserInfoRow('Gender', controller.gender.value.isNotEmpty ? controller.gender.value : '--'),
                     ],
                   ),
                 )),
-                const SizedBox(height: 32),
+
+                SizedBox(height: 32.h),
 
                 // Settings Header
                 Text(
                   'Settings',
                   style: GoogleFonts.inter(
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16.h),
 
                 // Settings Options Container
                 Container(
-                  padding: const EdgeInsets.only(left: 5, top: 5),
+                  padding: EdgeInsets.only(left: 5.w, top: 5.h),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(16.r),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
                       _buildSettingItem(affirmationTypesIcon, 'Affirmations Types'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(reminderIcon, 'Reminders',),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(appthemeIcon, 'App Theme'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(sharingIcon, 'Refer a Friend'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(reviewIcon, 'Leave us a Review'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(aboutUsIcon, 'About Us'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(termsConditionsIcon, 'Terms & Conditions'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(privacyPolicyIcon, 'Privacy Policy'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(contactAdminIcon, 'Contact Admin'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(faqIcon, 'FAQs'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(logoutIcon, 'Logout'),
-                      Divider(color: Color(0xFFF3F4F6), height: 14, thickness: 1,),
+                      Divider(color: Color(0xFFF3F4F6), height: 14.h, thickness: 1,),
                       _buildSettingItem(deleteIcon, 'Delete'),
 
                     ],
@@ -194,14 +195,14 @@ class SettingsView extends GetView<SettingsController> {
 
   Widget _buildUserInfoRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             label,
             style: GoogleFonts.inter(
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w500,
               color: Colors.black,
             ),
@@ -209,7 +210,7 @@ class SettingsView extends GetView<SettingsController> {
           Text(
             value,
             style: GoogleFonts.inter(
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w500,
               color: Colors.black,
             ),
@@ -221,13 +222,13 @@ class SettingsView extends GetView<SettingsController> {
 
   Widget _buildSettingItem(String image, String title) {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+      contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
 
-      leading: Image.asset(image, height: 24, width: 24,),
+      leading: Image.asset(image, height: 24.h, width: 24.w,),
       title: Text(
         title,
         style: GoogleFonts.inter(
-          fontSize: 16,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w500,
           color: Colors.black,
         ),

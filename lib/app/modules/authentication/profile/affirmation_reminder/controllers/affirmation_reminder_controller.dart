@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class AffirmationReminderController extends GetxController {
@@ -78,8 +79,8 @@ class AffirmationReminderController extends GetxController {
         backgroundColor: Colors.black87,
         colorText: Colors.white,
         duration: const Duration(seconds: 3),
-        margin: const EdgeInsets.all(12),
-        borderRadius: 12,
+        margin: EdgeInsets.all(12.w),
+        borderRadius: 12.r,
       );
       return;
     }
@@ -92,13 +93,13 @@ class AffirmationReminderController extends GetxController {
         backgroundColor: Colors.black87,
         colorText: Colors.white,
         duration: const Duration(seconds: 3),
-        margin: const EdgeInsets.all(12),
-        borderRadius: 12,
+        margin: EdgeInsets.all(12.w),
+        borderRadius: 12.r,
         icon: const Icon(Icons.warning_amber_rounded, color: Colors.white),
         messageText: Text(
           'Time span must be at least 5 hours',
           style: TextStyle(
-            fontSize: 14, // Slightly larger font
+            fontSize: 14.sp, // Slightly larger font
             fontWeight: FontWeight.bold,
             color: Colors.white, // Darker shade of white
           ),
@@ -125,6 +126,7 @@ class AffirmationReminderController extends GetxController {
         },
         primaryButtonText: "Don't Allow" ,
         secondaryButtonText: 'Allow',
+        descriptionWidth: 300.w,
       ),
       barrierDismissible: false,
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OnboardingPage extends StatelessWidget {
   final String title;
@@ -15,46 +16,48 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 60),
+      padding: EdgeInsets.only(top: 30.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Ensuring Image Scales Properly
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.42, // Keeps a uniform image height
+            height: MediaQuery.of(context).size.height * 0.35.h, // Keeps a uniform image height
             child: Image.asset(
               imagePath,
               fit: BoxFit.contain, // Ensures full image is visible without distortion
             ),
           ),
 
-          const SizedBox(height: 52),
+          SizedBox(height: 52.h),
 
           SizedBox(
-            width: 320,
+            width: 300.w,
+            height: 52.h,
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 22,
+              style: TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
-                height: 1.3,
+                height: 1.2.h,
                 color: Color(0xff12121D),
               ),
             ),
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 20.h),
 
           SizedBox(
-            width: 330,
+            width: 330.w,
+            height: 60.h,
             child: Text(
               description,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
+              style: TextStyle(
+                fontSize: 16.sp,
                 color: Colors.black,
-                height: 1.5,
+                height: 1.2.h,
               ),
             ),
           ),

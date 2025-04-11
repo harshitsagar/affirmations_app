@@ -1,5 +1,6 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,34 +23,34 @@ class JournalReminder extends GetView<JournalController> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 60),
+          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 60.h),
           child: Column(
             children: [
 
               const CustomAppBar(title: ""),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
 
               // Title
               Text(
                 'Set journal writing reminders',
                 style: GoogleFonts.inter(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: Colors.black,
                 ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // Time Selection Container
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.r),
                 child: Column(
                   children: [
                     _buildTimeSelector(
@@ -60,7 +61,7 @@ class JournalReminder extends GetView<JournalController> {
                           () => controller.selectStartTime(context),
                       isAM: true,
                     ),
-                    const SizedBox(height: 25),
+                    SizedBox(height: 25.h),
                     _buildTimeSelector(
                       context,
                       'End At',
@@ -77,7 +78,7 @@ class JournalReminder extends GetView<JournalController> {
 
               // Next Button
               Padding(
-                padding: const EdgeInsets.only(bottom: 50),
+                padding: EdgeInsets.only(bottom: 50.h),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -85,14 +86,14 @@ class JournalReminder extends GetView<JournalController> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30.r),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
                     ),
                     child: Text(
                       'Next',
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -121,12 +122,12 @@ class JournalReminder extends GetView<JournalController> {
         Text(
           label,
           style: GoogleFonts.inter(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         GestureDetector(
           onTap: onTap,
           child: Obx(() {
@@ -143,12 +144,12 @@ class JournalReminder extends GetView<JournalController> {
                 : (time.value.hour < 12 ? 'am' : 'pm');
 
             return Container(
-              height: 50,
+              height: 50.h,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(15.r),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 16.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -158,7 +159,7 @@ class JournalReminder extends GetView<JournalController> {
                         TextSpan(
                           text: '$hour:$minute ',
                           style: GoogleFonts.inter(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             color: isDefaultTime
                                 ? Colors.grey
@@ -168,7 +169,7 @@ class JournalReminder extends GetView<JournalController> {
                         TextSpan(
                           text: period,
                           style: GoogleFonts.inter(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             color: Colors.black, // Always black
                           ),
@@ -179,8 +180,8 @@ class JournalReminder extends GetView<JournalController> {
                   SvgPicture.asset(
                     clockIcon,
                     color: Colors.black,
-                    width: 24,
-                    height: 24,
+                    width: 24.w,
+                    height: 24.w,
                   ),
                 ],
               ),

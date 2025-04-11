@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/journal_controller.dart';
@@ -25,18 +26,18 @@ class JournalView1 extends GetView<JournalController> {
           children: [
 
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 100),
+              padding: EdgeInsets.only(left: 20.w, right: 20.w),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
 
                   // Text content
                   Padding(
-                    padding: const EdgeInsets.only(top: 30.0),
+                    padding: EdgeInsets.only(top: 120.h),
                     child: Text(
                       'Track your growth',
                       style: GoogleFonts.inter(
-                        fontSize: 20,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.black,
                       ),
@@ -44,18 +45,14 @@ class JournalView1 extends GetView<JournalController> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 68,
-                      child: Text(
-                        'Track your mood before and after affirmations to witness your transformation, and share your feelings in the Notes field.',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        ),
+                    padding: EdgeInsets.only(top: 20.h),
+                    child: Text(
+                      'Track your mood before and after affirmations to witness your transformation, and share your feelings in the Notes field.',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -65,9 +62,9 @@ class JournalView1 extends GetView<JournalController> {
             ),
 
             Padding(
-              padding: const EdgeInsets.only(top: 40),
+              padding: EdgeInsets.only(top: 40.h),
               child: SizedBox(
-                height: 400,
+                height: 300.h,
                 width: double.infinity,
                 child: Image.asset(
                   journalHome, // Replace with your actual image path
@@ -80,7 +77,7 @@ class JournalView1 extends GetView<JournalController> {
 
             // Button at the bottom
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 50),
+              padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 30.h),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -91,14 +88,14 @@ class JournalView1 extends GetView<JournalController> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(30.r),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                   ),
                   child: Text(
                     'Let\'s Go',
                     style: GoogleFonts.inter(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),

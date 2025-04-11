@@ -1,5 +1,6 @@
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +24,7 @@ class HearAboutView extends GetView<HearAboutController> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -43,7 +44,7 @@ class HearAboutView extends GetView<HearAboutController> {
                       child: Text(
                         'Skip',
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
                         ),
@@ -52,18 +53,18 @@ class HearAboutView extends GetView<HearAboutController> {
                   ],
                 ),
 
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
 
                 Text(
                   'How did you hear about the app?',
                   style: GoogleFonts.inter(
-                    fontSize: 20,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
 
-                const SizedBox(height: 30),
+                SizedBox(height: 20.h),
 
                 Expanded(
                   child: ListView.builder(
@@ -79,25 +80,28 @@ class HearAboutView extends GetView<HearAboutController> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: controller.navigateToSubscriptionScreen,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.h),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: controller.navigateToSubscriptionScreen,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(
-                      'Next',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      child: Text(
+                        'Next',
+                        style: GoogleFonts.inter(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -112,33 +116,33 @@ class HearAboutView extends GetView<HearAboutController> {
 
   Widget _buildOptionItem(String option, bool isSelected) {
     return SizedBox(
-      height: 70,
+      height: 60.h,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
+        padding: EdgeInsets.only(bottom: 20.h),
         child: GestureDetector(
           onTap: () => controller.toggleOptionSelection(option),
           child: Container(
-            height: 56,
+            height: 56.h,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(30.r),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   option,
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
                 ),
                 SvgPicture.asset(
                   isSelected ? checkedIcon : uncheckedIcon,
-                  width: 14,
-                  height: 14,
+                  width: 14.w,
+                  height: 14.h,
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/modules/screens/onboarding/views/onboardingPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../controllers/onboarding_controller.dart';
 
@@ -53,7 +54,7 @@ class OnboardingView extends GetView<OnboardingController> {
 
                 // Custom Indicator & Next Button Row
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20, left: 130, right: 24),
+                  padding: EdgeInsets.only(bottom: 20.h, left: 120.w, right: 25.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -66,11 +67,11 @@ class OnboardingView extends GetView<OnboardingController> {
                               controller.pageCount,
                                   (index) => AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
-                                width: controller.currentPage.value == index ? 20 : 10, // Elongated for active
-                                height: 10,
-                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                width: controller.currentPage.value == index ? 20.w : 10.w, // Elongated for active
+                                height: 10.h,
+                                margin: EdgeInsets.symmetric(horizontal: 4.w),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(10.r),
                                   color: controller.currentPage.value == index
                                       ? Colors.black  // Active (Black)
                                       : Colors.grey.withOpacity(0.5),  // Inactive (Grey)
@@ -81,7 +82,7 @@ class OnboardingView extends GetView<OnboardingController> {
                         ),
                       ),
 
-                      const SizedBox(width: 50),
+                      SizedBox(width: 30.w),
 
                       // Next Button
                       Obx(() => TextButton(
@@ -90,9 +91,9 @@ class OnboardingView extends GetView<OnboardingController> {
                           controller.currentPage.value == controller.pageCount - 1
                               ? "Get Started"
                               : "Next",
-                          style: const TextStyle(
+                          style: TextStyle(
                             decoration: TextDecoration.underline,
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
                             color: Color(0xff1E1E1E),
                           ),
@@ -101,6 +102,7 @@ class OnboardingView extends GetView<OnboardingController> {
                     ],
                   ),
                 ),
+
               ],
             ),
           ),

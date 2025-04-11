@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/modules/authentication/profile/affirmation_reminder/views/affirmation_reminder_view.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,7 +28,7 @@ class AffirmationsView extends GetView<AffirmationsController> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 20.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -35,31 +36,32 @@ class AffirmationsView extends GetView<AffirmationsController> {
                   title: "",
                   onBackPressed: () => Get.off(() => AffirmationReminderView()),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Title Section
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10.h),
                   child: Text(
                     'On which area you want to work though affirmations?',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.black,
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 20.h),
                 Text(
                   'Select minimum of 3 areas',
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w400,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 20),
+
+                SizedBox(height: 20.h),
 
                 // Areas List
                 Expanded(
@@ -77,37 +79,40 @@ class AffirmationsView extends GetView<AffirmationsController> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Next Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (controller.selectedAreas.length >= 3) {
-                        controller.navigateToThemeScreen();
-                      } else {
-                        Get.snackbar(
-                          'Selection Required',
-                          'Please select at least 3 areas',
-                          snackPosition: SnackPosition.TOP,
-                          duration: const Duration(seconds: 2),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8.h),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (controller.selectedAreas.length >= 3) {
+                          controller.navigateToThemeScreen();
+                        } else {
+                          Get.snackbar(
+                            'Selection Required',
+                            'Please select at least 3 areas',
+                            snackPosition: SnackPosition.TOP,
+                            duration: const Duration(seconds: 2),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(
-                      'Next',
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      child: Text(
+                        'Next',
+                        style: GoogleFonts.inter(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
@@ -124,33 +129,33 @@ class AffirmationsView extends GetView<AffirmationsController> {
     final controller = Get.find<AffirmationsController>();
     return SizedBox(
       width: double.infinity,
-      height: 70,
+      height: 55.h,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.only(bottom: 16.h),
         child: GestureDetector(
           onTap: () => controller.toggleAreaSelection(area),
           child: Container(
-            height: 56,
+            height: 56.h,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(30.r),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   area,
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
                 ),
                 SvgPicture.asset(
                   isSelected ? checkedIcon : uncheckedIcon,
-                  width: 14,
-                  height: 14,
+                  width: 14.w,
+                  height: 14.h,
                 ),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -27,13 +28,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         Text(
           title,
           style: GoogleFonts.inter(
-            fontSize: 20,
+            fontSize: 20.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
         const Spacer(),
-        const SizedBox(width: 48), // To balance the space of back icon
+        SizedBox(width: 48.w), // To balance the space of back icon
       ],
     );
   }

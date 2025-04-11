@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/about_edit_controller.dart';
@@ -22,31 +23,33 @@ class AboutEditView extends GetView<AboutEditController> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                const CustomAppBar(title: "Edit About You"),
+                CustomAppBar(title: "Edit About You"),
 
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
 
                 // Name
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
                     "Name*",
+                    // style: Theme.of(context).textTheme.headlineLarge!.copyWith(),
                     style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: Colors.black),
                   ),
                 ),
 
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
+
                 _buildTextField(controller.nameController, "Name"),
 
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
 
                 // Email
                 Align(
@@ -54,15 +57,15 @@ class AboutEditView extends GetView<AboutEditController> {
                   child: Text(
                     "Email",
                     style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         color: Colors.black),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildTextField(controller.emailController, "Email"),
 
-                const SizedBox(height: 24),
+                SizedBox(height: 24.h),
 
                 // Age
                 Align(
@@ -70,52 +73,52 @@ class AboutEditView extends GetView<AboutEditController> {
                   child: Text(
                     "Age",
                     style: GoogleFonts.inter(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildAgeOption('18 or Under'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildAgeOption('19 - 24'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildAgeOption('25 - 34'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildAgeOption('35 - 44'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildAgeOption('45 - 54'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildAgeOption('55 - 64'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildAgeOption('65 or Older'),
 
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
 
                 // Gender
                 Text(
                   "Gender",
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 _buildGenderOption('Female'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildGenderOption('Male'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildGenderOption('Non-Binary'),
-                const SizedBox(height: 20),
+                SizedBox(height: 18.h),
                 _buildGenderOption('Prefer not to say'),
 
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
 
                 // Save button
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 40, top: 16),
+                  padding: EdgeInsets.only(bottom: 40.h, top: 16.h),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -125,12 +128,12 @@ class AboutEditView extends GetView<AboutEditController> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
                         'Save',
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -148,24 +151,24 @@ class AboutEditView extends GetView<AboutEditController> {
 
   Widget _buildTextField(TextEditingController controller, String hintText) {
     return SizedBox(
-      height: 40,
+      height: 40.h,
       child: TextFormField(
         controller: controller,
         style: GoogleFonts.inter(
-          fontSize: 16,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w500,
           color: Colors.black,
         ),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: GoogleFonts.inter(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: Colors.grey,
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+          contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(30.r),
             borderSide: BorderSide.none,
           ),
           filled: true,
@@ -180,19 +183,19 @@ class AboutEditView extends GetView<AboutEditController> {
       onTap: () => controller.selectAgeGroup(ageGroup),
       child: Container(
         width: double.infinity,
-        height: 45,
+        height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(30.r),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               ageGroup,
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
               ),
@@ -201,8 +204,8 @@ class AboutEditView extends GetView<AboutEditController> {
               controller.selectedAgeGroup.value == ageGroup
                   ? selectedIcon
                   : unselectedIcon,
-              width: 15,
-              height: 15,
+              width: 15.w,
+              height: 15.h,
             ),
           ],
         ),
@@ -215,19 +218,19 @@ class AboutEditView extends GetView<AboutEditController> {
       onTap: () => controller.selectGender(gender),
       child: Container(
         width: double.infinity,
-        height: 45,
+        height: 40.h,
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(30.r),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               gender,
               style: GoogleFonts.inter(
-                fontSize: 16,
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
               ),
@@ -236,8 +239,8 @@ class AboutEditView extends GetView<AboutEditController> {
               controller.selectedGender.value == gender
                   ? selectedIcon
                   : unselectedIcon,
-              width: 15,
-              height: 15,
+              width: 15.w,
+              height: 15.h,
             ),
           ],
         ),

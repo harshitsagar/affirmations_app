@@ -1,10 +1,10 @@
 // profile_screen_view2.dart
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:affirmations_app/app/data/components/images_path.dart';
-
 import '../controllers/profile_screen_controller.dart';
 
 class ProfileScreenView2 extends GetView<ProfileScreenController> {
@@ -23,14 +23,14 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
 
               // Header with back and skip buttons
               Padding(
-                padding: const EdgeInsets.only(top: 60),
+                padding: EdgeInsets.only(top: 60.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -40,7 +40,7 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                       onPressed: () {
                         Get.back(); // Navigates back to previous screen
                       },
-                      iconSize: 24,
+                      iconSize: 24.sp,
                     ),
                     // Skip button
                     TextButton(
@@ -50,7 +50,7 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                       child: Text(
                         'Skip',
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
                         ),
@@ -62,18 +62,18 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
 
               // Title
               Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 40.h),
                 child: Text(
                   'What best represents you?',
                   style: GoogleFonts.inter(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // Gender options
               Expanded(
@@ -81,11 +81,11 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                   child: Column(
                     children: [
                       _buildGenderOption('Female'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       _buildGenderOption('Male'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       _buildGenderOption('Non-Binary'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20.h),
                       _buildGenderOption('Prefer not to say'),
                     ],
                   ),
@@ -94,7 +94,7 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
 
               // Next button
               Padding(
-                padding: const EdgeInsets.only(bottom: 40),
+                padding: EdgeInsets.only(bottom: 40.h),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -115,14 +115,14 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30.r),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
                     ),
                     child: Text(
                       'Next',
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -139,7 +139,7 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
 
   Widget _buildGenderOption(String gender) {
     return SizedBox(
-      height: 45,
+      height: 45.h,
       child: Obx(() => GestureDetector(
         onTap: () {
           if (controller.selectedGender.value == gender) {
@@ -150,20 +150,19 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
         },
         child: Container(
           height: 56,
-          margin: const EdgeInsets.symmetric(horizontal: 0),
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(30.r),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 12, left: 20, right: 20),
+            padding: EdgeInsets.only(top: 12.h, bottom: 12.h, left: 20.w, right: 20.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   gender,
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
@@ -172,8 +171,8 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                   controller.selectedGender.value == gender
                       ? selectedIcon
                       : unselectedIcon,
-                  width: 15,
-                  height: 15,
+                  width: 15.w,
+                  height: 15.h,
                 ),
               ],
             ),

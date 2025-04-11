@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -14,7 +15,7 @@ class CustomPopupDialog extends StatelessWidget {
   final Color? primaryTextColor;
   final Color? secondaryTextColor;
   final bool showDivider;
-  final double? descriptionWidth;
+  final double? descriptionWidth ;
   final bool singleButtonMode;
 
   const CustomPopupDialog({
@@ -30,7 +31,7 @@ class CustomPopupDialog extends StatelessWidget {
     this.primaryTextColor,
     this.secondaryTextColor,
     this.showDivider = true,
-    this.descriptionWidth,
+    this.descriptionWidth ,
     this.singleButtonMode = false,
   }) : assert(
   !singleButtonMode || (singleButtonMode && primaryButtonText != null),
@@ -43,52 +44,52 @@ class CustomPopupDialog extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.89,
+          width: MediaQuery.of(context).size.width * 0.85.w,
+
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.2),
-                blurRadius: 10,
-                spreadRadius: 2,
+                blurRadius: 10.r,
+                spreadRadius: 2.r,
               ),
             ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 5),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 16.h, left: 16.w, right: 16.w),                    child: Text(
                       title,
                       style: GoogleFonts.inter(
                         color: const Color(0xff12121D),
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: descriptionWidth ?? double.infinity,
-                      child: Text(
-                        description,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xff12121D),
-                          height: 1.4,
-                          fontWeight: FontWeight.w500,
-                        ),
+                  ),
+                  SizedBox(height: 12.h),
+                  SizedBox(
+                    width: descriptionWidth ?? double.infinity,
+                    child: Text(
+                      description,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Color(0xff12121D),
+                        height: 1.2.h,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20.h),
               _buildButtonSection(),
             ],
           ),
@@ -108,27 +109,27 @@ class CustomPopupDialog extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16.r),
+          bottomRight: Radius.circular(16.r),
         ),
       ),
       child: TextButton(
         onPressed: onPrimaryPressed ?? () => Get.back(),
         style: TextButton.styleFrom(
-          shape: const RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              bottomRight: Radius.circular(12),
-              bottomLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12.r),
+              bottomLeft: Radius.circular(12.r),
             ),
           ),
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(20.r),
           backgroundColor: primaryButtonColor ?? Colors.black,
         ),
         child: Text(
           primaryButtonText!,
           style: GoogleFonts.openSans(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: primaryTextColor ?? Colors.white,
           ),
@@ -141,9 +142,9 @@ class CustomPopupDialog extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16.r),
+          bottomRight: Radius.circular(16.r),
         ),
       ),
       child: Row(
@@ -152,20 +153,20 @@ class CustomPopupDialog extends StatelessWidget {
             child: TextButton(
               onPressed: onPrimaryPressed ?? () => Get.back(),
               style: TextButton.styleFrom(
-                shape: const RoundedRectangleBorder(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     bottomRight: Radius.zero,
-                    bottomLeft: Radius.circular(12),
+                    bottomLeft: Radius.circular(12.r),
                   ),
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.r),
                 backgroundColor: primaryButtonColor ?? Colors.black,
               ),
               child: Text(
                 primaryButtonText ?? 'Ask Not to Track',
                 style: GoogleFonts.openSans(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
                   color: primaryTextColor ?? Colors.white,
                 ),
               ),
@@ -173,22 +174,22 @@ class CustomPopupDialog extends StatelessWidget {
           ),
           if (showDivider)
             Container(
-              width: 1.5,
-              height: 44,
+              width: 1.5.w,
+              height: 44.h,
               color: Colors.grey.shade300,
             ),
           Expanded(
             child: TextButton(
               onPressed: onSecondaryPressed ?? () => Get.back(),
               style: TextButton.styleFrom(
-                shape: const RoundedRectangleBorder(
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.zero,
-                    bottomRight: Radius.circular(12),
+                    bottomRight: Radius.circular(12.r),
                   ),
                   side: BorderSide(
                     color: Colors.grey,
-                    width: 0.5,
+                    width: 0.5.w,
                   ),
                 ),
                 padding: const EdgeInsets.all(20),
@@ -197,7 +198,7 @@ class CustomPopupDialog extends StatelessWidget {
               child: Text(
                 secondaryButtonText ?? 'Allow',
                 style: GoogleFonts.openSans(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: secondaryTextColor ?? Colors.black,
                 ),

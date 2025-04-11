@@ -63,7 +63,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static var INITIAL = Routes.SUBSCRIPTION_SCREEN;
+  static var INITIAL = Routes.SETTINGS;
 
   static final routes = [
     GetPage(
@@ -168,7 +168,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.ABOUT_EDIT,
-      page: () => const AboutEditView(),
+      page: () => AboutEditView(),
       binding: AboutEditBinding(),
     ),
     GetPage(

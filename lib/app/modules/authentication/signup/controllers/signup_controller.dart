@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class SignupController extends GetxController {
@@ -46,7 +47,7 @@ class SignupController extends GetxController {
           description: 'A link has been sent to your registered email to reset your password.',
           primaryButtonText: 'Okay',
           singleButtonMode: true,
-          descriptionWidth: 300,
+          descriptionWidth: 300.w,
           onPrimaryPressed: () {
             Get.back();
             Get.offAllNamed(Routes.LOGIN);

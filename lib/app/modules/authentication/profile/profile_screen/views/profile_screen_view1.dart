@@ -1,10 +1,10 @@
 // profile_screen_view1.dart
 import 'package:affirmations_app/app/modules/authentication/profile/profile_screen/views/profile_screen_view2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:affirmations_app/app/data/components/images_path.dart';
-
 import '../controllers/profile_screen_controller.dart';
 
 class ProfileScreenView1 extends GetView<ProfileScreenController> {
@@ -23,7 +23,7 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -31,15 +31,15 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
               Align(
                 alignment: Alignment.topRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 60),
+                  padding: EdgeInsets.only(top: 60.h),
                   child: TextButton(
                     onPressed: () {
-                      Get.to(() => const ProfileScreenView2());
+                      Get.to(() => ProfileScreenView2());
                     },
                     child: Text(
                       'Skip',
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         color: Colors.black,
                         fontWeight: FontWeight.w500,
                       ),
@@ -50,18 +50,18 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
 
               // Title
               Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 20.h),
                 child: Text(
                   'How old are you?',
                   style: GoogleFonts.inter(
-                    fontSize: 24,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 30.h),
 
               // Age options
               Expanded(
@@ -69,17 +69,17 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
                   child: Column(
                     children: [
                       _buildAgeOption('18 or Under'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 15.h),
                       _buildAgeOption('19 - 24'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 15.h),
                       _buildAgeOption('25 - 34'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 15.h),
                       _buildAgeOption('35 - 44'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 15.h),
                       _buildAgeOption('45 - 54'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 15.h),
                       _buildAgeOption('55 - 64'),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 15.h),
                       _buildAgeOption('65 or Older'),
                     ],
                   ),
@@ -88,7 +88,7 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
 
               // Next button
               Padding(
-                padding: const EdgeInsets.only(bottom: 40),
+                padding: EdgeInsets.only(bottom: 40.h),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -111,12 +111,12 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
                     ),
                     child: Text(
                       'Next',
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -133,7 +133,7 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
 
   Widget _buildAgeOption(String ageGroup) {
     return SizedBox(
-      height: 45,
+      height: 38.h,
       child: Obx(() => GestureDetector(
         onTap: () {
           if (controller.selectedAgeGroup.value == ageGroup) {
@@ -143,21 +143,20 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
           }
         },
         child: Container(
-          height: 56,
-          margin: const EdgeInsets.symmetric(horizontal: 0),
+          height: 56.h,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(30),
+            color: Colors.white.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(30.r),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   ageGroup,
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
@@ -166,8 +165,8 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
                   controller.selectedAgeGroup.value == ageGroup
                       ? selectedIcon
                       : unselectedIcon,
-                  width: 15,
-                  height: 15,
+                  width: 15.w,
+                  height: 15.h,
                 ),
               ],
             ),

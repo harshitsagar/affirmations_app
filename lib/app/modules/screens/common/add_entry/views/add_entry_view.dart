@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/add_entry_controller.dart';
@@ -12,57 +13,58 @@ class AddEntryView extends GetView<AddEntryController> {
   Widget build(BuildContext context) {
     return Container(
       // This makes it appear like a bottom sheet with rounded corners
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30.r)),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
         child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 15),
+          padding: EdgeInsets.only(left: 18.w, right: 18.w, bottom: 20.h, top: 15.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               // The gray bar at the top
               Container(
-                width: 60,
-                height: 5,
+                width: 60.w,
+                height: 5.h,
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
               ),
-              const SizedBox(height: 45),
+
+              SizedBox(height: 40.h),
 
               Image.asset(
                   addEntryImage,
-                  height: 154,
-                  width: 182
+                  height: 154.h,
+                  width: 182.h
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 24.h),
 
               Text(
                 "How do you feel right now?",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
 
-              const SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
               Text(
                 "Take a moment to check in with yourself.\nAdd an entry into Journal.",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
 
-              const SizedBox(height: 40),
+              SizedBox(height: 40.h),
 
               SizedBox(
                 width: double.infinity,
@@ -74,15 +76,15 @@ class AddEntryView extends GetView<AddEntryController> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(25.r),
                     ),
                   ),
                   child: Text(
                     'Add Entry',
                     style: GoogleFonts.inter(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -90,7 +92,7 @@ class AddEntryView extends GetView<AddEntryController> {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: 16.h),
 
               TextButton(
                 onPressed: () {
@@ -100,7 +102,7 @@ class AddEntryView extends GetView<AddEntryController> {
                 child: Text(
                   "Don’t Ask Me Again",
                   style: GoogleFonts.inter(
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontWeight: FontWeight.w600,
                     decoration: TextDecoration.underline,
                     color: Colors.black,
@@ -108,7 +110,6 @@ class AddEntryView extends GetView<AddEntryController> {
                 ),
               ),
 
-              SizedBox(height: 16,),
             ],
           ),
         ),

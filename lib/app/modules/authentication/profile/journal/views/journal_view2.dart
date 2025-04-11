@@ -1,5 +1,6 @@
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,8 +26,8 @@ class JournalView2 extends GetView<JournalController> {
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView( // Added SingleChildScrollView to prevent overflow
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -35,23 +36,23 @@ class JournalView2 extends GetView<JournalController> {
                   onBackPressed: () => Get.back(),
                 ),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Question 1
                 Text(
                   'How do you feel right now?',
                   style: GoogleFonts.inter(
-                    fontSize: 20,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Mood options list - removed Expanded since we're using SingleChildScrollView
                 SizedBox(
-                  height: 350,
+                  height: 280.h,
                   child: ListView.builder(
                     // physics: const NeverScrollableScrollPhysics(), // Disable scrolling since we have outer scroll
                     itemCount: controller.moods.length,
@@ -66,7 +67,7 @@ class JournalView2 extends GetView<JournalController> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Title with character counter in same row
                 Obx(() => Row(
@@ -75,7 +76,7 @@ class JournalView2 extends GetView<JournalController> {
                     Text(
                       'Why do you feel this way?',
                       style: GoogleFonts.inter(
-                        fontSize: 20,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.black,
                       ),
@@ -83,7 +84,7 @@ class JournalView2 extends GetView<JournalController> {
                     Text(
                       '(${controller.notes.value.length}/${controller.maxNotesLength})',
                       style: GoogleFonts.inter(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w400,
                         color: Colors.black.withOpacity(0.6),
                       ),
@@ -91,7 +92,7 @@ class JournalView2 extends GetView<JournalController> {
                   ],
                 )),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 16.h),
 
                 // TextField
                 Obx(() => TextField(
@@ -102,26 +103,26 @@ class JournalView2 extends GetView<JournalController> {
                   decoration: InputDecoration(
                     hintText: 'Add notes here...',
                     hintStyle: GoogleFonts.inter(
-                      fontSize: 16,
+                      fontSize: 16.sp,
                       fontWeight: FontWeight.w500,
                       color: Color(0xffA9A9A9),
                     ),
                     filled: true,
                     fillColor: Colors.white.withOpacity(0.9),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(15.r),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.all(16),
+                    contentPadding: EdgeInsets.all(16.r),
                     counterText: '', // hides default counter
                   ),
                 )),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20.h),
 
                 // Next Button
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(bottom: 10.h),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -129,14 +130,14 @@ class JournalView2 extends GetView<JournalController> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(30.r),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
                         'Next',
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -154,31 +155,31 @@ class JournalView2 extends GetView<JournalController> {
 
   Widget _buildMoodOption(String mood, bool isSelected) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: 16.h),
       child: GestureDetector(
         onTap: () => Get.find<JournalController>().selectMood(mood),
         child: Container(
-          height: 56,
+          height: 42.h,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(30.r),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 mood,
                 style: GoogleFonts.inter(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
               SvgPicture.asset(
                 isSelected ? checkedIcon : uncheckedIcon,
-                width: 14,
-                height: 14,
+                width: 14.w,
+                height: 14.h,
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../data/components/images_path.dart';
@@ -30,76 +31,80 @@ class ThemesView extends GetView<ThemesController> {
 
               // Back Button
               Padding(
-                padding: const EdgeInsets.only(left: 20, top: 20),
+                padding: EdgeInsets.only(left: 20.w, top: 10.h),
                 child: CustomAppBar(title: ""),
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: 30.h),
 
               // Title Text
               Text(
                 "Let's choose your theme",
                 style: GoogleFonts.inter(
-                  fontSize: 20,
+                  fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                   color: Colors.black,
                 ),
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: 32.h),
 
               // Theme Options with "Aa" text inside the boxes
-              Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(controller.themeImages.length, (index) {
-                  bool isSelected = controller.selectedTheme.value == index;
+              Obx(() => Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List.generate(controller.themeImages.length, (index) {
+                    bool isSelected = controller.selectedTheme.value == index;
 
-                  return GestureDetector(
-                    onTap: () => controller.selectTheme(index),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          height: 168,
-                          width: 115,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            image: DecorationImage(
-                              image: AssetImage(controller.themeImages[index]),
-                              fit: BoxFit.cover,
+                    return GestureDetector(
+                      onTap: () => controller.selectTheme(index),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            height: 160.h,
+                            width: 105.w,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              image: DecorationImage(
+                                image: AssetImage(controller.themeImages[index]),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          child: Center( // Ensuring "Aa" is centered
-                            child: Text(
-                              "Aa",
-                              style: GoogleFonts.inter(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
+                            child: Center( // Ensuring "Aa" is centered
+                              child: Text(
+                                "Aa",
+                                style: GoogleFonts.inter(
+                                  fontSize: 25.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        if (isSelected)
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Image.asset(
-                                greenTickIcon,
-                                width: 24,
-                                height: 24),
-                          ),
-                      ],
-                    ),
-                  );
-                }),
+                          if (isSelected)
+                            Positioned(
+                              top: 8.h,
+                              right: 8.w,
+                              child: Image.asset(
+                                  greenTickIcon,
+                                  width: 24.w,
+                                  height: 24.h
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
               )),
 
               const Spacer(),
 
               // Next Button
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                 child: ElevatedButton(
                   onPressed: () {
                     Get.offAllNamed(Routes.JOURNAL1);
@@ -107,14 +112,14 @@ class ThemesView extends GetView<ThemesController> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(24.r),
                     ),
-                    minimumSize: const Size(double.infinity, 50),
+                    minimumSize: Size(double.infinity, 45.h),
                   ),
                   child: Text(
                     "Next",
                     style: GoogleFonts.inter(
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),

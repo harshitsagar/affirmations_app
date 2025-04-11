@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/home_controller.dart';
@@ -25,8 +26,8 @@ class HomeView extends GetView<HomeController> {
 
               // Top progress bar
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 20.0, right: 20.0, top: 20),
+                padding: EdgeInsets.only(
+                    left: 20.w, right: 20.w, top: 20.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -37,12 +38,12 @@ class HomeView extends GetView<HomeController> {
                       children: [
 
                         SizedBox(
-                          width: 48,
-                          height: 48,
+                          width: 45.w,
+                          height: 40.h,
                           child: Obx(() =>
                               CircularProgressIndicator(
                                 value: controller.streakProgress.value,
-                                strokeWidth: 6,
+                                strokeWidth: 6.w,
                                 backgroundColor: Colors.white,
                                 valueColor: AlwaysStoppedAnimation<Color>(
                                     Colors.orange),
@@ -50,13 +51,13 @@ class HomeView extends GetView<HomeController> {
                         ),
 
                         Positioned(
-                          top: 15,
-                          left: 12,
+                          top: 13.h,
+                          left: 12.w,
                           child: Obx(() =>
                               Text(
                                 '${controller.currentStreak.value}',
                                 style: GoogleFonts.inter(
-                                  fontSize: 12,
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                               )),
@@ -64,11 +65,11 @@ class HomeView extends GetView<HomeController> {
 
                         // Fire icon
                         Positioned(
-                          right: 9,
+                          right: 9.w,
                           child: Image.asset(
                             fireIcon,
-                            width: 14,
-                            height: 14,
+                            width: 14.w,
+                            height: 14.w,
                           ),
                         ),
 
@@ -78,15 +79,15 @@ class HomeView extends GetView<HomeController> {
                     // Progress indicator
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                        padding: EdgeInsets.symmetric(horizontal: 18.w),
                         child: Container(
-                          width: 30,
-                          height: 40,
-                          padding: EdgeInsets.symmetric(horizontal: 24,
-                              vertical: 8),
+                          width: 30.w,
+                          height: 30.h,
+                          padding: EdgeInsets.symmetric(horizontal: 24.w,
+                              vertical: 8.h),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(30.r),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -98,7 +99,7 @@ class HomeView extends GetView<HomeController> {
                                     '${controller.currentAffirmationCount
                                         .value}',
                                     style: GoogleFonts.inter(
-                                      fontSize: 14,
+                                      fontSize: 12.sp,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   )),
@@ -106,12 +107,12 @@ class HomeView extends GetView<HomeController> {
                                   Text(
                                     '/${controller.dailyGoal.value}',
                                     style: GoogleFonts.inter(
-                                      fontSize: 12,
+                                      fontSize: 12.sp,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   )),
 
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8.w),
                               // Add spacing between text and progress bar
                               Expanded(
                                 child: Obx(() =>
@@ -120,7 +121,7 @@ class HomeView extends GetView<HomeController> {
                                       backgroundColor: Colors.grey[200],
                                       valueColor: const AlwaysStoppedAnimation<
                                           Color>(Color(0xFFFF6B8B)),
-                                      minHeight: 6,
+                                      minHeight: 6.h,
                                       borderRadius: BorderRadius.circular(30),
                                     )),
                               ),
@@ -132,8 +133,8 @@ class HomeView extends GetView<HomeController> {
 
                     // Premium icon
                     Container(
-                      width: 48,
-                      height: 48,
+                      width: 45.w,
+                      height: 40.h,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
@@ -141,8 +142,8 @@ class HomeView extends GetView<HomeController> {
                       child: Center(
                         child: Image.asset(
                           premiumIcon1,
-                          width: 24,
-                          height: 24,
+                          width: 24.w,
+                          height: 24.h,
                         ),
                       ),
                     ),
@@ -161,17 +162,17 @@ class HomeView extends GetView<HomeController> {
                 },
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 20, right: 20, top: 266),
+                    padding: EdgeInsets.only(
+                        left: 20.w, right: 20.w, top: 200.h),
                     child: Obx(() =>
                         Text(
                           controller.currentAffirmation.value,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
-                            fontSize: 24,
+                            fontSize: 22.sp,
                             fontWeight: FontWeight.w600,
                             color: Colors.black,
-                            height: 1.4,
+                            height: 1.4.h,
                           ),
                         )),
                   ),
@@ -182,7 +183,7 @@ class HomeView extends GetView<HomeController> {
 
               // Bottom buttons
               Padding(
-                padding: const EdgeInsets.only(left: 116, right: 116, top: 100),
+                padding: EdgeInsets.only(left: 100.w, right: 100.w, bottom: 100.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -191,12 +192,12 @@ class HomeView extends GetView<HomeController> {
                     GestureDetector(
                       child: Image.asset(
                         shareIcon,
-                        width: 24,
-                        height: 24,
+                        width: 24.w,
+                        height: 24.h,
                       ),
                     ),
 
-                    SizedBox(width: 24,),
+                    SizedBox(width: 24.w),
 
                     GestureDetector(
                       onTap: () {
@@ -204,12 +205,12 @@ class HomeView extends GetView<HomeController> {
                       },
                       child: Obx(() => Image.asset(
                         controller.isCurrentFavorite() ? favoriteIcon2 : favoriteIcon1,
-                        width: 48,
-                        height: 48,
+                        width: 48.w,
+                        height: 48.h,
                       )),
                     ),
 
-                    SizedBox(width: 24,),
+                    SizedBox(width: 20.w),
 
                     // mute / unmute icon .....
                     GestureDetector(
@@ -218,11 +219,11 @@ class HomeView extends GetView<HomeController> {
                       },
                       child: Obx(() {
                         if (controller.isAudioMuted.value) {
-                          return Image.asset(muteIcon, width: 24, height: 24);
+                          return Image.asset(muteIcon, width: 24.w, height: 24.h);
                         } else if (controller.isAudioPlaying.value) {
-                          return Image.asset(unMuteIcon, width: 24, height: 24);
+                          return Image.asset(unMuteIcon, width: 24.w, height: 24.h);
                         } else {
-                          return Image.asset(muteIcon, width: 24, height: 24); // or use a different icon for "ready to play"
+                          return Image.asset(muteIcon, width: 24.w, height: 24.h); // or use a different icon for "ready to play"
                         }
                       }),
                     ),
@@ -232,8 +233,8 @@ class HomeView extends GetView<HomeController> {
               ),
 
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 100, bottom: 20),
+                padding: EdgeInsets.only(
+                    left: 20.w, right: 20.w, bottom: 20.h),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -248,12 +249,12 @@ class HomeView extends GetView<HomeController> {
                           },
                           child: Image.asset(
                             mylistIcon,
-                            width: 48,
-                            height: 48,
+                            width: 48.w,
+                            height: 48.h,
                           ),
                         ),
 
-                        SizedBox(width: 16,),
+                        SizedBox(width: 16.w),
 
                         // journal screen ....
                         GestureDetector(
@@ -262,8 +263,8 @@ class HomeView extends GetView<HomeController> {
                           },
                           child: Image.asset(
                             journalIcon,
-                            width: 48,
-                            height: 48,
+                            width: 48.w,
+                            height: 48.h,
                           ),
                         ),
 
@@ -277,15 +278,14 @@ class HomeView extends GetView<HomeController> {
                       },
                       child: Image.asset(
                         settingsIcon,
-                        width: 48,
-                        height: 48,
+                        width: 48.w,
+                        height: 48.h,
                       ),
                     ),
 
                   ],
                 ),
               )
-
 
             ],
           ),

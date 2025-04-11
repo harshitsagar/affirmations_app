@@ -1,5 +1,6 @@
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,35 +26,35 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 60),
+          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 60.h),
           child: Column(
             children: [
               const CustomAppBar(title: ""),
-              const SizedBox(height: 40),
+              SizedBox(height: 30.h),
 
               // Title Section
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Text(
                       'Choose when to receive your affirmation reminders',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
-                        fontSize: 20,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.w700,
                         color: Colors.black,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
                     child: Text(
                       'Reading multiple affirmations a day will help you achieve your goals faster',
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w400,
                         color: Colors.black,
                       ),
@@ -62,26 +63,26 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                 ],
               ),
 
-              const SizedBox(height: 40),
+              SizedBox(height: 32.h),
 
               // Affirmation Counter
               Obx(() => Container(
                 width: double.infinity,
-                height: 56,
+                height: 50.h,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
                         icon: SvgPicture.asset(
                           minusIcon,
-                          width: 24,
-                          height: 24,
+                          width: 24.w,
+                          height: 24.h,
                         ),
                         onPressed: controller.decrementAffirmations,
                         padding: EdgeInsets.zero,
@@ -89,7 +90,7 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                       Text(
                         controller.affirmationCount.value.toString(),
                         style: GoogleFonts.inter(
-                          fontSize: 20,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
                         ),
@@ -97,8 +98,8 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                       IconButton(
                         icon: SvgPicture.asset(
                           plusIcon,
-                          width: 24,
-                          height: 24,
+                          width: 24.w,
+                          height: 24.h,
                         ),
                         onPressed: controller.incrementAffirmations,
                         padding: EdgeInsets.zero,
@@ -108,16 +109,17 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                 ),
               )),
 
-              const SizedBox(height: 35),
+              SizedBox(height: 30.h),
 
               // Time Selection Container
               Container(
                 width: double.infinity,
+                height: 208.h,
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 16),
+                padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 16.h, bottom: 16.h),
                 child: Column(
                   children: [
                     _buildTimeSelector(
@@ -127,7 +129,7 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                       controller.startTime,
                           () => controller.selectStartTime(context),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
                     _buildTimeSelector(
                       context,
                       'End At',
@@ -143,7 +145,7 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
 
               // Submit Button
               Padding(
-                padding: const EdgeInsets.only(bottom: 50),
+                padding: EdgeInsets.only(bottom: 40.h),
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -151,14 +153,14 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(30.r),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
                     ),
                     child: Text(
                       "Let's Do This!",
                       style: GoogleFonts.inter(
-                        fontSize: 16,
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -186,12 +188,12 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
         Text(
           label,
           style: GoogleFonts.inter(
-            fontSize: 16,
+            fontSize: 16.sp,
             fontWeight: FontWeight.w600,
             color: Colors.black,
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         GestureDetector(
           onTap: onTap,
           child: Obx(() {
@@ -207,12 +209,12 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                 : (time.value.hour < 12 ? 'am' : 'pm');
 
             return Container(
-              height: 44,
+              height: 44.h,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: 20.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -221,7 +223,7 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                       Text(
                         '$hour:$minute',
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                           color: isDefaultTime
                               ? const Color(0xFFA9A9A9)
@@ -229,11 +231,11 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                         ),
                       ),
                       if (period.isNotEmpty) ...[
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4.w),
                         Text(
                           period,
                           style: GoogleFonts.inter(
-                            fontSize: 16,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             color: Colors.black,
                           ),
@@ -241,7 +243,7 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
                       ],
                     ],
                   ),
-                  const Icon(Icons.access_time),
+                  Icon(Icons.access_time),
                 ],
               ),
             );

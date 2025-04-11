@@ -1,9 +1,7 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../controllers/splash_controller.dart';
 
 class SplashView extends GetView<SplashController> {
@@ -29,21 +27,19 @@ class SplashView extends GetView<SplashController> {
           children: [
 
             SizedBox(
-              height: 320.51,
-              // width: 313.75,
+              height: 300.h,
+              width: 313.w,
               child: Image.asset(
                   splashLogo,
                   fit: BoxFit.contain,
               ),
             ),
 
-            SizedBox(height: 16,),
-
             Center(
               child: Text(
                 "Affirmations",
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 30.sp,
                   fontFamily: "LucidaHandwriting",
                   color: Colors.black,
                 ),

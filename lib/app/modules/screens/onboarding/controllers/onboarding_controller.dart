@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class OnboardingController extends GetxController {
@@ -39,6 +40,7 @@ class OnboardingController extends GetxController {
             Get.back();
             Get.offAllNamed(Routes.LOGIN);
           },
+          descriptionWidth: 360.w,
         ),
         barrierDismissible: false,
       );

@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsController extends GetxController {
+
   final box = GetStorage();
 
   // User data
