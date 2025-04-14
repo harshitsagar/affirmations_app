@@ -148,6 +148,7 @@ class CustomPopupDialog extends StatelessWidget {
         ),
       ),
       child: Row(
+
         children: [
           Expanded(
             child: TextButton(
@@ -165,7 +166,7 @@ class CustomPopupDialog extends StatelessWidget {
               child: Text(
                 primaryButtonText ?? 'Ask Not to Track',
                 style: GoogleFonts.openSans(
-                  fontSize: 14.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
                   color: primaryTextColor ?? Colors.white,
                 ),
@@ -185,14 +186,14 @@ class CustomPopupDialog extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.zero,
-                    bottomRight: Radius.circular(12.r),
+                    bottomRight: Radius.circular(16.r),
                   ),
                   side: BorderSide(
                     color: Colors.grey,
                     width: 0.5.w,
                   ),
                 ),
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(20.r),
                 backgroundColor: secondaryButtonColor,
               ),
               child: Text(
@@ -209,4 +210,5 @@ class CustomPopupDialog extends StatelessWidget {
       ),
     );
   }
+
 }
