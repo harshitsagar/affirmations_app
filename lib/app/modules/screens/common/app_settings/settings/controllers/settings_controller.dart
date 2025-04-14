@@ -1,6 +1,11 @@
 import 'dart:io';
+import 'package:affirmations_app/app/modules/screens/common/share_screen/controllers/share_screen_controller.dart';
+import 'package:affirmations_app/app/modules/screens/common/share_screen/views/share_screen_view.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
+import 'package:affirmations_app/app/widgets/detailsPage.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,6 +43,13 @@ class SettingsController extends GetxController {
       case 'App Theme':
         break;
       case 'Refer a Friend':
+        Get.lazyPut(() => ShareScreenController());
+        Get.bottomSheet(
+          ShareScreenView(),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent, // Makes the blur visible
+          barrierColor: Colors.black.withOpacity(0.5), // Optional: slight dim background
+        );
         break;
       case 'Leave us a Review':
         Get.dialog(
@@ -57,16 +69,34 @@ class SettingsController extends GetxController {
         );
         break;
       case 'About Us':
+        Get.to(() => InfoPage(title: "About Us"));
         break;
       case 'Terms & Conditions':
+        Get.to(() => InfoPage(title: "Terms & Conditions"));
         break;
       case 'Privacy Policy':
+        Get.to(() => InfoPage(title: "Privacy Policy"));
         break;
       case 'Contact Admin':
         break;
       case 'FAQs':
         break;
       case 'Logout':
+        Get.dialog(
+          CustomPopupDialog(
+            title: 'Logout',
+            description:
+            'Are you sure you want to log out? You can\nlog back in anytime to continue using\nAffirmations.',
+            primaryButtonText: 'Yes',
+            secondaryButtonText: 'No',
+            onPrimaryPressed: () {
+              logout();
+              Get.back();
+            },
+            onSecondaryPressed: () => Get.back(),
+          ),
+          barrierDismissible: false,
+        );
         break;
       case 'Delete':
         break;
@@ -97,5 +127,11 @@ class SettingsController extends GetxController {
       );
     }
   }
+
+  void logout() {
+
+  }
+
+
 
 }
