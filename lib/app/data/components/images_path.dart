@@ -80,4 +80,7 @@ const faqIcon = 'assets/settingImages/faqs.png';
 const logoutIcon = 'assets/settingImages/logout.png';
 const deleteIcon = 'assets/settingImages/delete.png';
 
-
+// share screen images .....
+const copyIcon = 'assets/share_screen/copy_icon.png';
+const whatsappIcon = 'assets/share_screen/whatsapp_icon.png';
+const messageIcon = 'assets/share_screen/message_icon.png';
