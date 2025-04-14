@@ -82,6 +82,7 @@ flutter:
     - assets/home/
     - assets/add_entry/
     - assets/settingImages/
+    - assets/share_screen/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
