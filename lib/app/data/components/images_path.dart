@@ -36,7 +36,14 @@ const uncheckedIcon = 'assets/affirmations/uncheckedIcon.svg';
 const theme1 = 'assets/themes/Theme1.png';
 const theme2 = 'assets/themes/Theme2.png';
 const theme3 = 'assets/themes/Theme3.png';
+const theme4 = 'assets/themes/Theme4.png';
+const theme5 = 'assets/themes/Theme5.png';
+const theme6 = 'assets/themes/Theme6.png';
+const theme7 = 'assets/themes/Theme7.png';
+const theme8 = 'assets/themes/Theme8.png';
+const theme9 = 'assets/themes/Theme9.png';
 const greenTickIcon = 'assets/themes/tick_icon.png';
+const lockIcon = 'assets/themes/lockIcon.png';
 
 // journal images .....
 const journalHome = 'assets/journal/journal_home.png';
