@@ -1,9 +1,6 @@
-import 'package:affirmations_app/app/modules/authentication/profile/journal/bindings/journal_binding.dart';
-import 'package:affirmations_app/app/modules/authentication/profile/journal/views/journal_reminder.dart';
-import 'package:affirmations_app/app/modules/authentication/profile/journal/views/journal_view1.dart';
-import 'package:affirmations_app/app/modules/authentication/profile/journal/views/journal_view2.dart';
+import 'package:affirmations_app/app/modules/screens/common/app_settings/FAQ/bindings/faq_binding.dart';
+import 'package:affirmations_app/app/modules/screens/common/app_settings/FAQ/views/faq_view.dart';
 import 'package:get/get.dart';
-
 import '../modules/authentication/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/authentication/forgot_password/views/forgot_password_view.dart';
 import '../modules/authentication/login/bindings/login_binding.dart';
@@ -14,6 +11,10 @@ import '../modules/authentication/profile/affirmations/bindings/affirmations_bin
 import '../modules/authentication/profile/affirmations/views/affirmations_view.dart';
 import '../modules/authentication/profile/hear_about/bindings/hear_about_binding.dart';
 import '../modules/authentication/profile/hear_about/views/hear_about_view.dart';
+import '../modules/authentication/profile/journal/bindings/journal_binding.dart';
+import '../modules/authentication/profile/journal/views/journal_reminder.dart';
+import '../modules/authentication/profile/journal/views/journal_view1.dart';
+import '../modules/authentication/profile/journal/views/journal_view2.dart';
 import '../modules/authentication/profile/profile_screen/bindings/profile_screen_binding.dart';
 import '../modules/authentication/profile/profile_screen/views/profile_screen_view1.dart';
 import '../modules/authentication/profile/subscription_screen/bindings/subscription_screen_binding.dart';
@@ -58,6 +59,7 @@ import '../modules/screens/user/streak/restore/bindings/restore_binding.dart';
 import '../modules/screens/user/streak/restore/views/restore_view.dart';
 import '../modules/screens/user/streak/streak_screen/bindings/streak_screen_binding.dart';
 import '../modules/screens/user/streak/streak_screen/views/streak_screen_view.dart';
+
 part 'app_routes.dart';
 
 class AppPages {
@@ -215,6 +217,11 @@ class AppPages {
       name: _Paths.JOURNAL_REMINDER,
       page: () => const JournalReminder(),
       binding: JournalBinding(),
+    ),
+    GetPage(
+      name: _Paths.FAQ,
+      page: () => const FaqView(),
+      binding: FaqBinding(),
     ),
   ];
 }
