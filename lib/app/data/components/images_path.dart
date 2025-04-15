@@ -79,8 +79,13 @@ const contactAdminIcon = 'assets/settingImages/contact-admin.png';
 const faqIcon = 'assets/settingImages/faqs.png';
 const logoutIcon = 'assets/settingImages/logout.png';
 const deleteIcon = 'assets/settingImages/delete.png';
+//3)
+//FAQ screen images .....
+const upwardArrow = 'assets/settingImages/upwardArrow.svg';
+const downwardArrow = 'assets/settingImages/downwardArrow.svg';
 
 // share screen images .....
 const copyIcon = 'assets/share_screen/copy_icon.png';
 const whatsappIcon = 'assets/share_screen/whatsapp_icon.png';
 const messageIcon = 'assets/share_screen/message_icon.png';
+
