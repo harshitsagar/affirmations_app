@@ -5,7 +5,6 @@ import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:affirmations_app/app/widgets/detailsPage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,7 +18,7 @@ class SettingsController extends GetxController {
   final RxString email = ''.obs;
   final RxString age = ''.obs;
   final RxString gender = ''.obs;
-
+  
   @override
   void onInit() {
     super.onInit();
@@ -40,6 +39,7 @@ class SettingsController extends GetxController {
         Get.toNamed(Routes.REMINDERS);
         break;
       case 'App Theme':
+        Get.toNamed(Routes.APP_THEMES);
         break;
       case 'Refer a Friend':
         Get.lazyPut(() => ShareScreenController());
