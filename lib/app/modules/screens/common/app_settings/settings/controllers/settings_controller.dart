@@ -34,7 +34,6 @@ class SettingsController extends GetxController {
   void handleSettingTap(String title) {
     switch (title) {
       case 'Affirmations Types':
-      // Navigate or handle logic
         Get.toNamed(Routes.AFFIRMATION_TYPES);
         break;
       case 'Reminders':
@@ -78,8 +77,10 @@ class SettingsController extends GetxController {
         Get.to(() => InfoPage(title: "Privacy Policy"));
         break;
       case 'Contact Admin':
+        Get.toNamed(Routes.CONTACT_ADMIN);
         break;
       case 'FAQs':
+        Get.toNamed(Routes.FAQ);
         break;
       case 'Logout':
         Get.dialog(
@@ -99,6 +100,7 @@ class SettingsController extends GetxController {
         );
         break;
       case 'Delete':
+        showDeleteAccountDialog();
         break;
       default:
         break;
@@ -131,6 +133,84 @@ class SettingsController extends GetxController {
   void logout() {
 
   }
+
+  // Add this method to check if user is premium
+  bool get isPremiumUser {
+    // Replace this with your actual premium check logic
+    // For now, using GetStorage as you're already using it
+    return box.read('is_premium') ?? false;
+  }
+
+  void showDeleteAccountDialog() {
+    if (isPremiumUser) {
+      // Premium user dialog (S2).....
+      Get.dialog(
+        CustomPopupDialog(
+          title: 'Delete Your Account',
+          description: 'Deleting your account permanently will erase all your data, and your lifetime access to premium features will be deactivated. This action cannot be undone. Are you sure you want to proceed?',
+          primaryButtonText: 'Yes',
+          secondaryButtonText: 'No',
+          onPrimaryPressed: () {
+            deleteAccount();
+            Get.back();
+          },
+          onSecondaryPressed: () => Get.back(),
+        ),
+        barrierDismissible: false,
+      );
+    } else {
+      // Free trial user dialog (S1)
+      Get.dialog(
+        CustomPopupDialog(
+          title: 'Delete Your Account',
+          description: 'Deleting your account is permanent and\ncannot be undone. Are you sure you want\nto proceed?',
+          primaryButtonText: 'Yes',
+          secondaryButtonText: 'No',
+          onPrimaryPressed: () {
+            deleteAccount();
+            Get.back();
+          },
+          onSecondaryPressed: () => Get.back(),
+        ),
+        barrierDismissible: false,
+      );
+    }
+  }
+
+  void deleteAccount() {
+    // TODO: Implement actual account deletion logic
+    // This should include:
+    // 1. API call to delete account (when you have the API)
+    // 2. Clearing local storage
+    // 3. Logging out the user
+
+    // For now, just implementing the local cleanup
+    box.erase(); // Clear all local storage
+    // Navigate to login or splash screen
+    Get.offAllNamed(Routes.LOGIN); // Replace with your actual login route
+
+    // When you have the API, modify to:
+    /*
+    try {
+      // Call your delete account API
+      await ApiService.deleteAccount();
+
+      // Clear local data
+      box.erase();
+
+      // Navigate to login
+      Get.offAllNamed(Routes.LOGIN);
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to delete account: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+    */
+  }
+
+
 
 
 
