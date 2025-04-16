@@ -54,7 +54,7 @@ class SettingsView extends GetView<SettingsController> {
                     children: [
 
                       Padding(
-                        padding: EdgeInsets.only(left: 5.w, top: 10.h),
+                        padding: EdgeInsets.only(left: 5.w, top: 15.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: 5.h,
@@ -70,7 +70,7 @@ class SettingsView extends GetView<SettingsController> {
                             Text(
                               'Removes Ads & unlock all themes',
                               style: GoogleFonts.inter(
-                                fontSize: 14.sp,
+                                fontSize: 12.sp,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.white,
                               ),
@@ -79,9 +79,9 @@ class SettingsView extends GetView<SettingsController> {
                         ),
                       ),
                       Positioned(
-                        right: 10.w,
+                        right: 5.w,
                         child: Image.asset(
-                          diamondIcon, // Replace with your asset path
+                          diamondIcon,
                           width: 70.w,
                           height: 70.h,
                         ),
