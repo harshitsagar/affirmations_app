@@ -7,10 +7,18 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/share_screen_controller.dart';
 
 class ShareScreenView extends GetView<ShareScreenController> {
-  const ShareScreenView({super.key});
+
+  final String? affirmation;
+
+  const ShareScreenView({super.key, this.affirmation});
 
   @override
   Widget build(BuildContext context) {
+
+    if (affirmation != null) {
+      controller.initializeContent(affirmation!);
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -21,7 +29,6 @@ class ShareScreenView extends GetView<ShareScreenController> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             // Grey bar at top
             Padding(
               padding: EdgeInsets.only(top: 14.h),
@@ -37,7 +44,7 @@ class ShareScreenView extends GetView<ShareScreenController> {
 
             // Row: Share with Friends + Icon
             Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 20, ),
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -49,18 +56,14 @@ class ShareScreenView extends GetView<ShareScreenController> {
                       color: Colors.black,
                     ),
                   ),
-
                   GestureDetector(
-                    onTap: () {
-                      controller.copyMessageToClipboard();
-                    },
+                    onTap: controller.copyMessageToClipboard,
                     child: Image.asset(
                       copyIcon,
                       width: 15.w,
                       height: 15.h,
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -73,14 +76,12 @@ class ShareScreenView extends GetView<ShareScreenController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 60.w, top: 10.h, bottom: 30.h),
                   child: GestureDetector(
                     onTap: controller.shareToMessage,
                     child: Column(
                       children: [
-                        // Placeholder for Message SVG Icon
                         Image.asset(
                           messageIcon,
                           width: 30.w,
@@ -98,7 +99,6 @@ class ShareScreenView extends GetView<ShareScreenController> {
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(top: 10.h, bottom: 30.h),
                   child: GestureDetector(

@@ -4,43 +4,45 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShareScreenController extends GetxController {
-
-  final String shareMessage = 'Check out this amazing app! 🌟\nhttps://yourapp.link';
   final RxBool isCopied = false.obs;
+  final String defaultShareMessage = 'Check out this amazing app! 🌟\nhttps://yourapp.link';
+  String currentContent = '';
+
+  void initializeContent(String content) {
+    currentContent = content;
+  }
+
+  String get _shareMessage {
+    return currentContent.isNotEmpty
+        ? '$currentContent\n\n$defaultShareMessage'
+        : defaultShareMessage;
+  }
 
   void shareToMessage() async {
     final uri = Uri(
       scheme: 'sms',
-      queryParameters: {
-        'body': shareMessage,
-      },
+      queryParameters: {'body': _shareMessage},
     );
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      // fallback
-      // Share.share(shareMessage);
+      _fallbackShare();
     }
-
-    Clipboard.setData(ClipboardData(text: shareMessage));
+    _copyToClipboard();
   }
 
   void shareToWhatsapp() async {
-    final uri = Uri.parse("https://wa.me/?text=${Uri.encodeComponent(shareMessage)}");
-
+    final uri = Uri.parse("https://wa.me/?text=${Uri.encodeComponent(_shareMessage)}");
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      // fallback
-      // Share.share(shareMessage);
+      _fallbackShare();
     }
-
-    Clipboard.setData(ClipboardData(text: shareMessage));
+    _copyToClipboard();
   }
 
   void copyMessageToClipboard() {
-
-    Clipboard.setData(ClipboardData(text: shareMessage));
+    _copyToClipboard();
     isCopied.value = true;
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -58,4 +60,13 @@ class ShareScreenController extends GetxController {
     );
   }
 
+  void _copyToClipboard() {
+    Clipboard.setData(ClipboardData(text: _shareMessage));
+  }
+
+  void _fallbackShare() {
+    // Uncomment if you have the share package
+    // Share.share(_shareMessage);
+    copyMessageToClipboard();
+  }
 }
