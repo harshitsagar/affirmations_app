@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/modules/screens/common/share_screen/controllers/share_screen_controller.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -190,6 +191,9 @@ class HomeView extends GetView<HomeController> {
 
                     // bottom sheet to share .....
                     GestureDetector(
+                      onTap: () {
+                        controller.showShareBottomSheet();
+                      },
                       child: Image.asset(
                         shareIcon,
                         width: 24.w,
@@ -245,7 +249,7 @@ class HomeView extends GetView<HomeController> {
                         // myList .....
                         GestureDetector(
                           onTap: () {
-
+                            controller.navigateToMyList();
                           },
                           child: Image.asset(
                             mylistIcon,

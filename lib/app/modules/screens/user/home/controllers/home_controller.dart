@@ -1,5 +1,9 @@
 import 'package:affirmations_app/app/modules/screens/common/add_entry/controllers/add_entry_controller.dart';
 import 'package:affirmations_app/app/modules/screens/common/add_entry/views/add_entry_view.dart';
+import 'package:affirmations_app/app/modules/screens/common/share_screen/controllers/share_screen_controller.dart';
+import 'package:affirmations_app/app/modules/screens/common/share_screen/views/share_screen_view.dart';
+import 'package:affirmations_app/app/modules/screens/user/my_List/myList/controllers/my_list_controller.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -7,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'dart:math';
 
 class HomeController extends GetxController {
-
   // Affirmation data
   final currentAffirmation = "".obs;
   final affirmationsList = <String>[].obs;
@@ -25,84 +28,42 @@ class HomeController extends GetxController {
   final isAudioPlaying = false.obs;
   final isAudioMuted = false.obs;
 
+  final prefs = GetStorage();
+
   @override
   void onInit() {
     super.onInit();
     _initializeData();
     _showInitialJournalPopup();
 
-    // Register AddEntryController if not registered
-    if (!Get.isRegistered<AddEntryController>()) {
-      Get.lazyPut(() => AddEntryController());
-    }
-
-    checkAndShowJournalBottomSheet();
+    Get.lazyPut(() => AddEntryController());
+    Get.lazyPut(() => ShareScreenController());
+    Get.lazyPut(() => MyListController());
   }
 
-  void _showInitialJournalPopup() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    Get.find<AddEntryController>().checkShouldShowSheet().then((shouldShow) {
-      if (shouldShow) {
-        _showJournalPopup();
-      }
-    });
-  }
-
-  void checkAndShowJournalBottomSheet() {
-    final now = DateTime.now();
-    final hour = now.hour;
-    final isMorning = hour < 12;
-    final isEvening = hour >= 12;
-
-    // Simulated persistent flags - Replace with shared prefs/storage
-    final prefs = GetStorage();
-    final dontAskAgain = prefs.read("dontAskAgain_${isMorning ? 'morning' : 'evening'}") ?? false;
-    final journalAdded = prefs.read("journalAdded_${DateFormat('yyyy-MM-dd').format(now)}_${isMorning ? 'morning' : 'evening'}") ?? false;
-
-    final isFirstTimeUser = prefs.read("isFirstTimeUser") ?? true;
-
-    if ((isFirstTimeUser || !journalAdded) && !dontAskAgain) {
-      Future.delayed(Duration.zero, () {
-        Get.bottomSheet(
-          const AddEntryView(),
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          barrierColor: Colors.black.withOpacity(0.5),
-        );
-      });
-    }
-
-    prefs.write("isFirstTimeUser", false); // After first display
-  }
-
-
-  void _initializeData() async {
-    // Load affirmations
+  void _initializeData() {
     affirmationsList.value = [
       "I cultivate inner peace and soothing relationships this season.",
       "I am worthy of love and happiness.",
       "Every day I grow stronger and more confident.",
-      // Add more affirmations as needed
     ];
 
     if (affirmationsList.isNotEmpty) {
       currentAffirmation.value = affirmationsList.first;
     }
 
-    // Initialize progress
     _loadUserProgress();
   }
 
   void _loadUserProgress() {
-    // TODO: Load from shared preferences
-    currentStreak.value = 0; // Example data
-    streakProgress.value = 0.75; // Example 75% progress
+    currentStreak.value = 0;
+    streakProgress.value = 0.75;
     updateProgress();
   }
 
   void updateProgress() {
     progressValue.value = min(currentAffirmationCount.value / dailyGoal.value, 1.0);
-    streakProgress.value = min(currentStreak.value / 7.0, 1.0); // Cap at 100%
+    streakProgress.value = min(currentStreak.value / 7.0, 1.0);
   }
 
   void nextAffirmation() {
@@ -137,13 +98,18 @@ class HomeController extends GetxController {
     _showPostGoalJournalPopup();
   }
 
+  void _showInitialJournalPopup() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (await Get.find<AddEntryController>().checkShouldShowSheet()) {
+      _showJournalPopup();
+    }
+  }
+
   void _showPostGoalJournalPopup() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    Get.find<AddEntryController>().checkShouldShowSheet().then((shouldShow) {
-      if (shouldShow) {
-        _showJournalPopup();
-      }
-    });
+    if (await Get.find<AddEntryController>().checkShouldShowSheet()) {
+      _showJournalPopup();
+    }
   }
 
   void _showJournalPopup() {
@@ -155,7 +121,7 @@ class HomeController extends GetxController {
     );
   }
 
-
+  // In HomeController class
   void toggleFavorite() {
     final current = currentAffirmation.value;
     if (favoriteAffirmations.contains(current)) {
@@ -163,6 +129,12 @@ class HomeController extends GetxController {
     } else {
       favoriteAffirmations.add(current);
     }
+
+    // Update MyListController with the current favorites
+    final myListController = Get.put(MyListController());
+    myListController.favoriteAffirmations.assignAll(favoriteAffirmations);
+    myListController.update(); // Force UI update
+
   }
 
   bool isCurrentFavorite() {
@@ -171,20 +143,14 @@ class HomeController extends GetxController {
 
   void toggleAudio() {
     if (isAudioMuted.value) {
-      // Unmute
       isAudioMuted.value = false;
       isAudioPlaying.value = true;
-      // TODO: Resume audio playback
     } else if (isAudioPlaying.value) {
-      // Mute
       isAudioPlaying.value = false;
       isAudioMuted.value = true;
-      // TODO: Pause audio playback
     } else {
-      // Start playing
       isAudioPlaying.value = true;
       isAudioMuted.value = false;
-      // TODO: Start audio playback
     }
   }
 
@@ -197,7 +163,7 @@ class HomeController extends GetxController {
           TextButton(
             onPressed: () {
               Get.back();
-              dailyGoal.value += 5; // Allow more affirmations
+              dailyGoal.value += 5;
               updateProgress();
             },
             child: const Text("Continue"),
@@ -208,6 +174,28 @@ class HomeController extends GetxController {
           ),
         ],
       ),
+    );
+  }
+
+  // Navigation methods
+  void navigateToMyList() {
+    Get.toNamed(Routes.MY_LIST);
+  }
+
+  void navigateToJournal() {
+    // Get.toNamed(Routes.JOURNAL);
+  }
+
+  void navigateToSettings() {
+    Get.toNamed(Routes.SETTINGS);
+  }
+
+  void showShareBottomSheet() {
+    Get.bottomSheet(
+      ShareScreenView(),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.5),
     );
   }
 }
