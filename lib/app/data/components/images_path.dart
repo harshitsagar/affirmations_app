@@ -96,3 +96,8 @@ const copyIcon = 'assets/share_screen/copy_icon.png';
 const whatsappIcon = 'assets/share_screen/whatsapp_icon.png';
 const messageIcon = 'assets/share_screen/message_icon.png';
 
+// my list images .....
+const addAffirmationPageIcon = 'assets/myList/addAffirmationPageIcon.svg';
+const deleteIcon2 = 'assets/myList/deleteIcon2.png';
+
+
