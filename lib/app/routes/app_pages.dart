@@ -1,6 +1,9 @@
-import 'package:affirmations_app/app/modules/screens/common/app_settings/FAQ/bindings/faq_binding.dart';
-import 'package:affirmations_app/app/modules/screens/common/app_settings/FAQ/views/faq_view.dart';
+import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/bindings/add_affirmations_binding.dart';
+import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/controllers/add_affirmations_controller.dart';
+import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/views/addAffirmation_bottomsheet.dart';
+import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/views/add_affirmations_view.dart';
 import 'package:get/get.dart';
+
 import '../modules/authentication/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/authentication/forgot_password/views/forgot_password_view.dart';
 import '../modules/authentication/login/bindings/login_binding.dart';
@@ -27,6 +30,8 @@ import '../modules/authentication/splash/bindings/splash_binding.dart';
 import '../modules/authentication/splash/views/splash_view.dart';
 import '../modules/screens/common/add_entry/bindings/add_entry_binding.dart';
 import '../modules/screens/common/add_entry/views/add_entry_view.dart';
+import '../modules/screens/common/app_settings/FAQ/bindings/faq_binding.dart';
+import '../modules/screens/common/app_settings/FAQ/views/faq_view.dart';
 import '../modules/screens/common/app_settings/about_edit/bindings/about_edit_binding.dart';
 import '../modules/screens/common/app_settings/about_edit/views/about_edit_view.dart';
 import '../modules/screens/common/app_settings/affirmation_types/bindings/affirmation_types_binding.dart';
@@ -52,6 +57,7 @@ import '../modules/screens/user/journal/filter/views/filter_view.dart';
 import '../modules/screens/user/my_List/favorites/bindings/favorites_binding.dart';
 import '../modules/screens/user/my_List/favorites/views/favorites_view.dart';
 import '../modules/screens/user/my_List/myList/bindings/my_list_binding.dart';
+import '../modules/screens/user/my_List/myList/views/addNewList.dart';
 import '../modules/screens/user/my_List/myList/views/my_list_view.dart';
 import '../modules/screens/user/streak/freeze/bindings/freeze_binding.dart';
 import '../modules/screens/user/streak/freeze/views/freeze_view.dart';
@@ -65,7 +71,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static var INITIAL = Routes.SETTINGS;
+  static var INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(
@@ -222,6 +228,25 @@ class AppPages {
       name: _Paths.FAQ,
       page: () => const FaqView(),
       binding: FaqBinding(),
+    ),
+    GetPage(
+      name: _Paths.addNewList,
+      page: () => AddNewList(),
+      binding: MyListBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_AFFIRMATIONS,
+      page: () => const AddAffirmationsView(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<AddAffirmationsController>(() => AddAffirmationsController());
+      }),
+    ),
+    GetPage(
+      name: _Paths.AddAffirmationBottomSheet,
+      page: () => AddAffirmationBottomSheet(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<AddAffirmationsController>(() => AddAffirmationsController());
+      }),
     ),
   ];
 }

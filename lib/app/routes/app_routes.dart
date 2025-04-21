@@ -33,6 +33,9 @@ abstract class Routes {
   static const SIGNUP = _Paths.SIGNUP;
   static const AFFIRMATION_REMINDER = _Paths.AFFIRMATION_REMINDER;
   static const FAQ = _Paths.FAQ;
+  static const addNewList = _Paths.addNewList;
+  static const ADD_AFFIRMATIONS = _Paths.ADD_AFFIRMATIONS;
+  static const AddAffirmationBottomSheet = _Paths.AddAffirmationBottomSheet;
 }
 
 abstract class _Paths {
@@ -68,4 +71,7 @@ abstract class _Paths {
   static const SIGNUP = '/signup';
   static const AFFIRMATION_REMINDER = '/affirmation-reminder';
   static const FAQ = '/faq';
+  static const addNewList = '/addNewList';
+  static const ADD_AFFIRMATIONS = '/add-affirmations';
+  static const AddAffirmationBottomSheet = '/add-affirmation-bottom-sheet';
 }
