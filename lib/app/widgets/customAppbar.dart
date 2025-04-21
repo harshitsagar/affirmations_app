@@ -6,39 +6,50 @@ import 'package:google_fonts/google_fonts.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final VoidCallback? onBackPressed;
+  final List<Widget>? actions;
 
   const CustomAppBar({
     Key? key,
     required this.title,
     this.onBackPressed,
+    this.actions,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black87,
+    return Container(
+      child: Row(
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black87,
+              size: 20.w,
+            ),
+            onPressed: onBackPressed ?? () => Get.back(),
           ),
-          onPressed: onBackPressed ?? () => Get.back(), // Default back behavior
-        ),
-        const Spacer(),
-        Text(
-          title,
-          style: GoogleFonts.inter(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
+          const Spacer(),
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
           ),
-        ),
-        const Spacer(),
-        SizedBox(width: 48.w), // To balance the space of back icon
-      ],
+          const Spacer(),
+          if (actions != null)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: actions!,
+            )
+          else
+            SizedBox(width: 48.w), // Maintain balance when no actions
+        ],
+      ),
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight.h);
 }
