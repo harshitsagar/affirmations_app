@@ -12,8 +12,11 @@ class CustomPopupDialog extends StatelessWidget {
   final VoidCallback? onSecondaryPressed;
   final Color? primaryButtonColor;
   final Color? secondaryButtonColor;
+  final double? primaryButtonSize ;
+  final double? secondaryButtonSize ;
   final Color? primaryTextColor;
   final Color? secondaryTextColor;
+
   final bool showDivider;
   final double? descriptionWidth ;
   final bool singleButtonMode;
@@ -33,6 +36,8 @@ class CustomPopupDialog extends StatelessWidget {
     this.showDivider = true,
     this.descriptionWidth ,
     this.singleButtonMode = false,
+    this.primaryButtonSize,
+    this.secondaryButtonSize,
   }) : assert(
   !singleButtonMode || (singleButtonMode && primaryButtonText != null),
   'In single button mode, primaryButtonText must be provided',
@@ -166,7 +171,7 @@ class CustomPopupDialog extends StatelessWidget {
               child: Text(
                 primaryButtonText ?? 'Ask Not to Track',
                 style: GoogleFonts.openSans(
-                  fontSize: 16.sp,
+                  fontSize: primaryButtonSize ?? 16.sp,
                   fontWeight: FontWeight.w700,
                   color: primaryTextColor ?? Colors.white,
                 ),
@@ -199,7 +204,7 @@ class CustomPopupDialog extends StatelessWidget {
               child: Text(
                 secondaryButtonText ?? 'Allow',
                 style: GoogleFonts.openSans(
-                  fontSize: 16.sp,
+                  fontSize: secondaryButtonSize ?? 16.sp,
                   fontWeight: FontWeight.w600,
                   color: secondaryTextColor ?? Colors.black,
                 ),
