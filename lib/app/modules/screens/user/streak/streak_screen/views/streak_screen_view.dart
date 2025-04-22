@@ -168,52 +168,6 @@ class StreakScreenView extends GetView<StreakScreenController> {
                                 return SizedBox.shrink();
                               }),
 
-                              // Row(
-                              //   children: [
-                              //
-                              //     // // Freeze button
-                              //     Expanded(
-                              //       child: _buildActionButton(
-                              //         icon: freezeIcon, // Replace with your freeze icon
-                              //         label: 'Freeze',
-                              //         count: controller.freezeStreaksAvailable.value,
-                              //         color: Color(0xFF3B82F6),
-                              //       ),
-                              //     ),
-                              //
-                              //     // // Restore button
-                              //     Expanded(
-                              //       child: _buildActionButton(
-                              //         icon: restoreIcon, // Replace with your restore icon
-                              //         label: 'Restore',
-                              //         count: controller.restoreStreaksAvailable.value,
-                              //         color: Color(0xFF84CC16),
-                              //       ),
-                              //     ),
-                              //
-                              //   ],
-                              // ),
-
-                              // SizedBox(height: 20.h),
-                              //
-                              // // Freeze button
-                              // _buildActionButton(
-                              //   icon: freezeIcon, // Replace with your freeze icon
-                              //   label: 'Freeze',
-                              //   count: controller.freezeStreaksAvailable.value,
-                              //   color: Color(0xFF3B82F6),
-                              // ),
-                              //
-                              // SizedBox(height: 20.h),
-                              //
-                              // // Restore button
-                              // _buildActionButton(
-                              //   icon: restoreIcon, // Replace with your restore icon
-                              //   label: 'Restore',
-                              //   count: controller.restoreStreaksAvailable.value,
-                              //   color: Color(0xFF84CC16),
-                              // ),
-
                             ],
                           ),
                         ),
