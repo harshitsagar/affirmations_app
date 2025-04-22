@@ -100,4 +100,8 @@ const messageIcon = 'assets/share_screen/message_icon.png';
 const addAffirmationPageIcon = 'assets/myList/addAffirmationPageIcon.svg';
 const deleteIcon2 = 'assets/myList/deleteIcon2.png';
 
+// streak images .....
+const freezeIcon = 'assets/streak/freezeIcon.svg';
+const restoreIcon = 'assets/streak/restoreIcon.svg';
+
 
