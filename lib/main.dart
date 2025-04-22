@@ -1,3 +1,4 @@
+import 'package:affirmations_app/app/helpers/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -35,11 +36,7 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Affirmations App",
-            theme: ThemeData(
-              // Add your custom theme here
-              primarySwatch: Colors.blue,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
+            theme: AppTheme.light,
             initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,
           );
