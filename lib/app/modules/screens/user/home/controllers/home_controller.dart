@@ -190,6 +190,12 @@ class HomeController extends GetxController {
     Get.toNamed(Routes.SETTINGS);
   }
 
+  void navigateToStreakScreen() {
+    Get.toNamed(Routes.STREAK_SCREEN);
+  }
+
+
+
   void showShareBottomSheet() {
     Get.bottomSheet(
       ShareScreenView(),

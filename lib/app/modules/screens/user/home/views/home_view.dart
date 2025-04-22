@@ -34,47 +34,51 @@ class HomeView extends GetView<HomeController> {
                   children: [
 
                     // Streak circle
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-
-                        SizedBox(
-                          width: 45.w,
-                          height: 40.h,
-                          child: Obx(() =>
-                              CircularProgressIndicator(
-                                value: controller.streakProgress.value,
-                                strokeWidth: 6.w,
-                                backgroundColor: Colors.white,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    Colors.orange),
-                              )),
-                        ),
-
-                        Positioned(
-                          top: 13.h,
-                          left: 12.w,
-                          child: Obx(() =>
-                              Text(
-                                '${controller.currentStreak.value}',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )),
-                        ),
-
-                        // Fire icon
-                        Positioned(
-                          right: 9.w,
-                          child: Image.asset(
-                            fireIcon,
-                            width: 14.w,
-                            height: 14.w,
+                    GestureDetector(
+                      onTap: () {
+                        controller.navigateToStreakScreen();
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            width: 45.w,
+                            height: 40.h,
+                            child: Obx(() =>
+                                CircularProgressIndicator(
+                                  value: controller.streakProgress.value,
+                                  strokeWidth: 6.w,
+                                  backgroundColor: Colors.white,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.orange),
+                                )),
                           ),
-                        ),
 
-                      ],
+                          Positioned(
+                            top: 13.h,
+                            left: 12.w,
+                            child: Obx(() =>
+                                Text(
+                                  '${controller.currentStreak.value}',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )),
+                          ),
+
+                          // Fire icon
+                          Positioned(
+                            right: 9.w,
+                            child: Image.asset(
+                              fireIcon,
+                              width: 14.w,
+                              height: 14.w,
+                            ),
+                          ),
+
+                        ],
+                      ),
                     ),
 
                     // Progress indicator
