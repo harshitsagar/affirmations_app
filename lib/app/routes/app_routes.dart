@@ -36,6 +36,7 @@ abstract class Routes {
   static const addNewList = _Paths.addNewList;
   static const ADD_AFFIRMATIONS = _Paths.ADD_AFFIRMATIONS;
   static const AddAffirmationBottomSheet = _Paths.AddAffirmationBottomSheet;
+  static const PURCHASE_SCREEN = _Paths.PURCHASE_SCREEN;
 }
 
 abstract class _Paths {
@@ -74,4 +75,5 @@ abstract class _Paths {
   static const addNewList = '/addNewList';
   static const ADD_AFFIRMATIONS = '/add-affirmations';
   static const AddAffirmationBottomSheet = '/add-affirmation-bottom-sheet';
+  static const PURCHASE_SCREEN = '/purchase-screen';
 }

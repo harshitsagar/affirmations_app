@@ -1,7 +1,9 @@
-import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/bindings/add_affirmations_binding.dart';
-import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/controllers/add_affirmations_controller.dart';
-import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/views/addAffirmation_bottomsheet.dart';
-import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/views/add_affirmations_view.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal_profile/bindings/journal_binding.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal_profile/views/journal_reminder.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal_profile/views/journal_view1.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/journal_profile/views/journal_view2.dart';
+import 'package:affirmations_app/app/modules/screens/user/streak/purchase_screen/bindings/purchase_screen_binding.dart';
+import 'package:affirmations_app/app/modules/screens/user/streak/purchase_screen/views/purchase_screen_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/authentication/forgot_password/bindings/forgot_password_binding.dart';
@@ -14,10 +16,6 @@ import '../modules/authentication/profile/affirmations/bindings/affirmations_bin
 import '../modules/authentication/profile/affirmations/views/affirmations_view.dart';
 import '../modules/authentication/profile/hear_about/bindings/hear_about_binding.dart';
 import '../modules/authentication/profile/hear_about/views/hear_about_view.dart';
-import '../modules/authentication/profile/journal/bindings/journal_binding.dart';
-import '../modules/authentication/profile/journal/views/journal_reminder.dart';
-import '../modules/authentication/profile/journal/views/journal_view1.dart';
-import '../modules/authentication/profile/journal/views/journal_view2.dart';
 import '../modules/authentication/profile/profile_screen/bindings/profile_screen_binding.dart';
 import '../modules/authentication/profile/profile_screen/views/profile_screen_view1.dart';
 import '../modules/authentication/profile/subscription_screen/bindings/subscription_screen_binding.dart';
@@ -54,15 +52,15 @@ import '../modules/screens/user/home/bindings/home_binding.dart';
 import '../modules/screens/user/home/views/home_view.dart';
 import '../modules/screens/user/journal/filter/bindings/filter_binding.dart';
 import '../modules/screens/user/journal/filter/views/filter_view.dart';
+import '../modules/screens/user/my_List/add_affirmations/bindings/add_affirmations_binding.dart';
+import '../modules/screens/user/my_List/add_affirmations/controllers/add_affirmations_controller.dart';
+import '../modules/screens/user/my_List/add_affirmations/views/addAffirmation_bottomsheet.dart';
+import '../modules/screens/user/my_List/add_affirmations/views/add_affirmations_view.dart';
 import '../modules/screens/user/my_List/favorites/bindings/favorites_binding.dart';
 import '../modules/screens/user/my_List/favorites/views/favorites_view.dart';
 import '../modules/screens/user/my_List/myList/bindings/my_list_binding.dart';
 import '../modules/screens/user/my_List/myList/views/addNewList.dart';
 import '../modules/screens/user/my_List/myList/views/my_list_view.dart';
-import '../modules/screens/user/streak/freeze/bindings/freeze_binding.dart';
-import '../modules/screens/user/streak/freeze/views/freeze_view.dart';
-import '../modules/screens/user/streak/restore/bindings/restore_binding.dart';
-import '../modules/screens/user/streak/restore/views/restore_view.dart';
 import '../modules/screens/user/streak/streak_screen/bindings/streak_screen_binding.dart';
 import '../modules/screens/user/streak/streak_screen/views/streak_screen_view.dart';
 
@@ -71,7 +69,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static var INITIAL = Routes.HOME;
+  static var INITIAL = Routes.STREAK_SCREEN;
 
   static final routes = [
     GetPage(
@@ -138,16 +136,6 @@ class AppPages {
       name: _Paths.STREAK_SCREEN,
       page: () => const StreakScreenView(),
       binding: StreakScreenBinding(),
-    ),
-    GetPage(
-      name: _Paths.RESTORE,
-      page: () => const RestoreView(),
-      binding: RestoreBinding(),
-    ),
-    GetPage(
-      name: _Paths.FREEZE,
-      page: () => const FreezeView(),
-      binding: FreezeBinding(),
     ),
     GetPage(
       name: _Paths.FILTER,
@@ -238,15 +226,22 @@ class AppPages {
       name: _Paths.ADD_AFFIRMATIONS,
       page: () => const AddAffirmationsView(),
       binding: BindingsBuilder(() {
-        Get.lazyPut<AddAffirmationsController>(() => AddAffirmationsController());
+        Get.lazyPut<AddAffirmationsController>(
+            () => AddAffirmationsController());
       }),
     ),
     GetPage(
       name: _Paths.AddAffirmationBottomSheet,
       page: () => AddAffirmationBottomSheet(),
       binding: BindingsBuilder(() {
-        Get.lazyPut<AddAffirmationsController>(() => AddAffirmationsController());
+        Get.lazyPut<AddAffirmationsController>(
+            () => AddAffirmationsController());
       }),
+    ),
+    GetPage(
+      name: _Paths.PURCHASE_SCREEN,
+      page: () => const PurchaseScreenView(),
+      binding: PurchaseScreenBinding(),
     ),
   ];
 }
