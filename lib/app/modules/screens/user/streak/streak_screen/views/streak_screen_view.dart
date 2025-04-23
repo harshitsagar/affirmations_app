@@ -178,10 +178,14 @@ class StreakScreenView extends GetView<StreakScreenController> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Streak Challenge',
-                            style: GoogleFonts.inter(
+                            style: Theme.of(context).textTheme.displaySmall?.copyWith(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                             ),
+                            // style: GoogleFonts.inter(
+                            //   fontSize: 16.sp,
+                            //   fontWeight: FontWeight.w700,
+                            // ),
                             textAlign: TextAlign.start,
                           ),
                         ),

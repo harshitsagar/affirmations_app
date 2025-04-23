@@ -131,9 +131,14 @@ class StreakScreenController extends GetxController {
   }
 
   void navigateToPurchaseScreen(String type) {
-
-
-
+    Get.toNamed('/purchase-screen', arguments: {'type': type})?.then((result) {
+      if (result != null) {
+        // Update the available streaks based on purchase
+        // Explicitly cast the values to int using .toInt()
+        freezeStreaksAvailable.value += (result['freezeCount'] as num).toInt();
+        restoreStreaksAvailable.value += (result['restoreCount'] as num).toInt();
+      }
+    });
   }
 
   void shareAppForFreeStreak(String type) async {
