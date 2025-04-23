@@ -104,4 +104,10 @@ const deleteIcon2 = 'assets/myList/deleteIcon2.png';
 const freezeIcon = 'assets/streak/freezeIcon.svg';
 const restoreIcon = 'assets/streak/restoreIcon.svg';
 
+// purchase screen images .....
+const freezeStreakIcon = 'assets/purchase_screen/freezeStreakIcon.svg';
+const restoreStreakIcon = 'assets/purchase_screen/restoreStreakIcon.svg';
+
+
+
 
