@@ -267,7 +267,7 @@ class HomeView extends GetView<HomeController> {
                         // journal screen ....
                         GestureDetector(
                           onTap: () {
-                            // Get.toNamed(Routes.JOURNAL);
+                            controller.navigateToJournalHome();
                           },
                           child: Image.asset(
                             journalIcon,
@@ -282,7 +282,7 @@ class HomeView extends GetView<HomeController> {
                     // settings .....
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(Routes.SETTINGS);
+                        controller.navigateToSettings();
                       },
                       child: Image.asset(
                         settingsIcon,

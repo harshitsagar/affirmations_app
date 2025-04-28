@@ -182,8 +182,8 @@ class HomeController extends GetxController {
     Get.toNamed(Routes.MY_LIST);
   }
 
-  void navigateToJournal() {
-    // Get.toNamed(Routes.JOURNAL);
+  void navigateToJournalHome() {
+    Get.toNamed(Routes.Journal_Home);
   }
 
   void navigateToSettings() {
@@ -194,8 +194,6 @@ class HomeController extends GetxController {
     Get.toNamed(Routes.STREAK_SCREEN);
   }
 
-
-
   void showShareBottomSheet() {
     Get.bottomSheet(
       ShareScreenView(),
@@ -204,4 +202,5 @@ class HomeController extends GetxController {
       barrierColor: Colors.black.withOpacity(0.5),
     );
   }
+
 }
