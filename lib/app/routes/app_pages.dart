@@ -2,6 +2,8 @@ import 'package:affirmations_app/app/modules/authentication/profile/journal_prof
 import 'package:affirmations_app/app/modules/authentication/profile/journal_profile/views/journal_reminder.dart';
 import 'package:affirmations_app/app/modules/authentication/profile/journal_profile/views/journal_view1.dart';
 import 'package:affirmations_app/app/modules/authentication/profile/journal_profile/views/journal_view2.dart';
+import 'package:affirmations_app/app/modules/screens/user/journal/journal_home/bindings/journal_home_binding.dart';
+import 'package:affirmations_app/app/modules/screens/user/journal/journal_home/views/journal_home_view.dart';
 import 'package:affirmations_app/app/modules/screens/user/streak/purchase_screen/bindings/purchase_screen_binding.dart';
 import 'package:affirmations_app/app/modules/screens/user/streak/purchase_screen/views/purchase_screen_view.dart';
 import 'package:get/get.dart';
@@ -69,7 +71,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static var INITIAL = Routes.STREAK_SCREEN;
+  static var INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(
@@ -242,6 +244,11 @@ class AppPages {
       name: _Paths.PURCHASE_SCREEN,
       page: () => const PurchaseScreenView(),
       binding: PurchaseScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.Journal_Home,
+      page: () => const JournalHomeView(),
+      binding: JournalHomeBinding(),
     ),
   ];
 }

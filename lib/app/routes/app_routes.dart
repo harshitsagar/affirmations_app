@@ -18,6 +18,7 @@ abstract class Routes {
   static const ADD_ENTRY = _Paths.ADD_ENTRY;
   static const HOME = _Paths.HOME;
   static const SHARE_SCREEN = _Paths.SHARE_SCREEN;
+  static const Journal_Home = _Paths.Journal_Home;
   static const STREAK_SCREEN = _Paths.STREAK_SCREEN;
   static const RESTORE = _Paths.RESTORE;
   static const FREEZE = _Paths.FREEZE;
@@ -57,6 +58,7 @@ abstract class _Paths {
   static const ADD_ENTRY = '/add-entry';
   static const HOME = '/home';
   static const SHARE_SCREEN = '/share-screen';
+  static const Journal_Home = '/journal-home';
   static const STREAK_SCREEN = '/streak-screen';
   static const RESTORE = '/restore';
   static const FREEZE = '/freeze';
