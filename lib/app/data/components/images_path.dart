@@ -47,6 +47,7 @@ const lockIcon = 'assets/themes/lockIcon.png';
 
 // journal images .....
 const journalHome = 'assets/journal/journal_home.png';
+const datePickerIcon = 'assets/journal/datePickerIcon.svg';
 
 // subscription images .....
 const crossIcon = 'assets/subscriptionScreen/cross_button.png';
