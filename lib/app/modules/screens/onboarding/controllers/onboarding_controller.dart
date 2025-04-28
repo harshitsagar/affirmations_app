@@ -19,11 +19,6 @@ class OnboardingController extends GetxController {
         curve: Curves.easeInOut,
       );
     } else {
-      
-      // Get.dialog(
-      //   const TrackingPermissionDialog(),
-      //   barrierDismissible: false,
-      // );
 
       Get.dialog(
         CustomPopupDialog(
@@ -40,6 +35,8 @@ class OnboardingController extends GetxController {
             Get.back();
             Get.offAllNamed(Routes.LOGIN);
           },
+          primaryButtonSize: 14.sp,
+          secondaryButtonSize: 14.sp,
           descriptionWidth: 360.w,
         ),
         barrierDismissible: false,
