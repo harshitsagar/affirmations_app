@@ -1,4 +1,11 @@
-import 'package:affirmations_app/app/data/api_service/models/auth_service.dart';
+import 'dart:io';
+
+import 'package:affirmations_app/app/data/api_provider.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/data/models/user_model.dart';
+import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
+import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,12 +13,112 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
 
+  final formKey = GlobalKey<FormState>();
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   var isPasswordHidden = true.obs;
 
+  var loadingStatus = LoadingStatus.loading.obs;
+
   void togglePasswordVisibility() {
     isPasswordHidden.value = !isPasswordHidden.value;
+  }
+
+  void signIn({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    // String? fcmToken = LocalStorage.getFCMToken();
+    try {
+      loadingStatus(LoadingStatus.loading);
+      final response = await APIProvider().postAPICall(
+        ApiConstants.signIn,
+        {
+          "email": email.toString(),
+          "password": password.toString(),
+          "device": Platform.isAndroid ? "android" : "ios",
+          // "fcmToken": fcmToken.toString(),
+          "timeZone": timeZone,
+        },
+        {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.data["code"] == 100) {
+        UserModel userModel = UserModel.fromJson(response.data);
+        var data = userModel.data;
+
+        LocalStorage.setUserAccessToken(
+          userAccessToken: data.accessToken,
+        );
+        LocalStorage.setUserDetailsData(
+          userDetailsData: data.user,
+        );
+
+        Future.delayed(
+          const Duration(seconds: 1),
+              () {
+            AppConstants.showSnackbar(
+              headText: "Successful",
+              content: "Signing in...",
+            );
+            Get.offAllNamed(Routes.PROFILE_SCREEN);
+          },
+        );
+      } else if (response.data["code"] == 103) {
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: "Requested user not found.",
+        );
+      } else if (response.data["code"] == 500) {
+        Get.back();
+        if (response.data["message"] == "Your account has been deleted.") {
+          AppConstants.showSnackbar(
+            headText: "Failed",
+            content: "Your account has been deleted.",
+          );
+        } else if (response.data["message"] ==
+            "Your account has been blocked.") {
+          AppConstants.showSnackbar(
+            headText: "Failed",
+            content: "Your account has been blocked.",
+          );
+        } else if (response.data["message"] ==
+            "Kindly set the password for the email.") {
+          AppConstants.showSnackbar(
+            headText: "Failed",
+            content: "Kindly set the password for the email.",
+          );
+        } else if (response.data["message"] ==
+            "Your account has not been verified. Kindly verify the email.") {
+          AppConstants.showSnackbar(
+            headText: "Failed",
+            content:
+            "Your account has not been verified. Kindly verify the email.",
+          );
+        } else {
+          AppConstants.showSnackbar(
+            headText: "Failed",
+            content: response.data["message"],
+          );
+        }
+      } else {
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data["message"],
+        );
+      }
+    } catch (e) {
+      Get.back();
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+      );
+    }
   }
 
   void login() async {
@@ -48,25 +155,211 @@ class LoginController extends GetxController {
     return prefs.getBool("isProfileSetup") ?? false; // Default is false (means first login)
   }
 
-  // This function should be called when the user completes their profile setup  ....
-  void setProfileCompleted() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool("isProfileSetup", true); // Save that profile setup is done
+  // Handles Google sign-in logic
+  Future<void> googleSignIn({
+    required String name,
+    required String email,
+    required int socialIdentifier,
+    required String socialId,
+    required String socialToken,
+    required String? picture,
+    required BuildContext context,
+  }) async {
+    String? fcmToken = LocalStorage.getFCMToken();
+    try {
+      AppConstants.showLoader(context: context);
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.socialLogin,
+        {
+          "name": name,
+          "email": email,
+          "socialIdentifier": socialIdentifier,
+          "socialId": socialId,
+          "socialToken": socialToken,
+          "picture": picture,
+          "device": Platform.isAndroid ? "android" : "ios",
+          "fcmToken": fcmToken.toString(),
+          "timeZone": timeZone,
+        },
+        {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.data['code'] == 100) {
+        // Process successful login and save user data
+        final UserModel userModel = UserModel.fromJson(response.data);
+        var data = UserData.fromJson(response.data["data"]);
+
+        LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
+        LocalStorage.setUserDetailsData(
+          userDetailsData: data.user,
+        );
+
+        AppConstants.showSnackbar(
+          headText: "Successful",
+          content: "Signing in...",
+        );
+        // Get.offNamedUntil(
+        //   Routes.BOTTOM_NAVIGATION_BAR,
+        //       (route) => false,
+        // );
+      } else {
+        // Handle specific error scenarios
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data['message'],
+        );
+      }
+    } catch (e) {
+      // Handle general errors during Google sign-in
+      Get.back();
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+      );
+    }
   }
 
-  void loginWithGoogle() {
-    // Handle Google login
+  // Handles Facebook sign-in logic (similar to Google and Apple sign-ins)
+  Future<void> facebookSignIn({
+    required String name,
+    required String email,
+    required String socialId,
+    required String socialToken,
+    required int socialIdentifier,
+    required BuildContext context,
+  }) async {
+    // Implementation is similar to googleSignIn
+    String? fcmToken = LocalStorage.getFCMToken();
+    try {
+      AppConstants.showLoader(context: context);
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.socialLogin,
+        {
+          'name': name,
+          "email": email,
+          "socialId": socialId,
+          "socialToken": socialToken,
+          "socialIdentifier": socialIdentifier,
+          "device": Platform.isAndroid ? "android" : "ios",
+          "fcmToken": fcmToken.toString(),
+          "timeZone": timeZone,
+        },
+        {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.data['code'] == 100) {
+        final UserModel userModel = UserModel.fromJson(response.data);
+        var data = UserData.fromJson(response.data["data"]);
+
+        LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
+        LocalStorage.setUserDetailsData(
+          userDetailsData: data.user,
+        );
+
+        AppConstants.showSnackbar(
+          headText: "Successful",
+          content: "Signing in...",
+        );
+        // Get.offNamedUntil(
+        //   Routes.BOTTOM_NAVIGATION_BAR,
+        //       (route) => false,
+        // );
+      } else {
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data['message'],
+        );
+      }
+    } catch (e) {
+      Get.back();
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+      );
+    }
   }
 
-  void loginWithFacebook() {
-    // Handle Facebook login
-  }
+  // Handles Apple sign-in logic (similar to Google sign-in)
+  Future<void> appleSignIn({
+    required String name,
+    required String email,
+    required int socialIdentifier,
+    required String socialId,
+    required String socialToken,
+    String? picture,
+    required BuildContext context,
+  }) async {
+    // Implementation is similar to googleSignIn
+    String? fcmToken = LocalStorage.getFCMToken();
+    try {
+      final response = await APIProvider().postAPICall(
+        ApiConstants.socialLogin,
+        {
+          "name": name,
+          "email": email,
+          "socialIdentifier": socialIdentifier,
+          "socialId": socialId,
+          "socialToken": socialToken,
+          "picture": picture,
+          "device": Platform.isAndroid ? "android" : "ios",
+          "fcmToken": fcmToken,
+          "timeZone": timeZone,
+        },
+        {
+          'Content-Type': 'application/json',
+        },
+      );
 
-  void loginWithApple() {
-    // Handle Apple login (iOS only)
+      if (response.data['code'] == 100) {
+        final UserModel userModel = UserModel.fromJson(response.data);
+        var data = UserData.fromJson(response.data["data"]);
+
+        LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
+        LocalStorage.setUserDetailsData(
+          userDetailsData: data.user,
+        );
+
+        AppConstants.showSnackbar(
+          headText: "Successful",
+          content: "Signing in...",
+        );
+        // Get.offNamedUntil(
+        //   Routes.BOTTOM_NAVIGATION_BAR,
+        //       (route) => false,
+        // );
+      } else {
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data['message'],
+        );
+      }
+    } catch (e) {
+      Get.back();
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   void continueAsGuest() {
     Get.offAllNamed('/home');
+  }
+
+  void loginWithApple() {
+  }
+
+  void loginWithGoogle() {
+  }
+
+  void loginWithFacebook() {
   }
 }

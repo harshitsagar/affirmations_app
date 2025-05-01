@@ -1,9 +1,16 @@
 import 'dart:io';
+import 'package:affirmations_app/app/data/api_provider.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/data/models/app_details_model.dart';
+import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
+import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/modules/screens/common/share_screen/controllers/share_screen_controller.dart';
 import 'package:affirmations_app/app/modules/screens/common/share_screen/views/share_screen_view.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:affirmations_app/app/widgets/detailsPage.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,6 +19,11 @@ import 'package:url_launcher/url_launcher.dart';
 class SettingsController extends GetxController {
 
   final box = GetStorage();
+
+  final _appDetails = Rx<AppData>(AppData());
+  AppData get appDetails => _appDetails.value;
+
+  final loadingStatus = LoadingStatus.loading.obs;
 
   // User data
   final RxString name = ''.obs;
@@ -23,11 +35,44 @@ class SettingsController extends GetxController {
   void onInit() {
     super.onInit();
 
+    fetchAppDetails();
+
     // Load from local storage, else use defaults
     name.value = box.read('user_name')?.toString() ?? 'John Doe';
     email.value = box.read('user_email')?.toString() ?? 'john@example.com';
     age.value = box.read('user_age')?.toString() ?? '25';
     gender.value = box.read('user_gender')?.toString() ?? '';
+  }
+
+  void fetchAppDetails() async {
+    try {
+      loadingStatus(LoadingStatus.loading);
+
+      // Fetch the app details from the API.
+      final response = await APIProvider().postAPICall(
+        ApiConstants.appDetails,
+        {},
+        {},
+      );
+
+      if (response.data["code"] == 100) {
+        _appDetails.value = AppData.fromJson(response.data["data"]);
+      } else {
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data["message"],
+          position: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
+      );
+    } finally {
+      loadingStatus(LoadingStatus.completed);
+    }
   }
 
   void handleSettingTap(String title) {
@@ -68,13 +113,28 @@ class SettingsController extends GetxController {
         );
         break;
       case 'About Us':
-        Get.to(() => InfoPage(title: "About Us"));
+        Get.to(() =>
+            Obx(() => InfoPage(
+                title: "About Us",
+                content: appDetails.aboutUs,
+                loadingStatus: loadingStatus.value
+            )));
         break;
       case 'Terms & Conditions':
-        Get.to(() => InfoPage(title: "Terms & Conditions"));
+        Get.to(() =>
+            Obx(() => InfoPage(
+                title: "Terms & Conditions",
+                content: appDetails.termsAndConditions,
+                loadingStatus: loadingStatus.value
+            )));
         break;
       case 'Privacy Policy':
-        Get.to(() => InfoPage(title: "Privacy Policy"));
+        Get.to(() =>
+            Obx(() => InfoPage(
+                title: "Privacy Policy",
+                content: appDetails.aboutUs,
+                loadingStatus: loadingStatus.value
+            )));
         break;
       case 'Contact Admin':
         Get.toNamed(Routes.CONTACT_ADMIN);
@@ -91,8 +151,8 @@ class SettingsController extends GetxController {
             primaryButtonText: 'Yes',
             secondaryButtonText: 'No',
             onPrimaryPressed: () {
-              logout();
-              Get.back();
+              AppConstants.showLoader(context: Get.context!);
+              logOut();
             },
             onSecondaryPressed: () => Get.back(),
           ),
@@ -130,8 +190,58 @@ class SettingsController extends GetxController {
     }
   }
 
-  void logout() {
+  void logOut() async {
+    try {
+      var accessToken = LocalStorage.getUserAccessToken();
 
+      final response = await APIProvider().postAPICall(
+        ApiConstants.logout,
+        {},
+        {
+          'Authorization': accessToken,
+        },
+      );
+
+      if (response.data["code"] == 100) {
+        LocalStorage.clearData();
+
+        // final prefs = await SharedPreferences.getInstance();
+        // await prefs.remove('lastTransactionDate');
+
+        // FirebaseMessaging.instance.deleteToken().then(
+        //       (value) => getAndSaveToken(),
+        // );
+
+        Future.delayed(
+          const Duration(seconds: 2),
+              () {
+            AppConstants.showSnackbar(
+              headText: "Success",
+              content: "Logged Out successfully.",
+              position: SnackPosition.BOTTOM,
+            );
+            Get.offNamedUntil(
+              Routes.LOGIN,
+                  (route) => false,
+            );
+          },
+        );
+      } else {
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data["message"],
+          position: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.back();
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   // Add this method to check if user is premium
@@ -151,8 +261,8 @@ class SettingsController extends GetxController {
           primaryButtonText: 'Yes',
           secondaryButtonText: 'No',
           onPrimaryPressed: () {
+            AppConstants.showLoader(context: Get.context!);
             deleteAccount();
-            Get.back();
           },
           onSecondaryPressed: () => Get.back(),
         ),
@@ -167,8 +277,8 @@ class SettingsController extends GetxController {
           primaryButtonText: 'Yes',
           secondaryButtonText: 'No',
           onPrimaryPressed: () {
+            AppConstants.showLoader(context: Get.context!);
             deleteAccount();
-            Get.back();
           },
           onSecondaryPressed: () => Get.back(),
         ),
@@ -177,41 +287,59 @@ class SettingsController extends GetxController {
     }
   }
 
-  void deleteAccount() {
-    // TODO: Implement actual account deletion logic
-    // This should include:
-    // 1. API call to delete account (when you have the API)
-    // 2. Clearing local storage
-    // 3. Logging out the user
-
-    // For now, just implementing the local cleanup
-    box.erase(); // Clear all local storage
-    // Navigate to login or splash screen
-    Get.offAllNamed(Routes.LOGIN); // Replace with your actual login route
-
-    // When you have the API, modify to:
-    /*
+  void deleteAccount() async {
     try {
-      // Call your delete account API
-      await ApiService.deleteAccount();
+      var accessToken = LocalStorage.getUserAccessToken();
 
-      // Clear local data
-      box.erase();
+      final response = await APIProvider().postAPICall(
+        ApiConstants.deleteAccount,
+        {},
+        {
+          'Authorization': accessToken,
+        },
+      );
+      if (response.data["code"] == 100) {
+        LocalStorage.clearData();
 
-      // Navigate to login
-      Get.offAllNamed(Routes.LOGIN);
+        // final prefs = await SharedPreferences.getInstance();
+        // await prefs.remove('lastTransactionDate');
+
+        // FirebaseMessaging.instance.deleteToken().then(
+        //       (value) => getAndSaveToken(),
+        // );
+
+        Future.delayed(
+          const Duration(seconds: 2),
+              () {
+            AppConstants.showSnackbar(
+              headText: "Success",
+              content: "Account deleted successfully.",
+              position: SnackPosition.BOTTOM,
+            );
+            Get.offNamedUntil(
+              Routes.LOGIN,
+                  (route) => false,
+            );
+          },
+        );
+      } else {
+        Get.back();
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data["message"],
+          position: SnackPosition.BOTTOM,
+        );
+      }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to delete account: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
+      Get.back();
+      Get.back();
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
       );
     }
-    */
   }
-
-
-
-
 
 }

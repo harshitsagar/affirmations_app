@@ -1,6 +1,10 @@
+import 'dart:math' as math;
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
 import 'package:affirmations_app/app/modules/screens/common/app_settings/FAQ/controllers/faq_controller.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
+import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -31,30 +35,42 @@ class FaqView extends GetView<FaqController> {
 
                 // FAQ List
                 Expanded(
-                  child: Obx(() => NotificationListener<ScrollNotification>(
-                    onNotification: (scrollNotification) {
-                      if (scrollNotification.metrics.pixels ==
-                          scrollNotification.metrics.maxScrollExtent &&
-                          !controller.isLoading.value &&
-                          controller.hasMore.value) {
-                        controller.loadMoreFaqs();
-                      }
-                      return false;
-                    },
-                    child: ListView.builder(
-                      padding: EdgeInsets.only(top: 20.h),
-                      itemCount: controller.displayedFaqs.length + (controller.hasMore.value ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index >= controller.displayedFaqs.length) {
-                          return const Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Center(child: CircularProgressIndicator()),
-                          );
-                        }
-                        return _buildFaqItem(controller.displayedFaqs[index], index);
-                      },
-                    ),
-                  )),
+                  child: Obx(() {
+                    if (controller.loadingStatus.value == LoadingStatus.loading) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 4.w,
+                          color: AppColors.black,
+                        ),
+                      );
+                    } else {
+                      return controller.faqList.isEmpty
+                          ? Center(
+                              child: Text(
+                                  "No FAQs available yet.",
+                                  style: GoogleFonts.inter(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                              ),
+                            )
+                          : ListView.builder(
+                            padding: EdgeInsets.only(top: 20.h),
+                            shrinkWrap: true,
+                            itemCount: controller.faqList.length,
+                            itemBuilder: (context, index) {
+                              final faq = controller.faqList[index];
+                              return faqExpansionWidget(
+                                question: faq.question,
+                                answer: faq.answer,
+                                index: index,
+                                initiallyExpanded: controller.expandedIndex.value == index,
+                              );
+                        },
+                      );
+                    }
+                  }),
                 ),
               ],
             ),
@@ -64,6 +80,96 @@ class FaqView extends GetView<FaqController> {
     );
   }
 
+  Widget faqExpansionWidget({
+    required String question,
+    required String answer,
+    required int index,
+    required bool initiallyExpanded,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20.h),
+      child: ExpansionWidget(
+        initiallyExpanded: initiallyExpanded,
+        titleBuilder: (
+            double animationValue,
+            _,
+            bool isExpanded,
+            toggleFunction,
+            ) {
+          return Container(
+            decoration: BoxDecoration(
+              color: isExpanded ? Colors.black : Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.r),
+                topRight: Radius.circular(20.r),
+                bottomLeft: Radius.circular(isExpanded ? 0 : 20.r),
+                bottomRight: Radius.circular(isExpanded ? 0 : 20.r),
+              ),
+            ),
+            child: InkWell(
+              onTap: () => toggleFunction(animated: true),
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                title: Text(
+                  question,
+                  style: GoogleFonts.inter(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                    color: isExpanded ? Colors.white : Colors.black,
+                  ),
+                ),
+                trailing: SvgPicture.asset(
+                  isExpanded ? upwardArrow : downwardArrow,
+                  height: 18.h,
+                  width: 18.w,
+                ),
+              ),
+            ),
+          );
+        },
+        content: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(20.r),
+              bottomRight: Radius.circular(20.r),
+            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
+          child: Text(
+            answer,
+            style: GoogleFonts.inter(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /*
+  ListView.builder(
+  padding: EdgeInsets.only(top: 20.h),
+  shrinkWrap: true,
+  itemCount: controller.faqList.length,
+  itemBuilder: (context, index) {
+  if (index >= controller.displayedFaqs.length) {
+  return const Padding(
+  padding: EdgeInsets.all(16.0),
+  child: Center(child: CircularProgressIndicator()),
+  );
+  }
+  return _buildFaqItem(controller.displayedFaqs[index], index);
+  },
+  );
+
+   */
+
+  /*
   Widget _buildFaqItem(FaqItem faq, int index) {
     return Obx(() {
       final isExpanded = controller.expandedIndex.value == index;
@@ -129,4 +235,6 @@ class FaqView extends GetView<FaqController> {
       );
     });
   }
+
+   */
 }

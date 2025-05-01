@@ -1,21 +1,33 @@
+import 'package:affirmations_app/app/data/api_provider.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/data/models/faq_model.dart';
+import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
+import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:get/get.dart';
 
-class FaqItem {
-  final String question;
-  final String answer;
-
-  FaqItem({required this.question, required this.answer});
-}
+// class FaqItem {
+//   final String question;
+//   final String answer;
+//
+//   FaqItem({required this.question, required this.answer});
+// }
 
 class FaqController extends GetxController {
+
+  final _faqList = Rx<List<FAQData>>([]);
+  List<FAQData> get faqList => _faqList.value;
+
+  final loadingStatus = LoadingStatus.loading.obs;
+
   final int itemsPerPage = 30;
   int currentPage = 1;
   var isLoading = false.obs;
   var hasMore = true.obs;
-  var displayedFaqs = <FaqItem>[].obs;
+  // var displayedFaqs = <FaqItem>[].obs;
   var expandedIndex = Rx<int?>(null);
 
   //  dummy data......
+  /*
   final List<FaqItem> _demoFaqs = [
     FaqItem(
       question: "Can to create custom affirmations?",
@@ -64,12 +76,47 @@ class FaqController extends GetxController {
 
   ];
 
+   */
+
   @override
   void onInit() {
     super.onInit();
-    loadMoreFaqs();
+    fetchAllFAQs();
   }
 
+  void fetchAllFAQs() async {
+    try {
+      loadingStatus(LoadingStatus.loading);
+      final response = await APIProvider().postAPICall(
+        ApiConstants.faqList,
+        {},
+        {},
+      );
+
+      if (response.data["code"] == 100) {
+        var data = Data.fromJson(
+          response.data["data"],
+        );
+        _faqList.value = data.list;
+      } else {
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data["message"],
+          position: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
+      );
+    } finally {
+      loadingStatus(LoadingStatus.completed);
+    }
+  }
+
+  /*
   Future<void> loadMoreFaqs() async {
     if (isLoading.value || !hasMore.value) return;
 
@@ -106,4 +153,6 @@ class FaqController extends GetxController {
       expandedIndex.value = index;
     }
   }
+
+   */
 }

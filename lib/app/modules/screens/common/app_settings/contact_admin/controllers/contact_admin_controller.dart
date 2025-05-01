@@ -1,3 +1,7 @@
+import 'package:affirmations_app/app/data/api_provider.dart';
+import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
+import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +23,58 @@ class ContactAdminController extends GetxController {
     isSendEnabled.value = messageController.text.trim().isNotEmpty;
   }
 
+  void contactAdmin(BuildContext context) async {
+    try {
+      var accessToken = LocalStorage.getUserAccessToken();
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.contactAdmin,
+        {
+          'message': messageController.text,
+        },
+        {
+          'Authorization': accessToken,
+        },
+      );
+      if (response.data["code"] == 100) {
+        Get.back();
+        // Success popup
+        Get.dialog(
+          CustomPopupDialog(
+            title: 'Mail Sent',
+            description: 'Thank you for contacting us. We will try getting back to you as soon as possible.',
+            primaryButtonText: 'Okay',
+            singleButtonMode: true,
+            descriptionWidth: 300.w,
+            onPrimaryPressed: () {
+              Get.back(); // close dialog
+              Get.back(); // back to last screen
+            },
+          ),
+        );
+
+        // Clear message
+        messageController.clear();
+
+      } else {
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: response.data["message"],
+          position: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.back();
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  /*
   void sendMessage() {
     final message = messageController.text.trim();
 
@@ -53,6 +109,7 @@ class ContactAdminController extends GetxController {
     // Clear message
     messageController.clear();
   }
+   */
 
 
   @override
