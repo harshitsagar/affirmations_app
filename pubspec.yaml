@@ -45,6 +45,21 @@ dependencies:
   flutter_screenutil: ^5.9.3
   table_calendar: ^3.2.0
   syncfusion_flutter_charts: ^29.1.39
+  dio: ^5.8.0+1
+  email_validator: ^3.0.0
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.3
+  firebase_messaging: ^15.2.5
+  flutter_local_notifications: ^19.1.0
+  google_sign_in: ^6.3.0
+  flutter_facebook_auth: ^7.1.1
+  sign_in_with_apple: ^7.0.1
+#  flutter_keychain: ^2.5.0
+  flutter_keychain:
+    git:
+      url: https://github.com/jeroentrappers/flutter_keychain
+      ref: refs/pull/53/head
+  expansion_widget: ^0.1.0
 
 dev_dependencies:
   flutter_test:
