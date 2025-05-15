@@ -15,6 +15,25 @@ class LocalStorage {
     return prefs.read("userAccessToken");
   }
 
+  // Onboarding status
+  static setOnboardingCompleted({bool value = true}) {
+    prefs.write("onboarding_completed", value);
+  }
+
+  static bool getOnboardingCompleted() {
+    return prefs.read("onboarding_completed") ?? false;
+  }
+
+  // Profile completion status
+  static setProfileCompleted({bool value = true}) {
+    prefs.write("profile_completed", value);
+  }
+
+  static bool getProfileCompleted() {
+    return prefs.read("profile_completed") ?? false;
+  }
+
+  // App session active status
   static setAppSessionActive({
     required bool value,
   }) {
@@ -25,6 +44,7 @@ class LocalStorage {
     return prefs.read("appSessionActive");
   }
 
+  // FCM Token
   static setFCMToken(String value) {
     prefs.write("USER_FCM_TOKEN", value);
   }
@@ -67,11 +87,12 @@ class LocalStorage {
     return prefs.read("sleepStartTime");
   }
 
+
+  // Clear all data (logout)
   static clearData() {
-    prefs.remove("userAccessToken");
-    prefs.remove("ongoingCardioData");
-    prefs.remove("sleepStartTime");
-    prefs.remove("appSessionActive");
-    prefs.erase();
+
+    prefs.erase(); // Clear everything
+
   }
+
 }
