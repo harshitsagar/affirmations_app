@@ -54,7 +54,6 @@ import '../modules/screens/user/home/bindings/home_binding.dart';
 import '../modules/screens/user/home/views/home_view.dart';
 import '../modules/screens/user/journal/filter/bindings/filter_binding.dart';
 import '../modules/screens/user/journal/filter/views/filter_view.dart';
-import '../modules/screens/user/my_List/add_affirmations/bindings/add_affirmations_binding.dart';
 import '../modules/screens/user/my_List/add_affirmations/controllers/add_affirmations_controller.dart';
 import '../modules/screens/user/my_List/add_affirmations/views/addAffirmation_bottomsheet.dart';
 import '../modules/screens/user/my_List/add_affirmations/views/add_affirmations_view.dart';
@@ -71,7 +70,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static var INITIAL = Routes.HOME;
+  static var INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -250,5 +249,6 @@ class AppPages {
       page: () => const JournalHomeView(),
       binding: JournalHomeBinding(),
     ),
+
   ];
 }
