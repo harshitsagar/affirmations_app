@@ -1,5 +1,7 @@
-import 'package:affirmations_app/app/helpers/constants/app_theme.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+import 'package:affirmations_app/app/modules/authentication/profile/themes/controllers/themes_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,7 +14,9 @@ void main() async {
 
   // Initialize local storage
   await GetStorage.init();
-
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+  );
   runApp(const MyApp());
 }
 
@@ -22,6 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    final currentTheme = ThemesController.getCurrentTheme();
     final MediaQueryData data = MediaQuery.of(context);
 
     return MediaQuery(
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Affirmations App",
-            theme: AppTheme.light,
+            theme: ThemeService.getThemeData(currentTheme),
             initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,
           );
