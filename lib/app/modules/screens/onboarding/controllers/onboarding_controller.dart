@@ -1,3 +1,4 @@
+import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +26,13 @@ class OnboardingController extends GetxController {
           title: 'Tracking Permission',
           description: 'Allow "Affirmations" to track your activity across other companies\' apps and websites?',
           // No need to specify button texts as they're now the defaults
-          onPrimaryPressed: () {
-            // Handle "Ask Not to Track" action
+          onPrimaryPressed: () async{
+            await LocalStorage.setOnboardingCompleted();
             Get.back();
             Get.offAllNamed(Routes.LOGIN);
           },
-          onSecondaryPressed: () {
-            // Handle "Allow" action
+          onSecondaryPressed: () async {
+            await LocalStorage.setOnboardingCompleted();
             Get.back();
             Get.offAllNamed(Routes.LOGIN);
           },
