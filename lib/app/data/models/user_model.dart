@@ -60,9 +60,9 @@ class User {
   final String id;
   final Affirmations affirmations;
   final bool notificationsEnabled;
-  final List<int> areasToWork;
-  final int? selectedTheme; // Nullable
-  final int heardFrom;
+  final List<String> areasToWork;
+  final String? selectedTheme; // Nullable
+  final List<int> heardFrom;
   final bool reminderNotification;
   final String name;
   final String email;
@@ -101,9 +101,9 @@ class User {
     id: json["_id"],
     affirmations: Affirmations.fromJson(json["affirmations"] ?? {}), // Handle null
     notificationsEnabled: json["notificationsEnabled"] ?? false,
-    areasToWork: List<int>.from(json["areasToWork"]?.map((x) => x) ?? []),
+    areasToWork: List<String>.from(json["areasToWork"]?.map((x) => x) ?? []),
     selectedTheme: json["selectedTheme"],
-    heardFrom: json["heardFrom"] ?? 0,
+    heardFrom: List<int>.from(json["heardFrom"]?.map((x) => x) ?? []),
     reminderNotification: json["reminderNotification"] ?? false,
     name: json["name"] ?? "",
     email: json["email"] ?? "",
@@ -128,7 +128,7 @@ class User {
     "notificationsEnabled": notificationsEnabled,
     "areasToWork": List<dynamic>.from(areasToWork.map((x) => x)),
     "selectedTheme": selectedTheme,
-    "heardFrom": heardFrom,
+    "heardFrom": List<dynamic>.from(heardFrom.map((x) => x)),
     "reminderNotification": reminderNotification,
     "name": name,
     "email": email,
