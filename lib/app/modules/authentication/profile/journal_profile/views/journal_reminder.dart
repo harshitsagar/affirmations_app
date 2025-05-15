@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,98 +17,107 @@ class JournalReminder extends GetView<JournalController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage),
-            fit: BoxFit.cover,
+      body: Obx(() {
+        if (controller.loadingStatus.value == LoadingStatus.loading) {
+          return Center(
+            child: Platform.isAndroid
+                ? CircularProgressIndicator(
+              strokeWidth: 4.w,
+              color: Colors.black,
+            )
+                : CupertinoActivityIndicator(
+              color: Colors.black,
+              radius: 20.r,
+            ),
+          );
+        }
+
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(bgImage),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 60.h),
-          child: Column(
-            children: [
-
-              const CustomAppBar(title: ""),
-
-              SizedBox(height: 30.h),
-
-              // Title
-              Text(
-                'Set journal writing reminders',
-                style: GoogleFonts.inter(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
+          child: Padding(
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 60.h),
+            child: Column(
+              children: [
+                const CustomAppBar(title: ""),
+                SizedBox(height: 30.h),
+                // Title
+                Text(
+                  'Set journal writing reminders',
+                  style: GoogleFonts.inter(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-
-              SizedBox(height: 32.h),
-
-              // Time Selection Container
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                padding: EdgeInsets.all(20.r),
-                child: Column(
-                  children: [
-                    _buildTimeSelector(
-                      context,
-                      'Start At',
-                      "am",
-                      controller.startTime,
-                          () => controller.selectStartTime(context),
-                      isAM: true,
-                    ),
-                    SizedBox(height: 25.h),
-                    _buildTimeSelector(
-                      context,
-                      'End At',
-                      "pm",
-                      controller.endTime,
-                          () => controller.selectEndTime(context),
-                      isAM: false,
-                    ),
-                  ],
-                ),
-              ),
-
-              const Spacer(),
-
-              // Next Button
-              Padding(
-                padding: EdgeInsets.only(bottom: 50.h),
-                child: SizedBox(
+                SizedBox(height: 32.h),
+                // Time Selection Container
+                Container(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: controller.navigateToHearAboutScreen,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.r),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(16.r),
+                  ),
+                  padding: EdgeInsets.all(20.r),
+                  child: Column(
+                    children: [
+                      _buildTimeSelector(
+                        context,
+                        'Start At',
+                        "am",
+                        controller.startTime,
+                            () => controller.selectStartTime(context),
+                        isAM: true,
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                    ),
-                    child: Text(
-                      'Next',
-                      style: GoogleFonts.inter(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      SizedBox(height: 25.h),
+                      _buildTimeSelector(
+                        context,
+                        'End At',
+                        "pm",
+                        controller.endTime,
+                            () => controller.selectEndTime(context),
+                        isAM: false,
+                      ),
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                // Next Button
+                Padding(
+                  padding: EdgeInsets.only(bottom: 50.h),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: controller.navigateToHearAboutScreen,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                      ),
+                      child: Text(
+                        'Next',
+                        style: GoogleFonts.inter(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 
@@ -171,7 +184,7 @@ class JournalReminder extends GetView<JournalController> {
                           style: GoogleFonts.inter(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black, // Always black
+                            color: Colors.black,
                           ),
                         ),
                       ],
@@ -191,5 +204,4 @@ class JournalReminder extends GetView<JournalController> {
       ],
     );
   }
-
 }

@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
 import 'package:affirmations_app/app/modules/authentication/profile/affirmation_reminder/views/affirmation_reminder_view.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,7 +33,7 @@ class AffirmationsView extends GetView<AffirmationsController> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 20.h),
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -42,7 +47,7 @@ class AffirmationsView extends GetView<AffirmationsController> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.h),
                   child: Text(
-                    'On which area you want to work though affirmations?',
+                    'On which area you want to work through affirmations?',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                       fontSize: 20.sp,
@@ -65,46 +70,61 @@ class AffirmationsView extends GetView<AffirmationsController> {
 
                 // Areas List
                 Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: controller.areas.length,
-                    itemBuilder: (context, index) {
-                      final area = controller.areas[index];
-                      return Obx(() {
-                        final isSelected = controller.selectedAreas.contains(area);
-                        return _buildAreaItem(area, isSelected);
-                      });
-                    },
-                  ),
-                ),
+                  child: Obx(() {
 
-                SizedBox(height: 20.h),
+                    if (controller.loadingStatus.value == LoadingStatus.loading) {
+                      return Center(
+                        child: Platform.isAndroid
+                            ? CircularProgressIndicator(
+                          strokeWidth: 4.w,
+                          color: AppColors.black,
+                        )
+                            : CupertinoActivityIndicator(
+                          color: AppColors.black,
+                          radius: 20.r,
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: ListView.separated(
+                            itemCount: controller.affirmationTypes.length,
+                            separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                            itemBuilder: (context, index) {
+                              final type = controller.affirmationTypes[index];
+                              return Obx(() {
+                                final isSelected = controller.selectedTypes.contains(type.sId);
+                                return _buildAreaItem(type.name ?? '', isSelected, () {
+                                  controller.toggleSelection(type.sId!);
+                                });
+                              });
+                            },
+                          ),
+                        ),
+
+                        // Fixed padding before button
+                        SizedBox(height: 20.h),
+                      ],
+                    );
+
+                  }),
+                ),
 
                 // Next Button
                 Padding(
-                  padding: EdgeInsets.only(bottom: 8.h),
+                  padding: EdgeInsets.only(bottom: 5.h),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        if (controller.selectedAreas.length >= 3) {
-                          controller.navigateToThemeScreen();
-                        } else {
-                          Get.snackbar(
-                            'Selection Required',
-                            'Please select at least 3 areas',
-                            snackPosition: SnackPosition.TOP,
-                            duration: const Duration(seconds: 2),
-                          );
-                        }
-                      },
+                      onPressed: controller.saveSelections,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.r),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
                         'Next',
@@ -125,15 +145,14 @@ class AffirmationsView extends GetView<AffirmationsController> {
     );
   }
 
-  Widget _buildAreaItem(String area, bool isSelected) {
-    final controller = Get.find<AffirmationsController>();
-    return SizedBox(
-      width: double.infinity,
-      height: 55.h,
-      child: Padding(
-        padding: EdgeInsets.only(bottom: 16.h),
-        child: GestureDetector(
-          onTap: () => controller.toggleAreaSelection(area),
+  Widget _buildAreaItem(String area, bool isSelected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: SizedBox(
+        width: double.infinity,
+        height: 50.h,
+        child: Padding(
+          padding: EdgeInsets.only(bottom: 8.h),
           child: Container(
             height: 56.h,
             decoration: BoxDecoration(

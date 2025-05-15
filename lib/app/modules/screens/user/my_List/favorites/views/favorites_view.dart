@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -5,6 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import '../../../../../../data/models/favList_model.dart';
+import '../../../../../../helpers/constants/app_colors.dart';
 import '../controllers/favorites_controller.dart';
 
 class FavoritesView extends GetView<FavoritesController> {
@@ -33,8 +40,22 @@ class FavoritesView extends GetView<FavoritesController> {
                 ),
                 SizedBox(height: 20.h),
                 Expanded(
-                  child: Obx(
-                        () => controller.favoriteAffirmations.isEmpty
+                  child: Obx(() {
+                    if (controller.loadingStatus.value == LoadingStatus.loading) {
+                      return Center(
+                        child: Platform.isAndroid
+                            ? CircularProgressIndicator(
+                          strokeWidth: 4.w,
+                          color: AppColors.black,
+                        )
+                            : CupertinoActivityIndicator(
+                          color: AppColors.black,
+                          radius: 20.r,
+                        ),
+                      );
+                    }
+
+                    return controller.favoriteList.isEmpty
                         ? Center(
                       child: Text(
                         'No favorites yet',
@@ -46,14 +67,14 @@ class FavoritesView extends GetView<FavoritesController> {
                       ),
                     )
                         : ListView.separated(
-                      itemCount: controller.favoriteAffirmations.length,
+                      itemCount: controller.favoriteList.length,
                       separatorBuilder: (_, __) => SizedBox(height: 12.h),
                       itemBuilder: (context, index) {
-                        final affirmation = controller.favoriteAffirmations[index];
-                        return _buildAffirmationCard(affirmation, controller);
+                        final item = controller.favoriteList[index];
+                        return _buildAffirmationCard(item, controller);
                       },
-                    ),
-                  ),
+                    );
+                  }),
                 ),
               ],
             ),
@@ -63,7 +84,7 @@ class FavoritesView extends GetView<FavoritesController> {
     );
   }
 
-  Widget _buildAffirmationCard(String affirmation, FavoritesController controller) {
+  Widget _buildAffirmationCard(Data affirmation, FavoritesController controller) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.9),
@@ -75,7 +96,7 @@ class FavoritesView extends GetView<FavoritesController> {
           Padding(
             padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 16.h),
             child: Text(
-              affirmation,
+              affirmation.name ?? 'No name', // Display the affirmation text from model
               style: GoogleFonts.inter(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w500,
@@ -83,7 +104,6 @@ class FavoritesView extends GetView<FavoritesController> {
               ),
             ),
           ),
-
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 5.h),
             child: Divider(
@@ -92,30 +112,28 @@ class FavoritesView extends GetView<FavoritesController> {
               height: 20.h,
             ),
           ),
-
           Padding(
             padding: EdgeInsets.only(right: 20.w, bottom: 16.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: () => controller.removeFavorite(affirmation),
+                  onTap: () => controller.removeFavorite(affirmation.sId ?? ''),
                   child: Image.asset(
-                    favoriteIcon2,
+                    affirmation.isLiked == true ? favoriteIcon2 : favoriteIcon1,
                     width: 24.w,
                     height: 24.h,
                   ),
                 ),
                 SizedBox(width: 24.w),
                 GestureDetector(
-                  onTap: () => controller.shareAffirmation(affirmation),
+                  onTap: () => controller.shareAffirmation(affirmation.name ?? ''),
                   child: Image.asset(
                     shareIcon,
                     width: 24.w,
                     height: 24.h,
                   ),
                 ),
-
               ],
             ),
           ),
@@ -123,4 +141,5 @@ class FavoritesView extends GetView<FavoritesController> {
       ),
     );
   }
+
 }

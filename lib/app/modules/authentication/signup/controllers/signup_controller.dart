@@ -136,31 +136,6 @@ class SignupController extends GetxController {
     }
   }
 
-  Future<void> signup() async {
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-    String confirmPassword = confirmPasswordController.text.trim();
-
-    if (name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      Get.snackbar("Error", "All fields are required");
-      return;
-    }
-    if (password != confirmPassword) {
-      Get.snackbar("Error", "Passwords do not match");
-      return;
-    }
-
-    // bool success = await AuthService.signUp(name, email, password);
-    bool success = true  ;
-
-    if (success) {
-
-    } else {
-      Get.snackbar("Error", "Signup failed");
-    }
-  }
-
   void loginWithGoogle() {
     // Implement Google Login
   }

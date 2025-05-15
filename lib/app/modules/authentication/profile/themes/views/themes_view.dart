@@ -1,10 +1,15 @@
-import 'package:affirmations_app/app/routes/app_pages.dart';
+import 'dart:io';
+
+import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../../data/components/images_path.dart';
 import '../controllers/themes_controller.dart';
 
 class ThemesView extends GetView<ThemesController> {
@@ -15,121 +20,143 @@ class ThemesView extends GetView<ThemesController> {
     final controller = Get.put(ThemesController());
 
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage), // Default background
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-
-              // Back Button
-              Padding(
-                padding: EdgeInsets.only(left: 20.w, top: 10.h),
-                child: CustomAppBar(title: ""),
-              ),
-
-              SizedBox(height: 30.h),
-
-              // Title Text
-              Text(
-                "Let's choose your theme",
-                style: GoogleFonts.inter(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
+      body: Obx(() {
+        final currentTheme = controller.selectedTheme.value;
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: ThemeService.getBackgroundDecoration(currentTheme),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Back Button
+                Padding(
+                  padding: EdgeInsets.only(left: 20.w, top: 10.h),
+                  child: CustomAppBar(title: ""),
                 ),
-              ),
 
-              SizedBox(height: 32.h),
+                SizedBox(height: 30.h),
 
-              // Theme Options with "Aa" text inside the boxes
-              Obx(() => Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(controller.themeImages.length, (index) {
-                    bool isSelected = controller.selectedTheme.value == index;
+                // Title Text
+                Text(
+                  "Let's choose your theme",
+                  style: GoogleFonts.inter(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
 
-                    return GestureDetector(
-                      onTap: () => controller.selectTheme(index),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
+                SizedBox(height: 32.h),
+
+                // Theme Options
+                Obx(() {
+
+                  if (controller.loadingStatus.value == LoadingStatus.loading) {
+                    return Center(
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator(
+                        strokeWidth: 4.w,
+                        color: AppColors.black,
+                      )
+                          : CupertinoActivityIndicator(
+                        color: AppColors.black,
+                        radius: 20.r,
+                      ),
+                    );
+                  }
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Wrap(
+                      spacing: 10.w,
+                      runSpacing: 10.h,
+                      alignment: WrapAlignment.center,
+                      children: controller.freeThemeList.map((theme) {
+                        bool isSelected = controller.selectedTheme.value?.sId == theme.sId;
+
+                        return GestureDetector(
+                          onTap: () {
+                            controller.selectTheme(theme);
+                            ThemeService.applyTheme(theme);
+                          },
+                          child: Container(
                             height: 160.h,
                             width: 105.w,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12.r),
-                              image: DecorationImage(
-                                image: AssetImage(controller.themeImages[index]),
-                                fit: BoxFit.cover,
+                              gradient: LinearGradient(
+                                colors: theme.backgroundGradient!
+                                    .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
+                                    // .map((color) => Color(int.parse('0xFF$color')))
+                                    .toList(),
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
                             ),
-                            child: Center( // Ensuring "Aa" is centered
-                              child: Text(
-                                "Aa",
-                                style: GoogleFonts.inter(
-                                  fontSize: 25.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: Text(
+                                    "Aa",
+                                    style: GoogleFonts.inter(
+                                      fontSize: 25.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                if (isSelected)
+                                  Positioned(
+                                    top: 5.h,
+                                    right: 8.w,
+                                    child: Image.asset(
+                                      greenTickIcon,
+                                      height: 30.h,
+                                      width: 30.w,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-                          if (isSelected)
-                            Positioned(
-                              top: 8.h,
-                              right: 8.w,
-                              child: Image.asset(
-                                  greenTickIcon,
-                                  width: 24.w,
-                                  height: 24.h
-                              ),
-                            ),
-                        ],
+                        );
+                      }).toList(),
+                    ),
+                  );
+                }),
+
+                const Spacer(),
+
+                // Next Button
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await controller.saveSelectedTheme();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.r),
                       ),
-                    );
-                  }),
-                ),
-              )),
-
-              const Spacer(),
-
-              // Next Button
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Get.offAllNamed(Routes.JOURNAL1);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.r),
+                      minimumSize: Size(double.infinity, 45.h),
                     ),
-                    minimumSize: Size(double.infinity, 45.h),
-                  ),
-                  child: Text(
-                    "Next",
-                    style: GoogleFonts.inter(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                    child: Text(
+                      "Next",
+                      style: GoogleFonts.inter(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

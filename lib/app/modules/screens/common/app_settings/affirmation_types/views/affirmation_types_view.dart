@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
 import 'package:affirmations_app/app/modules/screens/common/app_settings/affirmation_types/controllers/affirmation_types_controller.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AffirmationTypesView extends GetView<AffirmationTypesController> {
@@ -37,24 +40,49 @@ class AffirmationTypesView extends GetView<AffirmationTypesController> {
                 ),
                 SizedBox(height: 20.h),
 
-                // List of types
                 Expanded(
-                  child: ListView.separated(
-                    itemCount: controller.allAffirmationTypes.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                    itemBuilder: (context, index) {
-                      final type = controller.allAffirmationTypes[index];
-                      return Obx(() {
-                        final isSelected = controller.selectedTypes.contains(type);
-                        return _buildTypeItem(type, isSelected, controller);
-                      });
-                    },
-                  ),
+                  child: Obx(() {
+
+                    if (controller.loadingStatus.value == LoadingStatus.loading) {
+                      return Center(
+                        child: Platform.isAndroid
+                            ? CircularProgressIndicator(
+                          strokeWidth: 4.w,
+                          color: AppColors.black,
+                        )
+                            : CupertinoActivityIndicator(
+                          color: AppColors.black,
+                          radius: 20.r,
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: ListView.separated(
+                            itemCount: controller.affirmationTypes.length,
+                            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                            itemBuilder: (context, index) {
+                              final type = controller.affirmationTypes[index];
+                              return Obx(() {
+                                final isSelected = controller.selectedTypes.contains(type.sId);
+                                return _buildTypeItem(type.name ?? '', isSelected, () {
+                                  controller.toggleSelection(type.sId!);
+                                });
+                              });
+                            },
+                          ),
+                        ),
+
+                        // Fixed padding before button
+                        SizedBox(height: 20.h),
+                      ],
+                    );
+
+                  }),
                 ),
 
-                SizedBox(height: 20.h),
-
-                // Save Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -84,9 +112,9 @@ class AffirmationTypesView extends GetView<AffirmationTypesController> {
     );
   }
 
-  Widget _buildTypeItem(String title, bool isSelected, AffirmationTypesController controller) {
+  Widget _buildTypeItem(String title, bool isSelected, VoidCallback onTap) {
     return GestureDetector(
-      onTap: () => controller.toggleSelection(title),
+      onTap: onTap,
       child: Container(
         height: 40.h,
         decoration: BoxDecoration(

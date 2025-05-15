@@ -60,8 +60,8 @@ class JournalView2 extends GetView<JournalController> {
                     itemBuilder: (context, index) {
                       final mood = controller.moods[index];
                       return Obx(() {
-                        final isSelected = controller.selectedMood.value == mood;
-                        return _buildMoodOption(mood, isSelected);
+                        final isSelected = controller.selectedMoodIndex.value == index;
+                        return _buildMoodOption(mood, isSelected, () => controller.selectMood(index));
                       });
                     },
                   ),
@@ -95,9 +95,8 @@ class JournalView2 extends GetView<JournalController> {
                 SizedBox(height: 16.h),
 
                 // TextField
-                Obx(() => TextField(
-                  controller: TextEditingController(text: controller.notes.value), // Add controller to sync with notes
-                  onChanged: controller.updateNotes,
+                TextField(
+                  controller: controller.notesController, // Add controller to sync with notes
                   maxLines: 4,
                   maxLength: controller.maxNotesLength,
                   decoration: InputDecoration(
@@ -116,7 +115,7 @@ class JournalView2 extends GetView<JournalController> {
                     contentPadding: EdgeInsets.all(16.r),
                     counterText: '', // hides default counter
                   ),
-                )),
+                ),
 
                 SizedBox(height: 20.h),
 
@@ -126,7 +125,7 @@ class JournalView2 extends GetView<JournalController> {
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: controller.navigateToNextScreen,
+                      onPressed: controller.saveJournalEntry,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
@@ -153,11 +152,12 @@ class JournalView2 extends GetView<JournalController> {
     );
   }
 
-  Widget _buildMoodOption(String mood, bool isSelected) {
+  // Replace the existing _buildMoodOption with:
+  Widget _buildMoodOption(String mood, bool isSelected, VoidCallback onTap) {
     return Padding(
       padding: EdgeInsets.only(bottom: 16.h),
       child: GestureDetector(
-        onTap: () => Get.find<JournalController>().selectMood(mood),
+        onTap: onTap,
         child: Container(
           height: 42.h,
           decoration: BoxDecoration(
@@ -187,4 +187,5 @@ class JournalView2 extends GetView<JournalController> {
       ),
     );
   }
+
 }

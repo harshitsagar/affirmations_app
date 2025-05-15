@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:affirmations_app/app/data/api_provider.dart';
 import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/data/models/aboutProfileModel.dart';
 import 'package:affirmations_app/app/data/models/app_details_model.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
@@ -18,10 +19,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SettingsController extends GetxController {
 
-  final box = GetStorage();
+  final Rx<UserProfileData?> userProfile = Rx<UserProfileData?>(null);
 
   final _appDetails = Rx<AppData>(AppData());
   AppData get appDetails => _appDetails.value;
+
+  final box = GetStorage();
 
   final loadingStatus = LoadingStatus.loading.obs;
 
@@ -34,14 +37,68 @@ class SettingsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    fetchUserProfile();
     fetchAppDetails();
+  }
 
-    // Load from local storage, else use defaults
-    name.value = box.read('user_name')?.toString() ?? 'John Doe';
-    email.value = box.read('user_email')?.toString() ?? 'john@example.com';
-    age.value = box.read('user_age')?.toString() ?? '25';
-    gender.value = box.read('user_gender')?.toString() ?? '';
+  Future<void> fetchUserProfile() async {
+    try {
+      loadingStatus(LoadingStatus.loading);
+      final userRef = LocalStorage.getUserDetailsData()!.id; // Make sure this is implemented
+      if (userRef != null) {
+        final response = await APIProvider().postAPICall(
+          ApiConstants.userDetails,
+          {'userRef': userRef},
+          {
+            'Authorization': LocalStorage.getUserAccessToken(),
+          },
+        );
+
+        if (response.data["code"] == 100) {
+          final profile = AboutProfileModel.fromJson(response.data);
+          userProfile.value = profile.data;
+
+          // Update observable values directly from API
+          name.value = profile.data?.name ?? '';
+          email.value = profile.data?.email ?? '';
+          age.value = _getAgeGroupText(profile.data?.ageGroup);
+          gender.value = _getGenderText(profile.data?.gender);
+        } else {
+          throw Exception(response.data["message"]);
+        }
+      }
+    } catch (e) {
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
+      );
+    } finally {
+      loadingStatus(LoadingStatus.completed);
+    }
+  }
+
+  String _getAgeGroupText(int? ageGroup) {
+    switch (ageGroup) {
+      case 1: return '18 or Under';
+      case 2: return '19 - 24';
+      case 3: return '25 - 34';
+      case 4: return '35 - 44';
+      case 5: return '45 - 54';
+      case 6: return '55 - 64';
+      case 7: return '65 or Older';
+      default: return '';
+    }
+  }
+
+  String _getGenderText(int? gender) {
+    switch (gender) {
+      case 1: return 'Female';
+      case 2: return 'Male';
+      case 3: return 'Non-Binary';
+      case 4: return 'Prefer not to say';
+      default: return '';
+    }
   }
 
   void fetchAppDetails() async {
