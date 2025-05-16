@@ -8,6 +8,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../../../../data/api_provider.dart';
+import '../../../../../../helpers/constants/api_constants.dart';
+import '../../../../../../helpers/services/local_storage.dart';
+
 class AddAffirmationsController extends GetxController {
   final listName = ''.obs;
   final affirmations = <String>[].obs;
@@ -23,25 +27,73 @@ class AddAffirmationsController extends GetxController {
   }
 
   void _loadAffirmations() {
-    // First try loading from MyListController's unified storage
     final myListController = Get.find<MyListController>();
-    if (myListController.customListsAffirmations.containsKey(listName.value)) {
-      affirmations.assignAll(myListController.customListsAffirmations[listName.value]!);
+    final list = myListController.lists.firstWhereOrNull((e) => e.name == listName.value);
+
+    if (list != null && list.affirmations != null) {
+      final affirmationNames = list.affirmations!
+          .map((a) => a['name'].toString())
+          .toList();
+      affirmations.assignAll(affirmationNames);
     } else {
-      // Fallback to individual list storage
-      final rawData = _storage.read('${listName.value}_affirmations');
-      if (rawData != null && rawData is List) {
-        affirmations.assignAll(rawData.cast<String>());
-        // Initialize in MyListController if missing
-        myListController.customListsAffirmations[listName.value] = List<String>.from(affirmations);
-      }
+      affirmations.clear(); // No affirmations found for this list
     }
   }
 
-  void addAffirmation(String text) {
-    if (text.isNotEmpty && text.length <= maxCharacters) {
-      affirmations.add(text);
-      _saveAffirmations(); // This already updates MyListController as well
+
+
+  void addAffirmation(String text) async {
+    if (text.trim().isEmpty) {
+      Get.snackbar("Error", "Affirmation text cannot be empty.");
+      return;
+    }
+
+    if (text.length > maxCharacters) {
+      Get.snackbar("Error", "Affirmation cannot exceed $maxCharacters characters.");
+      return;
+    }
+
+    try {
+      final accessToken = LocalStorage.getUserAccessToken();
+      final myListController = Get.find<MyListController>();
+      final myListRef = myListController.listNameToIdMap[listName.value];
+
+      if (myListRef == null) {
+        Get.snackbar("Error", "List reference not found.");
+        return;
+      }
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.addAffirmation,
+        {
+          "name": text,
+          "myListRef": myListRef,
+        },
+        {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+        },
+      );
+
+      final res = response.data;
+
+      if (res["code"] == 100) {
+        affirmations.add(text);
+        // Update the corresponding list in MyListController
+        final list = myListController.lists.firstWhereOrNull((e) => e.name == listName.value);
+        if (list != null) {
+          list.affirmations.add({"name": text});
+          list.totalAffirmation += 1;
+          myListController.update(); // Notify the UI
+        }
+        _saveAffirmations();
+        Get.snackbar("Success", "Affirmation added successfully.");
+      } else {
+        Get.snackbar("Error", res["message"] ?? "Failed to add affirmation.");
+      }
+    } catch (e) {
+      print("Add Affirmation Error: $e");
+      Get.snackbar("Error", "Something went wrong while adding affirmation.");
     }
   }
 
@@ -75,20 +127,16 @@ class AddAffirmationsController extends GetxController {
       final removedAffirmation = affirmations.removeAt(index);
       final myListController = Get.find<MyListController>();
 
-      // Remove from current list
       myListController.removeAffirmationFromList(listName.value, removedAffirmation);
 
-      // Remove from favorites if needed
       if (myListController.favoriteAffirmations.contains(removedAffirmation)) {
         myListController.favoriteAffirmations.remove(removedAffirmation);
         Get.find<HomeController>().favoriteAffirmations.remove(removedAffirmation);
       }
 
-      // Update storage and UI
       _saveAffirmations();
       myListController.update();
       update();
-
     }
   }
 
@@ -97,16 +145,13 @@ class AddAffirmationsController extends GetxController {
   }
 
   void _saveAffirmations() {
-    // Save to both storage locations for redundancy
-    _storage.write('${listName.value}_affirmations', affirmations.toList());
-
-    // Update the unified storage via MyListController
-    final myListController = Get.find<MyListController>();
-    myListController.customListsAffirmations[listName.value] = List<String>.from(affirmations);
-    myListController.update();
+    // _storage.write('${listName.value}_affirmations', affirmations.toList());
+    //
+    // final myListController = Get.find<MyListController>();
+    // myListController.customListsAffirmations[listName.value] = List<String>.from(affirmations);
+    // myListController.update();
   }
 
-  // In add_affirmations_controller.dart
   void toggleAffirmationFavorite(int index) {
     if (index >= 0 && index < affirmations.length) {
       final affirmation = affirmations[index];
@@ -114,26 +159,22 @@ class AddAffirmationsController extends GetxController {
       final homeController = Get.find<HomeController>();
 
       if (myListController.favoriteAffirmations.contains(affirmation)) {
-        // Remove from favorites
         myListController.favoriteAffirmations.remove(affirmation);
         homeController.favoriteAffirmations.remove(affirmation);
       } else {
-        // Add to favorites
         myListController.favoriteAffirmations.add(affirmation);
         homeController.favoriteAffirmations.add(affirmation);
       }
 
-      // Force UI updates
       myListController.update();
       homeController.update();
-      update(); // This is crucial - updates the current controller
+      update();
     }
   }
 
   void shareAffirmation(String affirmation) {
     Get.lazyPut(() => ShareScreenController());
 
-    // Pass the specific affirmation to share
     Get.bottomSheet(
       ShareScreenView(affirmation: affirmation),
       isScrollControlled: true,

@@ -17,6 +17,12 @@ mixin ApiConstants {
   // my list ....
   static const String favList = 'affirmation/favList';
   static const String likeAffirmation = 'affirmation/like';
+  static const String newList = 'affirmation/myList';
+  static const String addAffirmation = 'affirmation/add';
+  static const String getAffirmationList = 'affirmation/list';
+
+
+
 
   // user
   static const String userDetails = 'user/details';

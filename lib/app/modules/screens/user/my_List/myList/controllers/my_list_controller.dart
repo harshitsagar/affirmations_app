@@ -1,19 +1,33 @@
+import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
 
+import '../../../../../../data/api_provider.dart';
+import '../../../../../../data/config.dart';
+import '../../../../../../data/models/affirmation_list_model.dart';
+import '../../../../../../helpers/services/local_storage.dart';
+
 class MyListController extends GetxController {
-  final lists = <String>['Favorites'].obs;
-  final selectedList = RxString('Favorites');
+  final lists = <AffirmationListModelData>[].obs; // ✅ backend-driven lists
+  final selectedList = Rx<AffirmationListModelData?>(null);
+  Map<String, String> listNameToIdMap = {
+  };
+  final loadingStatus = LoadingStatus.loading.obs;
+
+
+  // final lists = <String>['Favorites'].obs;
+  // final selectedList = RxString('Favorites');
   final favoriteAffirmations = <String>[].obs;
-  final customListsAffirmations = <String, List<String>>{}.obs;
+  // final customListsAffirmations = <String, List<String>>{}.obs;
   final _storage = GetStorage();
 
   @override
   void onInit() {
     super.onInit();
-    _initializeData();
+    _syncFavorites();
+    fetchListsFromBackend();
   }
 
   @override
@@ -23,36 +37,7 @@ class MyListController extends GetxController {
   }
 
 
-  void _initializeData() {
-    // Load custom lists from storage
-    final savedLists = _storage.read<List>('customLists');
-    if (savedLists != null) {
-      lists.addAll(savedLists.whereType<String>().where((list) => list != 'Favorites' && !lists.contains(list)));
-    }
 
-    // Load custom lists affirmations data
-    final savedCustomListsData = _storage.read<Map>('customListsData');
-    if (savedCustomListsData != null) {
-      customListsAffirmations.assignAll(
-          Map<String, List<String>>.from(
-            savedCustomListsData.map(
-                  (key, value) => MapEntry(key as String, List<String>.from(value)),
-            ),)
-          );
-      }
-
-          // Initialize favorites from HomeController
-          _syncFavorites();
-
-      // Set up auto-saving
-      ever(lists, (List<String> newLists) {
-        _storage.write('customLists', newLists.where((list) => list != 'Favorites').toList());
-      });
-
-      ever(customListsAffirmations, (Map<String, List<String>> newData) {
-        _storage.write('customListsData', newData);
-      });
-    }
 
   void _syncFavorites() {
     favoriteAffirmations.assignAll(Get.find<HomeController>().favoriteAffirmations);
@@ -63,64 +48,127 @@ class MyListController extends GetxController {
     });
   }
 
-  void addNewList(String listName) {
-    if (listName.isNotEmpty && !lists.contains(listName)) {
-      lists.add(listName);
-      customListsAffirmations[listName] = [];
-      selectedList.value = listName;
+  Future<void> fetchListsFromBackend() async {
+    loadingStatus.value = LoadingStatus.loading; // Set loading status
+
+    try {
+      final accessToken = LocalStorage.getUserAccessToken();
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.getAffirmationList,
+        {}, // Add pagination if needed
+        {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.data['code'] == 100) {
+        final model = AffirmationListModel.fromJson(response.data);
+        lists.assignAll(model.data);
+        // ✅ Populate listNameToIdMap
+        listNameToIdMap = {
+          for (var item in model.data) item.name: item.id
+
+        };
+        loadingStatus.value = LoadingStatus.completed; // Set status to completed
+
+      } else {
+        Get.snackbar("Error", response.data["message"] ?? "Failed to fetch lists.");
+      }
+    } catch (e) {
+      print("Fetch list error: $e");
+      Get.snackbar("Error", "Unable to fetch your lists.");
     }
   }
+
+
+
+
+  Future<void> addNewListFromApi(String listName) async {
+    if (listName.isEmpty || lists.contains(listName)) {
+      Get.snackbar("Warning", "List name is empty or already exists.");
+      return;
+    }
+
+    try {
+      final accessToken = LocalStorage.getUserAccessToken();
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.newList,
+        {"name": listName},
+        {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+        },
+      );
+
+      if (response.data["code"] == 100) {
+        // customListsAffirmations[listName] = [];
+        Get.back();
+        Get.snackbar("Success", "List added successfully.");
+        await fetchListsFromBackend(); // 🔁 re-fetch all lists
+      } else {
+        Get.snackbar("Error", response.data["message"] ?? "Failed to add list.");
+      }
+    } catch (e) {
+      print("Add list error: $e");
+      Get.snackbar("Error", "Something went wrong while adding the list.");
+      print("Add list error: $e");
+    }
+  }
+
+
+
 
   void updateFavorites(List<String> favorites) {
     favoriteAffirmations.assignAll(favorites);
     update();
   }
 
-  int getItemCount(String listName) {
-    if (listName == 'Favorites') {
-      return favoriteAffirmations.length;
-    }
-    return customListsAffirmations[listName]?.length ?? 0;
+  int getItemCount(String listId) {
+    final list = lists.firstWhereOrNull((element) => element.id == listId);
+    return list?.totalAffirmation ?? 0;
   }
 
-  void navigateToList(String listName) {
-    selectedList.value = listName;
-    if (listName == 'Favorites') {
-      Get.toNamed(Routes.FAVORITES, arguments: favoriteAffirmations.toList());
-    } else {
-      Get.toNamed(Routes.ADD_AFFIRMATIONS, arguments: {
-        'listName': listName,
-        'affirmations': customListsAffirmations[listName] ?? [],
-      });
-    }
+
+  void navigateToList(AffirmationListModelData listData) {
+    selectedList.value = listData;
+
+    Get.toNamed(Routes.ADD_AFFIRMATIONS, arguments: {
+      'listName': listData.name,
+      'listId': listData.id,
+      'affirmations': listData.affirmations, // List of affirmation objects or IDs
+    });
   }
+
 
   void addAffirmationToList(String listName, String affirmation) {
-    if (!customListsAffirmations.containsKey(listName)) {
-      customListsAffirmations[listName] = [];
-    }
-    customListsAffirmations[listName]!.add(affirmation);
-    update();
-    _saveAffirmationsForList(listName); // Save to storage
+    // if (!customListsAffirmations.containsKey(listName)) {
+    //   customListsAffirmations[listName] = [];
+    // }
+    // customListsAffirmations[listName]!.add(affirmation);
+    // update();
+    // _saveAffirmationsForList(listName); // Save to storage
   }
 
   void removeAffirmationFromList(String listName, String affirmation) {
-    if (customListsAffirmations.containsKey(listName)) {
-      customListsAffirmations[listName]!.remove(affirmation);
-      update();
-      _saveAffirmationsForList(listName); // Save to storage
-    }
+    // if (customListsAffirmations.containsKey(listName)) {
+    //   customListsAffirmations[listName]!.remove(affirmation);
+    //   update();
+    //   _saveAffirmationsForList(listName); // Save to storage
+    // }
   }
 
   void _saveAffirmationsForList(String listName) {
-    if (customListsAffirmations.containsKey(listName)) {
-      _storage.write('${listName}_affirmations', customListsAffirmations[listName]);
-    }
+    // if (customListsAffirmations.containsKey(listName)) {
+    //   _storage.write('${listName}_affirmations', customListsAffirmations[listName]);
+    // }
   }
 
   List<String>? getAffirmationsForList(String listName) {
-    if (listName == 'Favorites') return favoriteAffirmations;
-    return customListsAffirmations[listName];
+    // if (listName == 'Favorites') return favoriteAffirmations;
+    // return customListsAffirmations[listName];
   }
 
   void _saveFavorites() {
@@ -129,15 +177,15 @@ class MyListController extends GetxController {
 
   void deleteList(String listName) {
 
-    lists.remove(listName);
-    customListsAffirmations.remove(listName);
-    _storage.remove('${listName}_affirmations');
-
-    // Update storage
-    _storage.write('customLists', lists.where((list) => list != 'Favorites').toList());
-    _storage.write('customListsData', customListsAffirmations);
-
-    update();
+    // lists.remove(listName);
+    // customListsAffirmations.remove(listName);
+    // _storage.remove('${listName}_affirmations');
+    //
+    // // Update storage
+    // _storage.write('customLists', lists.where((list) => list != 'Favorites').toList());
+    // _storage.write('customListsData', customListsAffirmations);
+    //
+    // update();
   }
 
   @override
