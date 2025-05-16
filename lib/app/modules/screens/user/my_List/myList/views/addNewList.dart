@@ -41,7 +41,7 @@ class AddNewList extends GetView<MyListController> {
                     ),
                     onPressed: () => Get.back(),
                   ),
-      
+
                   Text(
                     'Back',
                     style: GoogleFonts.inter(
@@ -53,7 +53,7 @@ class AddNewList extends GetView<MyListController> {
                 ],
               ),
             ),
-      
+
             // title text ....
             Padding(
               padding: EdgeInsets.only(top: 20.h, left: 20.w, right: 20.w),
@@ -67,7 +67,7 @@ class AddNewList extends GetView<MyListController> {
                 textAlign: TextAlign.start,
               ),
             ),
-      
+
             // Description text
             Padding(
               padding: EdgeInsets.only(top: 10.h, left: 20.w, right: 20.w),
@@ -81,27 +81,28 @@ class AddNewList extends GetView<MyListController> {
                 textAlign: TextAlign.start,
               ),
             ),
-      
+
             SizedBox(height: 24.h),
-      
+
             // List Title TextField
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               child: _buildTextField(_listNameController, 'List Title'),
             ),
-      
+
            Spacer(),
-      
+
             // Save Button
             Padding(
               padding: EdgeInsets.only(bottom: 30.h, left: 24.w, right: 24.w),
               child: Obx(() => SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _isButtonEnabled.value ? () {
-                    controller.addNewList(_listNameController.text.trim());
-                    Get.back();
-                  } : null,
+                  onPressed: _isButtonEnabled.value
+                      ? () {
+                    controller.addNewListFromApi(_listNameController.text.trim());
+                  }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isButtonEnabled.value
                         ? const Color(0xFF1E1E1E)

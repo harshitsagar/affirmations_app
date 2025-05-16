@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../../../data/config.dart';
+import '../../../../../../data/models/affirmation_list_model.dart';
 import '../controllers/my_list_controller.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:affirmations_app/app/data/components/images_path.dart';
@@ -36,14 +38,36 @@ class MyListView extends GetView<MyListController> {
 
                 Expanded(
                   child: Obx(
-                        () => ListView.separated(
-                      itemCount: controller.lists.length,
-                      separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                      itemBuilder: (context, index) {
-                        final listName = controller.lists[index];
-                        return _buildListItem(listName, controller);
-                      },
-                    ),
+                        () {
+                          if (controller.loadingStatus.value == LoadingStatus.loading) {
+                            return Center(
+                              child: CircularProgressIndicator(), // Show loading spinner
+                            );
+                          } else if (controller.loadingStatus.value == LoadingStatus.error) {
+                            return Center(
+                              child: Text(
+                                "Failed to load lists. Please try again.",
+                                style: TextStyle(fontSize: 16.sp, color: Colors.red),
+                              ),
+                            );
+                          } else if (controller.lists.isEmpty) {
+                            return Center(
+                              child: Text(
+                                "No lists available.",
+                                style: TextStyle(fontSize: 16.sp, color: Colors.black),
+                              ),
+                            );
+                          }
+                        return  ListView.separated(
+                            itemCount: controller.lists.length,
+                            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                            itemBuilder: (context, index) {
+                              final listData = controller.lists[index];
+                              return _buildListItem(listData, controller);
+                            },
+                          )
+                          ;
+                        }
                   ),
                 ),
 
@@ -86,9 +110,9 @@ class MyListView extends GetView<MyListController> {
   }
 
   // In my_list_view.dart, update the _buildListItem widget:
-  Widget _buildListItem(String listName, MyListController controller) {
+  Widget _buildListItem(AffirmationListModelData listData, MyListController controller) {
     return GestureDetector(
-      onTap: () => controller.navigateToList(listName),
+      onTap: () => controller.navigateToList(listData),
       child: Container(
         height: 50.h,
         decoration: BoxDecoration(
@@ -101,7 +125,7 @@ class MyListView extends GetView<MyListController> {
           children: [
             Expanded(
               child: Text(
-                listName,
+                listData.name,
                 style: GoogleFonts.inter(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
@@ -112,14 +136,14 @@ class MyListView extends GetView<MyListController> {
             ),
             Row(
               children: [
-                Obx(() => Text(
-                  "${controller.getItemCount(listName)} Items",
+                Text(
+                  "${listData.totalAffirmation} Items",
                   style: GoogleFonts.inter(
                     fontSize: 14.sp,
                     color: Colors.black,
                     fontWeight: FontWeight.w500,
                   ),
-                )),
+                ),
                 SizedBox(width: 10.w),
                 Icon(Icons.chevron_right, size: 24.w),
               ],
