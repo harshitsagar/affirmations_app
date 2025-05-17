@@ -9,7 +9,6 @@ import 'package:affirmations_app/app/modules/screens/common/share_screen/views/s
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
-import 'package:affirmations_app/app/modules/screens/user/my_List/myList/controllers/my_list_controller.dart';
 
 class FavoritesController extends GetxController {
 
@@ -26,33 +25,29 @@ class FavoritesController extends GetxController {
 
   Future<void> fetchFavList() async {
     try {
+      loadingStatus(LoadingStatus.loading);
       var accessToken = LocalStorage.getUserAccessToken();
 
       final response = await APIProvider().postAPICall(
         ApiConstants.favList,
         {},
-        {
-          'Authorization': accessToken,
-        },
+        {'Authorization': accessToken},
       );
 
       if (response.data["code"] == 100) {
         final model = FavoriteListModel.fromJson(response.data);
         _favoriteList.assignAll(model.data ?? []);
-        print(_favoriteList.value);
-      } else {
-        AppConstants.showSnackbar(
-          headText: "Failed",
-          content: response.data["message"] ?? "An error occurred",
-          position: SnackPosition.BOTTOM,
-        );
+
+        // Sync with HomeController
+        if (Get.isRegistered<HomeController>()) {
+          final homeController = Get.find<HomeController>();
+          homeController.likedAffirmationIds.assignAll(
+              _favoriteList.where((item) => item.isLiked == true).map((item) => item.sId ?? "").toList()
+          );
+        }
       }
     } catch (e) {
-      AppConstants.showSnackbar(
-        headText: "Failed",
-        content: e.toString(),
-        position: SnackPosition.BOTTOM,
-      );
+      // Error handling
     } finally {
       loadingStatus(LoadingStatus.completed);
     }
@@ -76,19 +71,18 @@ class FavoritesController extends GetxController {
       );
 
       if (response.data["code"] == 100) {
-        // Update the local list immediately for better UX
-        _favoriteList.removeWhere((item) => item.sId == affirmationRef);
+        // Refresh the list
+        await fetchFavList();
 
-        // Optional: Show feedback
-        Get.snackbar(
-          'Success',
-          isCurrentlyLiked ? 'Removed from favorites' : 'Added to favorites',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-
-        // // Optional: Refresh the list from server
-        // await fetchFavList();
-
+        // Also update the HomeController if it's in memory
+        if (Get.isRegistered<HomeController>()) {
+          final homeController = Get.find<HomeController>();
+          if (isCurrentlyLiked) {
+            homeController.likedAffirmationIds.remove(affirmationRef);
+          } else {
+            homeController.likedAffirmationIds.add(affirmationRef);
+          }
+        }
       } else {
         throw Exception(response.data["message"] ?? "Failed to update favorite status");
       }
@@ -101,11 +95,23 @@ class FavoritesController extends GetxController {
     }
   }
 
-  // Update your existing removeFavorite method to use toggleFavorite
   void removeFavorite(String affirmationRef) async {
-    loadingStatus(LoadingStatus.loading);
-    await toggleFavorite(affirmationRef, true);
-    loadingStatus(LoadingStatus.completed);
+    try {
+      loadingStatus(LoadingStatus.loading);
+
+      // Optimistic update
+      _favoriteList.removeWhere((item) => item.sId == affirmationRef);
+      update();
+
+      await toggleFavorite(affirmationRef, true);
+
+      // Sync with HomeController
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().likedAffirmationIds.remove(affirmationRef);
+      }
+    } finally {
+      loadingStatus(LoadingStatus.completed);
+    }
   }
 
   void shareAffirmation(String affirmation) {

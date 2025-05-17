@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:affirmations_app/app/data/config.dart';
-import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
