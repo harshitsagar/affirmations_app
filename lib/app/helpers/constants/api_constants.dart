@@ -27,6 +27,7 @@ mixin ApiConstants {
   // user
   static const String userDetails = 'user/details';
   static const String editProfile = 'user/update';
+  static const String home = 'user/home';
 
   // setup profile
   static const String listTheme = 'user/listTheme';
