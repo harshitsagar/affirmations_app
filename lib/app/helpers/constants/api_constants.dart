@@ -21,29 +21,16 @@ mixin ApiConstants {
   static const String addAffirmation = 'affirmation/add';
   static const String getAffirmationList = 'affirmation/list';
 
-
-
-
-  // user
+  // user ...
   static const String userDetails = 'user/details';
   static const String editProfile = 'user/update';
   static const String home = 'user/home';
 
-  // setup profile
+  // setup profile ....
   static const String listTheme = 'user/listTheme';
 
-  // calendar
-  static const String addTask = 'calendar/addTask';
-  static const String editTask = 'calendar/editTask';
-  static const String subjectList = 'study/listSubject';
-  static const String sessionList = 'myRoutine/list';
-  static const String taskList = 'calendar/listTask';
-  static const String deleteTask = 'calendar/deleteTask';
-  static const String calendarMonthlyDetail = 'calendar/monthlyDetail';
-
-  // subscription
-  static const String freeTrial = 'subscription/start/freeTrial';
-  static const String buySubscription = 'subscription/buy';
-  static const String subscriptionDetail = 'subscription/detail';
+  // journal .....
+  static const String journalDetails = 'user/journalDetails';
+  static const String addJournal = 'user/addJournal';
 
 }
