@@ -86,128 +86,155 @@ class JournalHomeView extends GetView<JournalHomeController> {
           SizedBox(
             height: 200.h,
             child: Obx(() {
-              // that will be in center if no data with axis lines ......
-              if (controller.chartData.isEmpty) {
-                return Center(
-                  child: Text(
-                    'No data',
-                    style: GoogleFonts.inter(
-                      fontSize: 16.sp,
-                      color: Colors.grey,
+
+              // Create a default range for the axis even when there's no data
+              final now = DateTime.now();
+              final weekAgo = now.subtract(const Duration(days: 6));
+              final minDate = controller.chartData.isNotEmpty
+                  ? controller.chartData.first.date.subtract(const Duration(hours: 12))
+                  : weekAgo;
+              final maxDate = controller.chartData.isNotEmpty
+                  ? controller.chartData.last.date.add(const Duration(hours: 12))
+                  : now;
+
+              return Stack(
+                children: [
+
+                  SfCartesianChart(
+                    plotAreaBorderWidth: 0,
+                    plotAreaBorderColor: Colors.transparent,
+                    primaryXAxis: DateTimeAxis(
+                      plotOffset: 8,
+                      opposedPosition: false,
+                      dateFormat: DateFormat('d'),
+                      interval: 1,
+                      intervalType: DateTimeIntervalType.days,
+                      axisLine: const AxisLine(width: 1.5, color: Color(0xFFC4C4C4)),
+                      majorTickLines: const MajorTickLines(size: 0),
+                      majorGridLines: const MajorGridLines(width: 0),
+                      labelRotation: 0,
+                      // minimum: controller.chartData.first.date.subtract(const Duration(hours: 12)),
+                      // maximum: controller.chartData.last.date.add(const Duration(hours: 12)),
+                      minimum: minDate,
+                      maximum: maxDate,
+                      axisLabelFormatter: (AxisLabelRenderDetails details) {
+                        final labelDate = DateTime.fromMillisecondsSinceEpoch(details.value.toInt());
+
+                        final isSelected = controller.selectedDate.value != null &&
+                            labelDate.year == controller.selectedDate.value!.year &&
+                            labelDate.month == controller.selectedDate.value!.month &&
+                            labelDate.day == controller.selectedDate.value!.day;
+
+                        return ChartAxisLabel(
+                          DateFormat('d').format(labelDate),
+                          GoogleFonts.inter(
+                            fontSize: 12.sp,
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            color: isSelected ? Colors.black : Colors.grey,
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                );
-              }
-              return SfCartesianChart(
-                plotAreaBorderWidth: 0,
-                plotAreaBorderColor: Colors.transparent,
-                primaryXAxis: DateTimeAxis(
-                  plotOffset: 8,
-                  opposedPosition: false,
-                  dateFormat: DateFormat('d'),
-                  interval: 1,
-                  intervalType: DateTimeIntervalType.days,
-                  axisLine: const AxisLine(width: 1.5, color: Color(0xFFC4C4C4)),
-                  majorTickLines: const MajorTickLines(size: 0),
-                  majorGridLines: const MajorGridLines(width: 0),
-                  labelRotation: 0,
-                  minimum: controller.chartData.first.date.subtract(const Duration(hours: 12)),
-                  maximum: controller.chartData.last.date.add(const Duration(hours: 12)),
-                  axisLabelFormatter: (AxisLabelRenderDetails details) {
-                    final labelDate = DateTime.fromMillisecondsSinceEpoch(details.value.toInt());
-
-                    final isSelected = controller.selectedDate.value != null &&
-                        labelDate.year == controller.selectedDate.value!.year &&
-                        labelDate.month == controller.selectedDate.value!.month &&
-                        labelDate.day == controller.selectedDate.value!.day;
-
-                    return ChartAxisLabel(
-                      DateFormat('d').format(labelDate),
-                      GoogleFonts.inter(
+                    primaryYAxis: NumericAxis(
+                      plotOffset: 8,
+                      minimum: 1,
+                      maximum: 5,
+                      interval: 1,
+                      labelStyle: GoogleFonts.inter(
                         fontSize: 12.sp,
-                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isSelected ? Colors.black : Colors.grey,
+                        color: Colors.black,
                       ),
-                    );
-                  },
-                ),
-                primaryYAxis: NumericAxis(
-                  plotOffset: 8,
-                  minimum: 1,
-                  maximum: 5,
-                  interval: 1,
-                  labelStyle: GoogleFonts.inter(
-                    fontSize: 12.sp,
-                    color: Colors.black,
+                      axisLine: const AxisLine(width: 1.5, color: Color(0xFFC4C4C4)),
+                      majorTickLines: const MajorTickLines(size: 0),
+                      majorGridLines: const MajorGridLines(width: 0),
+                      axisLabelFormatter: (axisLabelRenderArgs) {
+                        final value = axisLabelRenderArgs.value.toInt();
+                        String label;
+                        switch (value) {
+                          case 1: label = 'Tough'; break;
+                          case 2: label = 'Not Great'; break;
+                          case 3: label = 'Okay'; break;
+                          case 4: label = 'Doing Well'; break;
+                          case 5: label = 'Amazing'; break;
+                          default: label = '';
+                        }
+                        return ChartAxisLabel(
+                          label,
+                          GoogleFonts.inter(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF757575),
+                          ),
+                        );
+                      },
+                    ),
+                    legend: Legend(
+                      isVisible: false,
+                    ),
+                    series: <CartesianSeries<ChartData, DateTime>>[
+                      if(controller.chartData.isNotEmpty) ...[
+                        LineSeries<ChartData, DateTime>(
+                          dataSource: controller.chartData,
+                          xValueMapper: (data, _) => data.date,
+                          yValueMapper: (data, _) => controller.moodToNumber(data.morningMood),
+                          name: 'Morning',
+                          color: const Color(0xFFFF92D2),
+                          markerSettings: const MarkerSettings(
+                            isVisible: true,
+                            shape: DataMarkerType.circle,
+                            borderWidth: 3,
+                          ),
+                          /// ********** on tapping issue is here **********
+                          /// Instead of selecting points by tapping on the chart, we need to make them selectable using dates.
+                          // onPointTap: (ChartPointDetails details) {
+                          //   if (details.pointIndex != null) {
+                          //     final tappedDate = controller.chartData[details.pointIndex!].date;
+                          //     controller.loadEntryForDate(tappedDate);
+                          //   }
+                          // },
+                        ),
+                        LineSeries<ChartData, DateTime>(
+                          dataSource: controller.chartData,
+                          xValueMapper: (data, _) => data.date,
+                          yValueMapper: (data, _) => controller.moodToNumber(data.nightMood),
+                          name: 'Night',
+                          color: const Color(0xFFB4A4F9),
+                          markerSettings: const MarkerSettings(
+                            isVisible: true,
+                            shape: DataMarkerType.circle,
+                            borderWidth: 2,
+                          ),
+                          /// ********** on tapping issue is here **********
+                          /// Instead of selecting points by tapping on the chart, we need to make them selectable using dates.
+                          // onPointTap: (ChartPointDetails details) {
+                          //   if (details.pointIndex != null) {
+                          //     final tappedDate = controller.chartData[details.pointIndex!].date;
+                          //     controller.loadEntryForDate(tappedDate);
+                          //   }
+                          // },
+                        ),
+                      ],
+                    ],
+                    // onAxisLabelTapped: (AxisLabelTapDetails details) {
+                    //   if (details.axis is DateTimeAxis) {
+                    //     final tappedDate = DateTime.fromMillisecondsSinceEpoch(details.value.toInt());
+                    //     controller.loadEntryForDate(tappedDate);
+                    //   }
+                    // },
                   ),
-                  axisLine: const AxisLine(width: 1.5, color: Color(0xFFC4C4C4)),
-                  majorTickLines: const MajorTickLines(size: 0),
-                  majorGridLines: const MajorGridLines(width: 0),
-                  axisLabelFormatter: (axisLabelRenderArgs) {
-                    final value = axisLabelRenderArgs.value.toInt();
-                    String label;
-                    switch (value) {
-                      case 1: label = 'Tough'; break;
-                      case 2: label = 'Not Great'; break;
-                      case 3: label = 'Okay'; break;
-                      case 4: label = 'Doing Well'; break;
-                      case 5: label = 'Amazing'; break;
-                      default: label = '';
-                    }
-                    return ChartAxisLabel(
-                      label,
-                      GoogleFonts.inter(
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF757575),
+
+                  if (controller.chartData.isEmpty) ...[
+                    Center(
+                      child: Text(
+                        'No data',
+                        style: GoogleFonts.inter(
+                          fontSize: 16.sp,
+                          color: Colors.grey,
+                        ),
                       ),
-                    );
-                  },
-                ),
-                legend: Legend(
-                  isVisible: false,
-                ),
-                series: <CartesianSeries<ChartData, DateTime>>[
-                  LineSeries<ChartData, DateTime>(
-                    dataSource: controller.chartData,
-                    xValueMapper: (data, _) => data.date,
-                    yValueMapper: (data, _) => controller.moodToNumber(data.morningMood),
-                    name: 'Morning',
-                    color: const Color(0xFFFF92D2),
-                    markerSettings: const MarkerSettings(
-                      isVisible: true,
-                      shape: DataMarkerType.circle,
-                      borderWidth: 3,
                     ),
-                    /// ********** on tapping issue is here **********
-                    /// Instead of selecting points by tapping on the chart, we need to make them selectable using dates.
-                    onPointTap: (ChartPointDetails details) {
-                      if (details.pointIndex != null) {
-                        final tappedDate = controller.chartData[details.pointIndex!].date;
-                        controller.loadEntryForDate(tappedDate);
-                      }
-                    },
-                  ),
-                  LineSeries<ChartData, DateTime>(
-                    dataSource: controller.chartData,
-                    xValueMapper: (data, _) => data.date,
-                    yValueMapper: (data, _) => controller.moodToNumber(data.nightMood),
-                    name: 'Night',
-                    color: const Color(0xFFB4A4F9),
-                    markerSettings: const MarkerSettings(
-                      isVisible: true,
-                      shape: DataMarkerType.circle,
-                      borderWidth: 2,
-                    ),
-                    /// ********** on tapping issue is here **********
-                    /// Instead of selecting points by tapping on the chart, we need to make them selectable using dates.
-                    onPointTap: (ChartPointDetails details) {
-                      if (details.pointIndex != null) {
-                        final tappedDate = controller.chartData[details.pointIndex!].date;
-                        controller.loadEntryForDate(tappedDate);
-                      }
-                    },
-                  ),
+                  ],
+
                 ],
               );
             }),
@@ -274,6 +301,28 @@ class JournalHomeView extends GetView<JournalHomeController> {
       }
     });
   }
+
+  // Widget _buildMoodEntrySection() {
+  //   return Obx(() {
+  //     if (controller.selectedDate.value == null) {
+  //       // Show nothing or a message when no date is selected
+  //       return SizedBox.shrink();
+  //     }
+  //
+  //     // Check if the selected date has an entry
+  //     final hasEntry = controller.chartData.any((item) =>
+  //     item.date.year == controller.selectedDate.value!.year &&
+  //         item.date.month == controller.selectedDate.value!.month &&
+  //         item.date.day == controller.selectedDate.value!.day &&
+  //         (item.morningMood != null || item.nightMood != null));
+  //
+  //     if (hasEntry) {
+  //       return _buildJournalEntryDetails();
+  //     } else {
+  //       return _buildNewJournalEntry();
+  //     }
+  //   });
+  // }
 
   Widget _buildNewJournalEntry() {
     return Padding(
