@@ -21,8 +21,8 @@ import 'dart:math';
 class HomeController extends GetxController {
 
   // Affirmation data
-  final currentAffirmation = Rx<HomeScreenModelData?>(null);
-  final affirmationsList = <HomeScreenModelData>[].obs;
+  final currentAffirmation = Rx<Affirmation?>(null);
+  final affirmationsList = <Affirmation>[].obs;
   final currentIndex = 0.obs;
   final favoriteAffirmations = <String>[].obs;
   final isLoading = false.obs;
@@ -40,6 +40,11 @@ class HomeController extends GetxController {
   final isAudioMuted = true.obs;
 
   final likedAffirmationIds = <String>[].obs;
+
+  // Add these new fields
+  final targetCount = 0.obs;
+  final streakCount = 0.obs;
+  final journalPending = false.obs;
 
   final prefs = GetStorage();
 
@@ -69,8 +74,10 @@ class HomeController extends GetxController {
 
       if (response.data["code"] == 100) {
         final model = HomeScreenModel.fromJson(response.data);
-        affirmationsList.assignAll(
-            model.data.where((item) => item.text != null));
+
+
+        // Update affirmations list
+        affirmationsList.assignAll(model.data.affirmations);
 
         if (affirmationsList.isNotEmpty) {
           currentIndex.value = 0;
