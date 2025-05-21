@@ -70,6 +70,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+
           Obx(() => Padding(
             padding: EdgeInsets.only(left: 40.w, right: 20.w, top: 15.h),
             child: Text(
@@ -87,15 +88,12 @@ class JournalHomeView extends GetView<JournalHomeController> {
             height: 200.h,
             child: Obx(() {
 
-              // Create a default range for the axis even when there's no data
-              final now = DateTime.now();
-              final weekAgo = now.subtract(const Duration(days: 6));
               final minDate = controller.chartData.isNotEmpty
-                  ? controller.chartData.first.date.subtract(const Duration(hours: 12))
-                  : weekAgo;
+                  ? controller.chartData.first.date
+                  : DateTime.now().subtract(const Duration(days: 6));
               final maxDate = controller.chartData.isNotEmpty
-                  ? controller.chartData.last.date.add(const Duration(hours: 12))
-                  : now;
+                  ? controller.chartData.last.date
+                  : DateTime.now();
 
               return Stack(
                 children: [
@@ -184,14 +182,6 @@ class JournalHomeView extends GetView<JournalHomeController> {
                             shape: DataMarkerType.circle,
                             borderWidth: 3,
                           ),
-                          /// ********** on tapping issue is here **********
-                          /// Instead of selecting points by tapping on the chart, we need to make them selectable using dates.
-                          // onPointTap: (ChartPointDetails details) {
-                          //   if (details.pointIndex != null) {
-                          //     final tappedDate = controller.chartData[details.pointIndex!].date;
-                          //     controller.loadEntryForDate(tappedDate);
-                          //   }
-                          // },
                         ),
                         LineSeries<ChartData, DateTime>(
                           dataSource: controller.chartData,
@@ -204,23 +194,26 @@ class JournalHomeView extends GetView<JournalHomeController> {
                             shape: DataMarkerType.circle,
                             borderWidth: 2,
                           ),
-                          /// ********** on tapping issue is here **********
-                          /// Instead of selecting points by tapping on the chart, we need to make them selectable using dates.
-                          // onPointTap: (ChartPointDetails details) {
-                          //   if (details.pointIndex != null) {
-                          //     final tappedDate = controller.chartData[details.pointIndex!].date;
-                          //     controller.loadEntryForDate(tappedDate);
-                          //   }
-                          // },
                         ),
                       ],
                     ],
-                    // onAxisLabelTapped: (AxisLabelTapDetails details) {
-                    //   if (details.axis is DateTimeAxis) {
-                    //     final tappedDate = DateTime.fromMillisecondsSinceEpoch(details.value.toInt());
-                    //     controller.loadEntryForDate(tappedDate);
-                    //   }
-                    // },
+                    onAxisLabelTapped: (AxisLabelTapArgs args) {
+                      if (args.axisName == 'primaryXAxis') {
+                        // Calculate the tapped date based on the axis position
+                        final minDate = controller.chartData.isNotEmpty
+                            ? controller.chartData.first.date
+                            : DateTime.now().subtract(const Duration(days: 6));
+                        final maxDate = controller.chartData.isNotEmpty
+                            ? controller.chartData.last.date
+                            : DateTime.now();
+
+                        final dateRange = maxDate.difference(minDate).inDays;
+                        final tappedDay = (args.value.toInt() * dateRange).round();
+                        final tappedDate = minDate.add(Duration(days: tappedDay));
+
+                        controller.onDateTapped(tappedDate);
+                      }
+                    },
                   ),
 
                   if (controller.chartData.isEmpty) ...[
@@ -237,6 +230,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
 
                 ],
               );
+
             }),
           ),
 
@@ -291,38 +285,19 @@ class JournalHomeView extends GetView<JournalHomeController> {
   Widget _buildMoodEntrySection() {
     return Obx(() {
       if (controller.selectedDate.value == null) {
-        // Always show New Journal Entry initially
         return _buildNewJournalEntry();
       }
-      if (controller.selectedDateHasEntry.value) {
-        return _buildJournalEntryDetails();
-      } else {
-        return _buildNewJournalEntry();
-      }
+
+      // Check if selected date has any entry
+      final hasEntry = controller.chartData.any((item) =>
+      item.date.year == controller.selectedDate.value!.year &&
+          item.date.month == controller.selectedDate.value!.month &&
+          item.date.day == controller.selectedDate.value!.day &&
+          (item.morningMood != null || item.nightMood != null));
+
+      return hasEntry ? _buildJournalEntryDetails() : _buildNewJournalEntry();
     });
   }
-
-  // Widget _buildMoodEntrySection() {
-  //   return Obx(() {
-  //     if (controller.selectedDate.value == null) {
-  //       // Show nothing or a message when no date is selected
-  //       return SizedBox.shrink();
-  //     }
-  //
-  //     // Check if the selected date has an entry
-  //     final hasEntry = controller.chartData.any((item) =>
-  //     item.date.year == controller.selectedDate.value!.year &&
-  //         item.date.month == controller.selectedDate.value!.month &&
-  //         item.date.day == controller.selectedDate.value!.day &&
-  //         (item.morningMood != null || item.nightMood != null));
-  //
-  //     if (hasEntry) {
-  //       return _buildJournalEntryDetails();
-  //     } else {
-  //       return _buildNewJournalEntry();
-  //     }
-  //   });
-  // }
 
   Widget _buildNewJournalEntry() {
     return Padding(
