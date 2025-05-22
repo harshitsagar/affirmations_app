@@ -1,5 +1,6 @@
 // addAffirmation_bottomsheet.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -89,7 +90,18 @@ class AddAffirmationBottomSheet extends GetView<AddAffirmationsController> {
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                   color: Colors.black,
+
                 ),
+                inputFormatters: [
+                  TextInputFormatter.withFunction((oldValue, newValue) {
+                    if (newValue.text.isEmpty) return newValue;
+                    String capitalizedText = newValue.text[0].toUpperCase() + newValue.text.substring(1);
+                    return newValue.copyWith(
+                      text: capitalizedText,
+                      selection: TextSelection.collapsed(offset: capitalizedText.length),
+                    );
+                  }),
+                ],
                 decoration: InputDecoration(
                   hintText: 'Affirmation',
                   hintStyle: GoogleFonts.inter(
@@ -144,7 +156,7 @@ class AddAffirmationBottomSheet extends GetView<AddAffirmationsController> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _isButtonEnabled.value
                         ? const Color(0xFF1E1E1E)
-                        : const Color(0xFF757575),
+                         : const Color(0xFF757575),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.r),
                     ),

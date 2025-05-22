@@ -6,7 +6,6 @@ import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 
 import '../../../../../../data/api_provider.dart';
 import '../../../../../../helpers/constants/api_constants.dart';
@@ -15,7 +14,6 @@ import '../../../../../../helpers/services/local_storage.dart';
 class AddAffirmationsController extends GetxController {
   final listName = ''.obs;
   final affirmations = <String>[].obs;
-  final _storage = GetStorage();
   final characterCount = 0.obs;
   final int maxCharacters = 300;
 
@@ -32,13 +30,22 @@ class AddAffirmationsController extends GetxController {
 
     if (list != null && list.affirmations != null) {
       final affirmationNames = list.affirmations!
-          .map((a) => a['name'].toString())
+          .map((a) {
+        final name = a['name'].toString();
+        final id = a['_id']?.toString(); // Might be null in some older lists
+        if (id != null) {
+          myListController.affirmationTextToIdMap[name] = id;
+        }
+        return name;
+      })
           .toList();
+
       affirmations.assignAll(affirmationNames);
     } else {
-      affirmations.clear(); // No affirmations found for this list
+      affirmations.clear();
     }
   }
+
 
 
 
@@ -78,17 +85,28 @@ class AddAffirmationsController extends GetxController {
       final res = response.data;
 
       if (res["code"] == 100) {
-        affirmations.add(text);
-        // Update the corresponding list in MyListController
+        final newAffirmationId = res["data"]["_id"]; // Or whatever key the backend uses
+        final newAffirmationName = text;
+
+        affirmations.add(newAffirmationName);
+
+        // Update the list in MyListController
         final list = myListController.lists.firstWhereOrNull((e) => e.name == listName.value);
         if (list != null) {
-          list.affirmations.add({"name": text});
+          list.affirmations.add({"name": newAffirmationName, "_id": newAffirmationId});
           list.totalAffirmation += 1;
-          myListController.update(); // Notify the UI
+
+          /// Store in the map so it can be retrieved for deletion
+          myListController.affirmationTextToIdMap[newAffirmationName] = newAffirmationId;
+
+          myListController.update();
         }
+
         _saveAffirmations();
         Get.snackbar("Success", "Affirmation added successfully.");
-      } else {
+      }
+
+      else {
         Get.snackbar("Error", res["message"] ?? "Failed to add affirmation.");
       }
     } catch (e) {
@@ -122,23 +140,53 @@ class AddAffirmationsController extends GetxController {
     );
   }
 
-  void _performDelete(int index) {
+  void _performDelete(int index) async {
     if (index >= 0 && index < affirmations.length) {
-      final removedAffirmation = affirmations.removeAt(index);
+      final affirmationText = affirmations[index];
       final myListController = Get.find<MyListController>();
+      final myListRef = myListController.listNameToIdMap[listName.value];
+      final affirmationRef = myListController.affirmationTextToIdMap[affirmationText];
 
-      myListController.removeAffirmationFromList(listName.value, removedAffirmation);
-
-      if (myListController.favoriteAffirmations.contains(removedAffirmation)) {
-        myListController.favoriteAffirmations.remove(removedAffirmation);
-        Get.find<HomeController>().favoriteAffirmations.remove(removedAffirmation);
+      if (myListRef == null || affirmationRef == null) {
+        Get.snackbar("Error", "Reference ID not found.");
+        return;
       }
 
-      _saveAffirmations();
-      myListController.update();
-      update();
+      try {
+        final accessToken = LocalStorage.getUserAccessToken();
+
+        final response = await APIProvider().postAPICall(
+          ApiConstants.deleteAffirmation,
+          {
+            "myListRef": myListRef,
+            "affirmationRef": affirmationRef,
+            "action": 2, // 2 = delete affirmation
+          },
+          {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+          },
+        );
+
+        final res = response.data;
+
+        if (res["code"] == 100) {
+          affirmations.removeAt(index);
+          myListController.removeAffirmationFromList(listName.value, affirmationText);
+          _saveAffirmations();
+
+          Get.snackbar("Success", "Affirmation deleted successfully.");
+          update();
+        } else {
+          Get.snackbar("Error", res["message"] ?? "Failed to delete affirmation.");
+        }
+      } catch (e) {
+        print("Delete Affirmation Error: $e");
+        Get.snackbar("Error", "Something went wrong while deleting affirmation.");
+      }
     }
   }
+
 
   void updateCharacterCount(int count) {
     characterCount.value = count;

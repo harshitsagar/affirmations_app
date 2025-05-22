@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/add_affirmations_controller.dart';
+import '../../../../../../widgets/customPopUp.dart';
 
 class DeletePopupScreen extends StatelessWidget {
   const DeletePopupScreen({super.key});
@@ -40,18 +41,36 @@ class DeletePopupScreen extends StatelessWidget {
                   // Delete List Button (using GestureDetector)
                   GestureDetector(
                     onTap: () {
-                      Get.find<MyListController>().deleteList(
-                          Get.find<AddAffirmationsController>().listName.value
+                      Get.dialog(
+                        CustomPopupDialog(
+                          title: 'Delete List',
+                          description: 'Are you sure you want to delete this list?',
+                          primaryButtonText: 'Yes',
+                          secondaryButtonText: 'No',
+                          onPrimaryPressed: () {
+                            Get.back(); // Close confirmation dialog
+                            Get.find<MyListController>().deleteList(
+                                Get.find<AddAffirmationsController>().listName.value
+                            );
+                            Get.back(); // Close popup
+                            Get.back(); // Go back to list view
+                          },
+                          onSecondaryPressed: () {
+                            Get.back();
+                            Get.back();
+                          }, // Close confirmation dialog
+                          descriptionWidth: 300.w,
+                        ),
+                        barrierDismissible: false
+                        ,
                       );
-                      Get.back(); // Close popup
-                      Get.back(); // Go back to list view
                     },
                     child: Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(vertical: 10.h),
                       decoration: BoxDecoration(
                         color: const Color(0xFFFDF9F8),
-                        borderRadius: BorderRadius.circular(16.r)
+                        borderRadius: BorderRadius.circular(16.r),
                       ),
                       child: Center(
                         child: Text(
@@ -66,7 +85,7 @@ class DeletePopupScreen extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 14.h,),
+                  SizedBox(height: 14.h),
 
                   // Cancel Button (using GestureDetector)
                   GestureDetector(
@@ -75,8 +94,8 @@ class DeletePopupScreen extends StatelessWidget {
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(vertical: 10.h),
                       decoration: BoxDecoration(
-                          color: const Color(0xFFFDF9F8),
-                          borderRadius: BorderRadius.circular(16.r)
+                        color: const Color(0xFFFDF9F8),
+                        borderRadius: BorderRadius.circular(16.r),
                       ),
                       child: Center(
                         child: Text(
