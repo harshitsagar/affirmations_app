@@ -106,7 +106,7 @@ class SignInSocialAuth {
       //     final String socialId = res.accessToken!.userId;
       //     final profile = await facebookLogin.getUserProfile();
       //     final email = await facebookLogin.getUserEmail();
-
+      //
       //     if (email != null) {
       //       log('And your email is $email');
       //     }
@@ -120,7 +120,7 @@ class SignInSocialAuth {
       //       ),
       //       context: context,
       //     );
-
+      //
       //     break;
       //   case FacebookLoginStatus.cancel:
       //     // User cancel log in

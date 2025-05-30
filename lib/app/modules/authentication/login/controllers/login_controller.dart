@@ -73,6 +73,13 @@ class LoginController extends GetxController {
           headText: "Failed",
           content: "Requested user not found.",
         );
+      } else if (response.data["code"] == 104) {
+        // Incorrect password
+        Get.back();
+        AppConstants.showSnackbar(
+          headText: "Failed",
+          content: "Incorrect password.",
+        );
       } else if (response.data["code"] == 500) {
         Get.back();
         if (response.data["message"] == "Your account has been deleted.") {
