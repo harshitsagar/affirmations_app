@@ -7,6 +7,7 @@ import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -154,6 +155,36 @@ class AffirmationReminderController extends GetxController {
       loadingStatus(LoadingStatus.completed);
     }
   }
+
+  // Future<void> scheduleAffirmationNotifications() async {
+  //   tz.initializeTimeZones();
+  //
+  //   final startHour = startTime.value.hour;
+  //   final endHour = endTime.value.hour;
+  //   final interval = (endHour - startHour) ~/ affirmationCount.value;
+  //
+  //   for (int i = 0; i < affirmationCount.value; i++) {
+  //     final notificationTime = tz.TZDateTime.now(tz.local).add(
+  //       Duration(hours: startHour + (interval * i), minutes: startTime.value.minute),
+  //     );
+  //
+  //     // await flutterLocalNotificationsPlugin.zonedSchedule(
+  //     //   i, // Unique ID for each notification
+  //     //   'Affirmation Reminder',
+  //     //   'Time for your affirmation!',
+  //     //   notificationTime,
+  //     //   const NotificationDetails(
+  //     //     android: AndroidNotificationDetails(
+  //     //       'affirmation_channel',
+  //     //       'Affirmation Reminders',
+  //     //       importance: Importance.high,
+  //     //     ),
+  //     //   ),
+  //     //   androidAllowWhileIdle: true,
+  //     //   uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+  //     // );
+  //   }
+  // }
 
   Future<bool> _updateNotificationPermission(bool enabled) async {
     try {
