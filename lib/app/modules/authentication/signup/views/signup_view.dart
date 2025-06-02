@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../helpers/services/social_auth.dart';
 import '../controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
@@ -70,6 +73,8 @@ class SignupView extends GetView<SignupController> {
                           TextFormField(
                             controller: controller.nameController,
                             keyboardType: TextInputType.name,
+                            textCapitalization: TextCapitalization.words, // Automatically capitalize the first letter of each word
+
                             onChanged: (value) {
                               if (value.isNotEmpty) {
                                 controller.formKey.currentState!.validate();
@@ -87,7 +92,7 @@ class SignupView extends GetView<SignupController> {
                                 color: Colors.black
                             ),
                             decoration: InputDecoration(
-                              hintText: "Your name",
+                              hintText: "Johnny",
                               hintStyle: GoogleFonts.inter(
                                   fontSize: 14.sp,
                                   fontWeight: FontWeight.w400,
@@ -207,69 +212,73 @@ class SignupView extends GetView<SignupController> {
 
                           SizedBox(height: 12.h),
 
-                          Obx(() => TextFormField(
-                            controller: controller.passwordController,
-                            obscureText: controller.isPasswordHidden.value,
-                            onChanged: (value) {
-                              if (value.isNotEmpty && value.length >= 6) {
-                                controller.formKey.currentState!.validate();
-                              }
-                            },
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Password is required';
-                              } else if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                            style: GoogleFonts.inter(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black
-                            ),
-                            decoration: InputDecoration(
-                              hintText: "●●●●●●●",
-                              hintStyle: GoogleFonts.inter(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: Color(0xffD9D9D9)
-                              ),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.r),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.r),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.r),
-                                borderSide: BorderSide(color: Colors.black26),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.r),
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.r),
-                                borderSide: BorderSide(color: Colors.black26),
-                              ),
-                              filled: true,
-                              fillColor: Colors.white.withOpacity(0.9),
-                              suffixIcon: IconButton(
-                                icon: Image.asset(
-                                    height: 24.h,
-                                    width: 24.w,
-                                    controller.isPasswordHidden.value
-                                        ? visible
-                                        : invisible
+                          Obx(() =>
+                              TextFormField(
+                                controller: controller.passwordController,
+                                obscureText: controller.isPasswordHidden.value,
+                                maxLength: 20, // Set maximum limit to 20 characters
+                                buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null, // Hides counter
+
+                                onChanged: (value) {
+                                  if (value.isNotEmpty && value.length >= 6) {
+                                    controller.formKey.currentState!.validate();
+                                  }
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Password is required';
+                                  } else if (value.length < 6) {
+                                    return 'Password must be at least 6 characters';
+                                  } else if (value.length > 20) {
+                                    return 'Password cannot exceed 20 characters';
+                                  }
+                                  return null;
+                                },
+                                style: GoogleFonts.inter(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
                                 ),
-                                onPressed: controller.togglePasswordVisibility,
-                              ),
-                            ),
-                          )),
+                                decoration: InputDecoration(
+                                  hintText: "●●●●●●●",
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xffD9D9D9),
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.r),
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.r),
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.r),
+                                    borderSide: BorderSide(color: Colors.black26),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.r),
+                                    borderSide: BorderSide(color: Colors.transparent),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(30.r),
+                                    borderSide: BorderSide(color: Colors.black26),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white.withOpacity(0.9),
+                                  suffixIcon: IconButton(
+                                    icon: Image.asset(
+                                      height: 24.h,
+                                      width: 24.w,
+                                      controller.isPasswordHidden.value ? visible : invisible,
+                                    ),
+                                    onPressed: controller.togglePasswordVisibility,
+                                  ),
+                                ),
+                              ),),
 
                           SizedBox(height: 24.h),
 
@@ -446,7 +455,7 @@ class SignupView extends GetView<SignupController> {
                     SizedBox(height: 30.h),
                     _buildDivider(),
                     SizedBox(height: 10.h),
-                    _buildSocialLoginButtons(),
+                    _buildSocialLoginButtons(context),
                     SizedBox(height: 25.h),
                     _buildLoginRedirect(),
                     SizedBox(height: 20.h),
@@ -485,16 +494,20 @@ class SignupView extends GetView<SignupController> {
     );
   }
 
-  Widget _buildSocialLoginButtons() {
-    return Row(
+  Widget _buildSocialLoginButtons(BuildContext context) {
+    return
+      Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
+        if (!Platform.isAndroid) // Show Apple login button only for non-Android users
+          IconButton(
+            onPressed: controller.loginWithApple,
+            icon: Image.asset(apple, height: 48.h, width: 48.w),
+          ),
         IconButton(
-          onPressed: controller.loginWithApple,
-          icon: Image.asset(apple, height: 48.h, width: 48.w),
-        ),
-        IconButton(
-          onPressed: controller.loginWithGoogle,
+          onPressed: () => SignInSocialAuth.signInWithGoogle(
+            context: context,
+          ),
           icon: Image.asset(google, height: 48.h, width: 48.w),
         ),
         IconButton(

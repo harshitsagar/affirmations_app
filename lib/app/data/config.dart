@@ -39,4 +39,4 @@ int getSocialIdentifier(SocialIdentifier socialIdentifier) {
   return code;
 }
 
-String timeZone = '';
+String timeZone = DateTime.now().timeZoneName;

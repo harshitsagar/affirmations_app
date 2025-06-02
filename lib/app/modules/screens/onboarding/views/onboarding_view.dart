@@ -21,6 +21,7 @@ class OnboardingView extends GetView<OnboardingController> {
             child: Image.asset(
               bgImage,
               fit: BoxFit.cover,
+
             ),
           ),
 
@@ -34,7 +35,7 @@ class OnboardingView extends GetView<OnboardingController> {
                     onPageChanged: (index) => controller.currentPage.value = index,
                     children: [
                       OnboardingPage(
-                        title: "Welcome to Your Affirmations Journey!",
+                        title: "  Welcome to Your \n Affirmations Journey!",
                         description: "Elevate your thinking with life-changing affirmations.",
                         imagePath: onboardingImage1,
                       ),

@@ -41,7 +41,8 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Padding(
+          child:
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,6 +65,7 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
                       // Skip button
                       TextButton(
                         onPressed: () {
+                          controller.selectGender(''); // Clear selection
                           Get.toNamed(Routes.AFFIRMATION_REMINDER);
                         },
                         child: Text(

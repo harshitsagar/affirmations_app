@@ -1,0 +1,55 @@
+
+{
+  "project_info": {
+    "project_number": "166922148674",
+    "project_id": "affirmations-app-496ef",
+    "storage_bucket": "affirmations-app-496ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166922148674:android:52f60e7a710ed95e7186db",
+        "android_client_info": {
+          "package_name": "com.affirmations.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "166922148674-bdjucvk9i5et09li35a9ed3d2bal9ncu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.affirmations.app",
+            "certificate_hash": "87f5f79d70a964dbe19df045fcf08300377253e3"
+          }
+        },
+        {
+          "client_id": "166922148674-nrjqrujt70r1j81l9bqt7c8a9chj1lhb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmvlanlo1S8lVpnJdMdLfVJACSy17Cfeo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "166922148674-nrjqrujt70r1j81l9bqt7c8a9chj1lhb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "166922148674-1auanf6354531pli6gt72jqg4lv1nu31.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.affirmations.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

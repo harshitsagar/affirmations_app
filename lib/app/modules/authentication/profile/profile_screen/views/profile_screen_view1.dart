@@ -55,6 +55,7 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
                     padding: EdgeInsets.only(top: 60.h),
                     child: TextButton(
                       onPressed: () {
+                        controller.selectAgeGroup("");
                         Get.to(() => ProfileScreenView2());
                       },
                       child: Text(

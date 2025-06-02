@@ -14,6 +14,8 @@ class MyListController extends GetxController {
   final selectedList = Rx<AffirmationListModelData?>(null);
   Map<String, String> listNameToIdMap = {
   };
+  final affirmationTextToIdMap = <String, String>{}.obs;
+
   final loadingStatus = LoadingStatus.loading.obs;
 
 
@@ -175,18 +177,48 @@ class MyListController extends GetxController {
     _storage.write('favorites', favoriteAffirmations.toList());
   }
 
-  void deleteList(String listName) {
 
-    // lists.remove(listName);
-    // customListsAffirmations.remove(listName);
-    // _storage.remove('${listName}_affirmations');
-    //
-    // // Update storage
-    // _storage.write('customLists', lists.where((list) => list != 'Favorites').toList());
-    // _storage.write('customListsData', customListsAffirmations);
-    //
-    // update();
+
+
+
+  Future<void> deleteList(String listName) async {
+    final myListRef = listNameToIdMap[listName];
+    if (myListRef == null) {
+      Get.snackbar("Error", "List reference not found.");
+      return;
+    }
+
+    try {
+      final accessToken = LocalStorage.getUserAccessToken();
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.deleteAffirmation, // same endpoint
+        {
+          "myListRef": myListRef,
+          "action": 1, // 1 = delete list
+        },
+        {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+        },
+      );
+
+      final res = response.data;
+
+      if (res["code"] == 100) {
+        lists.removeWhere((element) => element.name == listName);
+        listNameToIdMap.remove(listName);
+        update();
+        Get.snackbar("Success", "List deleted successfully.");
+      } else {
+        Get.snackbar("Error", res["message"] ?? "Failed to delete list.");
+      }
+    } catch (e) {
+      print("Delete List Error: $e");
+      Get.snackbar("Error", "Something went wrong while deleting list.");
+    }
   }
+
 
   @override
   void onClose() {

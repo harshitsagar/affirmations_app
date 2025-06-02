@@ -20,6 +20,7 @@ mixin ApiConstants {
   static const String newList = 'affirmation/myList';
   static const String addAffirmation = 'affirmation/add';
   static const String getAffirmationList = 'affirmation/list';
+  static const String deleteAffirmation = 'affirmation/delete';
 
   // user ...
   static const String userDetails = 'user/details';

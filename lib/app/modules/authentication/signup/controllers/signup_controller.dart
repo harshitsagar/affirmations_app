@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../../../helpers/services/local_storage.dart';
+
 class SignupController extends GetxController {
 
   final formKey = GlobalKey<FormState>();
@@ -77,7 +79,7 @@ class SignupController extends GetxController {
     required String password,
     required BuildContext context,
   }) async {
-    // String? fcmToken = LocalStorage.getFCMToken();
+     String? fcmToken = LocalStorage.getFCMToken();
     try {
       final response = await APIProvider().formDataPostAPICall(
         ApiConstants.signUp,
@@ -86,7 +88,7 @@ class SignupController extends GetxController {
           "email": email,
           "password": password,
           "device": Platform.isAndroid ? "android" : "ios",
-          // "fcmToken": fcmToken.toString(),
+           "fcmToken": fcmToken.toString(),
         },
         {
           'Content-Type': 'application/json',
@@ -137,6 +139,7 @@ class SignupController extends GetxController {
   }
 
   void loginWithGoogle() {
+
     // Implement Google Login
   }
 

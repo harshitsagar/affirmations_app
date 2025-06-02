@@ -300,32 +300,29 @@ class LoginView extends GetView<LoginController> {
 
                     // Social Login Buttons.....
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: Platform.isAndroid
+                          ? MainAxisAlignment.spaceEvenly // Adjust spacing for Android
+                          : MainAxisAlignment.spaceEvenly, // Adjust spacing for Apple
                       children: [
-
-                        Platform.isAndroid
-                            ? const SizedBox.shrink()
-                            : IconButton(
-                                onPressed: () => SignInSocialAuth.signInWithApple(
-                                  context: context,
-                                ),
-                                icon: Image.asset(apple, height: 48, width: 48),
+                        if (!Platform.isAndroid) // Show Apple login button only for non-Android users
+                          IconButton(
+                            onPressed: () => SignInSocialAuth.signInWithApple(
+                              context: context,
                             ),
-
+                            icon: Image.asset(apple, height: 48, width: 48),
+                          ),
                         IconButton(
                           onPressed: () => SignInSocialAuth.signInWithGoogle(
                             context: context,
                           ),
                           icon: Image.asset(google, height: 48.h, width: 48.w),
                         ),
-
                         IconButton(
                           onPressed: () => SignInSocialAuth.signInWithFacebook(
                             context: context,
                           ),
                           icon: Image.asset(facebook, height: 48.h, width: 48.w),
                         ),
-
                       ],
                     ),
 

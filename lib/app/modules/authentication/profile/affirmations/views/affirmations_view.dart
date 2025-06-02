@@ -44,18 +44,17 @@ class AffirmationsView extends GetView<AffirmationsController> {
                 SizedBox(height: 20.h),
 
                 // Title Section
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.h),
-                  child: Text(
-                    'On which area you want to work through affirmations?',
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 8.h),
+                  Text(
+                    'On which area you want  to work through affirmations?',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                       fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
                   ),
-                ),
                 SizedBox(height: 20.h),
                 Text(
                   'Select minimum of 3 areas',
