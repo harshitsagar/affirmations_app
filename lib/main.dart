@@ -104,7 +104,6 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Affirmations App",
-            theme: ThemeService.getThemeData(currentTheme),
             initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,
           );

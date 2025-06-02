@@ -38,9 +38,6 @@ class MyListController extends GetxController {
     _syncFavorites();
   }
 
-
-
-
   void _syncFavorites() {
     favoriteAffirmations.assignAll(Get.find<HomeController>().favoriteAffirmations);
 
@@ -84,10 +81,13 @@ class MyListController extends GetxController {
     }
   }
 
-
-
-
   Future<void> addNewListFromApi(String listName) async {
+
+    if (Get.find<HomeController>().isGuestUser.value) {
+      Get.find<HomeController>().showGuestPopup();
+      return;
+    }
+
     if (listName.isEmpty || lists.contains(listName)) {
       Get.snackbar("Warning", "List name is empty or already exists.");
       return;
@@ -135,6 +135,12 @@ class MyListController extends GetxController {
 
 
   void navigateToList(AffirmationListModelData listData) {
+
+    if (Get.find<HomeController>().isGuestUser.value) {
+      Get.find<HomeController>().showGuestPopup();
+      return;
+    }
+
     selectedList.value = listData;
 
     Get.toNamed(Routes.ADD_AFFIRMATIONS, arguments: {

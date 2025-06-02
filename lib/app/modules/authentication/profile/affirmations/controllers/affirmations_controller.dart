@@ -93,7 +93,7 @@ class AffirmationsController extends GetxController {
         // LocalStorage.setUserDetailsData(userDetailsData: updatedUser);
         AppConstants.showSnackbar(
           headText: "Success",
-          content: "Selections saved successfully",
+          content: "Preferences saved successfully",
           position: SnackPosition.BOTTOM,
         );
         Get.toNamed(Routes.THEMES); // Navigate to themes after successful save

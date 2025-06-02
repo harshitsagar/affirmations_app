@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -15,20 +16,21 @@ class SplashView extends GetView<SplashController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(bgImage),
-              fit: BoxFit.cover
-          )
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //       image: AssetImage(bgImage),
+        //       fit: BoxFit.cover
+        //   )
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
 
             SizedBox(
-              height: 300.h,
-              width: 313.w,
+              height: 264.h,
+              width: 264.w,
               child: Image.asset(
                   splashLogo,
                   fit: BoxFit.contain,

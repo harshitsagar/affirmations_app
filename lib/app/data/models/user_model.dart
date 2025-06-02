@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+
 UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 
 String userModelToJson(UserModel data) => json.encode(data.toJson());
@@ -59,29 +61,26 @@ class UserData {
 class User {
   final String id;
   final Affirmations affirmations;
-  final bool notificationsEnabled;
   final List<String> areasToWork;
-  final String? selectedTheme; // Nullable
   final List<int> heardFrom;
   final bool reminderNotification;
   final String name;
   final String email;
   final DateTime createdOn;
   final DateTime updatedOn;
-  final int? ageGroup; // Nullable
-  final DateTime? dob; // Nullable
-  final int? gender; // Nullable
-  final JournalInitial? journalInitial; // Nullable
-  final JournalReminders? journalReminders; // Nullable
-  final String? phoneCode; // Nullable
-  final String? phoneNumber; // Nullable
+  final int? ageGroup;
+  final DateTime? dob;
+  final int? gender;
+  final JournalInitial? journalInitial;
+  final JournalReminders? journalReminders;
+  final String subscriptionStatus;
+  final Streak streak;
+  Theme theme;
 
   User({
     required this.id,
     required this.affirmations,
-    required this.notificationsEnabled,
     required this.areasToWork,
-    this.selectedTheme,
     required this.heardFrom,
     required this.reminderNotification,
     required this.name,
@@ -93,22 +92,21 @@ class User {
     this.gender,
     this.journalInitial,
     this.journalReminders,
-    this.phoneCode,
-    this.phoneNumber,
+    required this.subscriptionStatus,
+    required this.streak,
+    required this.theme,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["_id"],
-    affirmations: Affirmations.fromJson(json["affirmations"] ?? {}), // Handle null
-    notificationsEnabled: json["notificationsEnabled"] ?? false,
+    id: json["_id"] ?? "",
+    affirmations: Affirmations.fromJson(json["affirmations"] ?? {}),
     areasToWork: List<String>.from(json["areasToWork"]?.map((x) => x) ?? []),
-    selectedTheme: json["selectedTheme"],
     heardFrom: List<int>.from(json["heardFrom"]?.map((x) => x) ?? []),
     reminderNotification: json["reminderNotification"] ?? false,
     name: json["name"] ?? "",
     email: json["email"] ?? "",
-    createdOn: DateTime.parse(json["createdOn"]),
-    updatedOn: DateTime.parse(json["updatedOn"]),
+    createdOn: DateTime.parse(json["createdOn"] ?? DateTime.now().toIso8601String()),
+    updatedOn: DateTime.parse(json["updatedOn"] ?? DateTime.now().toIso8601String()),
     ageGroup: json["ageGroup"],
     dob: json["dob"] != null ? DateTime.parse(json["dob"]) : null,
     gender: json["gender"],
@@ -118,16 +116,28 @@ class User {
     journalReminders: json["journalReminders"] != null
         ? JournalReminders.fromJson(json["journalReminders"])
         : null,
-    phoneCode: json["phoneCode"],
-    phoneNumber: json["phoneNumber"],
+    subscriptionStatus: json["subscriptionStatus"]?.toString().toLowerCase() ?? "inactive",
+    streak: Streak.fromJson(json["streak"] ?? {}),
+    theme: json["theme"] != null
+        ? Theme.fromJson(json["theme"])
+        : Theme(
+      id: ThemeService.getDefaultTheme().sId!,
+      backgroundGradient: ThemeService.getDefaultTheme().backgroundGradient!,
+      deleted: ThemeService.getDefaultTheme().deleted ?? false,
+      name: ThemeService.getDefaultTheme().name!,
+      primaryColor: ThemeService.getDefaultTheme().primaryColor!,
+      secondaryColor: ThemeService.getDefaultTheme().secondaryColor!,
+      aspect: ThemeService.getDefaultTheme().aspect!,
+      createdOn: DateTime.now(),
+      updatedOn: DateTime.now(),
+      v: 0,
+    ),
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
     "affirmations": affirmations.toJson(),
-    "notificationsEnabled": notificationsEnabled,
     "areasToWork": List<dynamic>.from(areasToWork.map((x) => x)),
-    "selectedTheme": selectedTheme,
     "heardFrom": List<dynamic>.from(heardFrom.map((x) => x)),
     "reminderNotification": reminderNotification,
     "name": name,
@@ -139,15 +149,20 @@ class User {
     "gender": gender,
     "journalInitial": journalInitial?.toJson(),
     "journalReminders": journalReminders?.toJson(),
-    "phoneCode": phoneCode,
-    "phoneNumber": phoneNumber,
+    "subscriptionStatus": subscriptionStatus,
+    "streak": streak.toJson(),
+    "theme": theme.toJson(),
   };
+
+  bool get isPremium => subscriptionStatus == "active";
+  Theme? get currentTheme => theme;
+
 }
 
 class Affirmations {
   final int countPerDay;
-  final String? startTime; // Nullable
-  final String? endTime; // Nullable
+  final String? startTime;
+  final String? endTime;
 
   Affirmations({
     required this.countPerDay,
@@ -206,5 +221,127 @@ class JournalReminders {
   Map<String, dynamic> toJson() => {
     "startTime": startTime,
     "endTime": endTime,
+  };
+}
+
+class Streak {
+  final int status;
+  final int current;
+  final int longest;
+  final bool broken;
+  final Restore restore;
+  final Freeze freeze;
+
+  Streak({
+    required this.status,
+    required this.current,
+    required this.longest,
+    required this.broken,
+    required this.restore,
+    required this.freeze,
+  });
+
+  factory Streak.fromJson(Map<String, dynamic> json) => Streak(
+    status: json["status"] ?? 0,
+    current: json["current"] ?? 0,
+    longest: json["longest"] ?? 0,
+    broken: json["broken"] ?? false,
+    restore: Restore.fromJson(json["restore"] ?? {}),
+    freeze: Freeze.fromJson(json["freeze"] ?? {}),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "status": status,
+    "current": current,
+    "longest": longest,
+    "broken": broken,
+    "restore": restore.toJson(),
+    "freeze": freeze.toJson(),
+  };
+}
+
+class Restore {
+  final int totalAvailable;
+
+  Restore({
+    required this.totalAvailable,
+  });
+
+  factory Restore.fromJson(Map<String, dynamic> json) => Restore(
+    totalAvailable: json["totalAvailable"] ?? 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    "totalAvailable": totalAvailable,
+  };
+}
+
+class Freeze {
+  final int totalAvailable;
+
+  Freeze({
+    required this.totalAvailable,
+  });
+
+  factory Freeze.fromJson(Map<String, dynamic> json) => Freeze(
+    totalAvailable: json["totalAvailable"] ?? 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    "totalAvailable": totalAvailable,
+  };
+}
+
+class Theme {
+  final String id;
+  final List<String> backgroundGradient;
+  final bool deleted;
+  final String name;
+  final String primaryColor;
+  final String secondaryColor;
+  final String aspect;
+  final DateTime createdOn;
+  final DateTime updatedOn;
+  final int v;
+
+  Theme({
+    required this.id,
+    required this.backgroundGradient,
+    required this.deleted,
+    required this.name,
+    required this.primaryColor,
+    required this.secondaryColor,
+    required this.aspect,
+    required this.createdOn,
+    required this.updatedOn,
+    required this.v,
+  });
+
+  factory Theme.fromJson(Map<String, dynamic> json) => Theme(
+    id: json["_id"] ?? "",
+    backgroundGradient:
+    List<String>.from(json["backgroundGradient"]?.map((x) => x) ?? []),
+    deleted: json["deleted"] ?? false,
+    name: json["name"] ?? "",
+    primaryColor: json["primaryColor"] ?? "",
+    secondaryColor: json["secondaryColor"] ?? "",
+    aspect: json["aspect"] ?? "",
+    createdOn: DateTime.parse(json["createdOn"]),
+    updatedOn: DateTime.parse(json["updatedOn"]),
+    v: json["__v"] ?? 0,
+  );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "backgroundGradient":
+    List<dynamic>.from(backgroundGradient.map((x) => x)),
+    "deleted": deleted,
+    "name": name,
+    "primaryColor": primaryColor,
+    "secondaryColor": secondaryColor,
+    "aspect": aspect,
+    "createdOn": createdOn.toIso8601String(),
+    "updatedOn": updatedOn.toIso8601String(),
+    "__v": v,
   };
 }

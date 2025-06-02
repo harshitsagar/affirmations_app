@@ -1,5 +1,6 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,12 +22,13 @@ class ContactAdminView extends GetView<ContactAdminController> {
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage2), // bgImage from images_path.dart
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(bgImage2), // bgImage from images_path.dart
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          decoration: ThemeService.getBackgroundDecoration(),
           child: SafeArea(
             child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -63,6 +65,7 @@ class ContactAdminView extends GetView<ContactAdminController> {
                         hintStyle: GoogleFonts.inter(
                           fontSize: 16.sp,
                           color: Color(0xFFD9D9D9),
+                          fontWeight: FontWeight.bold,
                         ),
                         filled: true,
                         fillColor: Colors.white.withOpacity(0.9),

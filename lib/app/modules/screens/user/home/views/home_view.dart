@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:affirmations_app/app/data/components/images_path.dart';
-import 'package:affirmations_app/app/modules/screens/common/share_screen/controllers/share_screen_controller.dart';
-import 'package:affirmations_app/app/routes/app_pages.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,13 +31,18 @@ class HomeView extends GetView<HomeController> {
           );
         }
 
+        final affirmations = controller.isGuestUser.value
+            ? controller.guestAffirmations
+            : controller.affirmationsList;
+
         return Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage2),
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(bgImage2),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          decoration: ThemeService.getBackgroundDecoration(),
           child: SafeArea(
             child: Column(
               children: [
@@ -120,11 +123,12 @@ class HomeView extends GetView<HomeController> {
                               children: [
                                 Obx(() =>
                                     Text(
-                                      '${controller.currentAffirmationCount
-                                          .value}',
+                                      controller.isGuestUser.value
+                                          ? '0'
+                                          : '${controller.currentAffirmationCount.value}',
                                       style: GoogleFonts.inter(
                                         fontSize: 12.sp,
-                                        fontWeight: FontWeight.w700,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     )),
                                 Obx(() =>
@@ -132,7 +136,7 @@ class HomeView extends GetView<HomeController> {
                                       '/${controller.dailyGoal.value}',
                                       style: GoogleFonts.inter(
                                         fontSize: 12.sp,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.w700,
                                       ),
                                     )),
 
@@ -178,19 +182,23 @@ class HomeView extends GetView<HomeController> {
                 // Affirmation text with loading/empty state handling
                 // Replace the PageView.builder section with this:
                 Expanded(
-                  child: controller.affirmationsList.isEmpty
+                  child: affirmations.isEmpty
                       ? Center(child: Text('No affirmations available'))
                       : Obx(() => PageView.builder(
                     controller: PageController(
                       initialPage: controller.currentIndex.value,
-                      viewportFraction: 0.9,
+                      viewportFraction: 1.0,
                     ),
-                    itemCount: controller.affirmationsList.length,
+                    itemCount: controller.isGuestUser.value
+                        ? controller.guestAffirmations.length
+                        : controller.affirmationsList.length,
                     onPageChanged: (index) {
                       controller.handlePageChange(index);
                     },
                     itemBuilder: (context, index) {
-                      final affirmation = controller.affirmationsList[index];
+                      final affirmation = controller.isGuestUser.value
+                          ? controller.guestAffirmations[index]
+                          : controller.affirmationsList[index];
                       return Padding(
                         padding: EdgeInsets.only(
                             left: 20.w, right: 20.w, top: 200.h),

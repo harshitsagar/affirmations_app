@@ -189,7 +189,7 @@ class SettingsController extends GetxController {
         Get.to(() =>
             Obx(() => InfoPage(
                 title: "Privacy Policy",
-                content: appDetails.aboutUs,
+                content: appDetails.privacyPolicy,
                 loadingStatus: loadingStatus.value
             )));
         break;

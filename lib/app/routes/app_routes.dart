@@ -25,7 +25,6 @@ abstract class Routes {
   static const FILTER = _Paths.FILTER;
   static const MY_LIST = _Paths.MY_LIST;
   static const FAVORITES = _Paths.FAVORITES;
-  static const GUEST = _Paths.GUEST;
   static const SETTINGS = _Paths.SETTINGS;
   static const ABOUT_EDIT = _Paths.ABOUT_EDIT;
   static const AFFIRMATION_TYPES = _Paths.AFFIRMATION_TYPES;
@@ -65,7 +64,6 @@ abstract class _Paths {
   static const FILTER = '/filter';
   static const MY_LIST = '/my-list';
   static const FAVORITES = '/favorites';
-  static const GUEST = '/guest';
   static const SETTINGS = '/settings';
   static const ABOUT_EDIT = '/about-edit';
   static const AFFIRMATION_TYPES = '/affirmation-types';

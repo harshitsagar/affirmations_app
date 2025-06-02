@@ -1,7 +1,7 @@
 import 'package:affirmations_app/app/data/api_provider.dart';
-import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/data/models/themeListModel.dart';
+import 'package:affirmations_app/app/data/models/user_model.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:affirmations_app/app/helpers/services/local_storage.dart';
@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 class ThemesController extends GetxController {
 
   final RxList<ThemeListModelData> themeList = <ThemeListModelData>[].obs;
-  final RxList<ThemeListModelData> freeThemeList = <ThemeListModelData>[].obs;
+  final RxList<ThemeListModelData> availableThemes = <ThemeListModelData>[].obs;
   final selectedTheme = Rx<ThemeListModelData?>(null);
   final loadingStatus = LoadingStatus.loading.obs;
 
@@ -22,6 +22,7 @@ class ThemesController extends GetxController {
     fetchThemes();
   }
 
+  /*
   Future<void> fetchThemes() async {
     try {
       loadingStatus(LoadingStatus.loading);
@@ -46,6 +47,19 @@ class ThemesController extends GetxController {
 
         // Set default theme from free themes if available
         if (freeThemeList.isNotEmpty) {
+          // First check user data for current theme
+          final user = LocalStorage.getUserDetailsData();
+          if (user?.currentTheme != null) {
+            final currentTheme = freeThemeList.firstWhereOrNull(
+                    (theme) => theme.sId == user!.currentTheme!.id
+            );
+            if (currentTheme != null) {
+              selectedTheme(currentTheme);
+              return;
+            }
+          }
+
+          // Fallback to local storage
           final savedTheme = LocalStorage.prefs.read('selectedTheme');
           if (savedTheme != null) {
             final savedThemeData = ThemeListModelData.fromJson(savedTheme);
@@ -59,6 +73,73 @@ class ThemesController extends GetxController {
             }
           } else {
             selectedTheme(freeThemeList.first);
+          }
+        }
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch themes: ${e.toString()}');
+    } finally {
+      loadingStatus(LoadingStatus.completed);
+    }
+  }
+
+   */
+
+  Future<void> fetchThemes() async {
+    try {
+      loadingStatus(LoadingStatus.loading);
+      final accessToken = LocalStorage.getUserAccessToken();
+
+      final response = await APIProvider().postAPICall(
+        ApiConstants.listTheme,
+        {},
+        {
+          'Authorization': accessToken ?? "",
+        },
+      );
+
+      if (response.data["code"] == 100) {
+        final model = ThemeListModel.fromJson(response.data);
+        themeList.assignAll(model.data ?? []);
+
+        // Get default theme and free themes
+        final defaultTheme = themeList.firstWhereOrNull((theme) => theme.aspect == 'default');
+        final freeThemes = themeList.where((theme) => theme.aspect == 'free').toList();
+
+        // Combine default theme (first) with free themes
+        availableThemes.assignAll([
+          if (defaultTheme != null) defaultTheme,
+          ...freeThemes,
+        ]);
+
+        // Set initial theme selection
+        if (availableThemes.isNotEmpty) {
+          // First check user data for current theme
+          final user = LocalStorage.getUserDetailsData();
+          if (user?.currentTheme != null) {
+            final currentTheme = availableThemes.firstWhereOrNull(
+                    (theme) => theme.sId == user!.currentTheme!.id
+            );
+            if (currentTheme != null) {
+              selectedTheme(currentTheme);
+              return;
+            }
+          }
+
+          // Fallback to local storage
+          final savedTheme = LocalStorage.prefs.read('selectedTheme');
+          if (savedTheme != null) {
+            final savedThemeData = ThemeListModelData.fromJson(savedTheme);
+            final currentTheme = availableThemes.firstWhereOrNull(
+                    (theme) => theme.sId == savedThemeData.sId
+            );
+            if (currentTheme != null) {
+              selectedTheme(currentTheme);
+            } else {
+              selectedTheme(availableThemes.first); // Default to first theme (default theme)
+            }
+          } else {
+            selectedTheme(availableThemes.first); // Default to first theme (default theme)
           }
         }
       }
@@ -100,9 +181,11 @@ class ThemesController extends GetxController {
       );
 
       if (response["code"] == 100) {
+
         // Save theme to local storage
-        LocalStorage.prefs.write('selectedTheme', selectedTheme.value?.toJson());
-        ThemeService.applyTheme(selectedTheme.value);
+        final user = User.fromJson(response["data"]);
+        LocalStorage.setUserDetailsData(userDetailsData: user);
+        ThemeService.updateThemeFromUserData(user); // This will update the theme
 
         AppConstants.showSnackbar(
           headText: 'Success',

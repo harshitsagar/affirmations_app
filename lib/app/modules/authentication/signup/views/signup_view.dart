@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:affirmations_app/app/data/components/images_path.dart';
-import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:affirmations_app/app/widgets/detailsPage.dart';
 import 'package:email_validator/email_validator.dart';
@@ -27,12 +28,13 @@ class SignupView extends GetView<SignupController> {
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage2),
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: const BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(bgImage2),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          decoration: ThemeService.getBackgroundDecoration(),
           child: SafeArea(
             child: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (overscroll) {
@@ -532,7 +534,7 @@ class SignupView extends GetView<SignupController> {
             )
         ),
         GestureDetector(
-          onTap: () => Get.toNamed('/login'),
+          onTap: () => Get.offAllNamed(Routes.LOGIN),
           child: Text(
             "Login",
             style: TextStyle(

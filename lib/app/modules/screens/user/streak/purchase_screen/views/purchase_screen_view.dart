@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -13,12 +14,13 @@ class PurchaseScreenView extends GetView<PurchaseScreenController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),

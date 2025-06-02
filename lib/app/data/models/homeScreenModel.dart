@@ -22,6 +22,14 @@ class HomeScreenModel {
       timestamp: DateTime.tryParse(json["timestamp"] ?? ""),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    "code": code,
+    "message": message,
+    "data": data.toJson(),
+    "format": format,
+    "timestamp": timestamp?.toIso8601String(),
+  };
 }
 
 class HomeScreenData {
@@ -30,6 +38,7 @@ class HomeScreenData {
     required this.page,
     required this.limit,
     required this.target,
+    required this.targetAchieved,
     required this.streakCount,
     required this.journalPending,
     required this.showInterstitialAd,
@@ -40,25 +49,40 @@ class HomeScreenData {
   final int? page;
   final int? limit;
   final int? target;
+  final int? targetAchieved;
   final int? streakCount;
   final bool? journalPending;
-  final bool? showInterstitialAd;
+  final String? showInterstitialAd;
   final bool? goalCompleted;
 
   factory HomeScreenData.fromJson(Map<String, dynamic> json) {
     return HomeScreenData(
       affirmations: json["affirmations"] == null
           ? []
-          : List<Affirmation>.from(json["affirmations"]!.map((x) => Affirmation.fromJson(x))),
+          : List<Affirmation>.from(
+          json["affirmations"]!.map((x) => Affirmation.fromJson(x))),
       page: json["page"],
       limit: json["limit"],
       target: json["target"],
+      targetAchieved: json["targetAchieved"],
       streakCount: json["streakCount"],
       journalPending: json["journalPending"],
       showInterstitialAd: json["showInterstitialAd"],
       goalCompleted: json["goalCompleted"],
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    "affirmations": List<dynamic>.from(affirmations.map((x) => x.toJson())),
+    "page": page,
+    "limit": limit,
+    "target": target,
+    "targetAchieved": targetAchieved,
+    "streakCount": streakCount,
+    "journalPending": journalPending,
+    "showInterstitialAd": showInterstitialAd,
+    "goalCompleted": goalCompleted,
+  };
 }
 
 class Affirmation {
@@ -87,4 +111,12 @@ class Affirmation {
       text: json["text"] ?? "",
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "theme": List<dynamic>.from(theme.map((x) => x)),
+    "categoryRef": categoryRef,
+    "createdOn": createdOn.toIso8601String(),
+    "text": text,
+  };
 }

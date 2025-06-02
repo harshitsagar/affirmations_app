@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
+import 'package:affirmations_app/app/helpers/services/local_storage.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,16 +19,19 @@ class SettingsView extends GetView<SettingsController> {
 
   @override
   Widget build(BuildContext context) {
+    // final currentTheme = LocalStorage.prefs.read('selectedTheme');
+
     return Scaffold(
-      body: Container(
+    body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2), // from your sample
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2), // from your sample
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Obx(() {
 
@@ -53,63 +58,68 @@ class SettingsView extends GetView<SettingsController> {
                   // Custom AppBar....
                   CustomAppBar(title: "Settings"),
 
-                  SizedBox(height: 30.h),
-
                   // Try Premium Now Container....
-                  Container(
-                    width: double.infinity,
-                    height: 104.h,
-                    padding: EdgeInsets.all(16.r),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xffB4A4F9),
-                          Color(0xFFFFCCEA)
-                        ],
-                      ),
-                    ),
-                    child: Stack(
-                      children: [
+                  if (!LocalStorage.isPremiumUser()) ...[
 
-                        Padding(
-                          padding: EdgeInsets.only(left: 5.w, top: 15.h),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 5.h,
-                            children: [
-                              Text(
-                                'Try Premium Now',
-                                style: GoogleFonts.inter(
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'Removes Ads & unlock all themes',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                ),
-                              ),
+                    SizedBox(height: 30.h),
+
+                    GestureDetector(
+                      onTap: () => Get.toNamed(Routes.SUBSCRIPTION_SCREEN),
+                      child: Container(
+                        width: double.infinity,
+                        height: 104.h,
+                        padding: EdgeInsets.all(16.r),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xffB4A4F9),
+                              Color(0xFFFFCCEA)
                             ],
                           ),
                         ),
-                        Positioned(
-                          right: 5.w,
-                          child: Image.asset(
-                            diamondIcon,
-                            width: 70.w,
-                            height: 70.h,
-                          ),
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 5.w, top: 15.h),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 5.h,
+                                children: [
+                                  Text(
+                                    'Try Premium Now',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Removes Ads & unlock all themes',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              right: 5.w,
+                              child: Image.asset(
+                                diamondIcon,
+                                width: 70.w,
+                                height: 70.h,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
 
                   SizedBox(height: 34.h),
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,12 +20,13 @@ class AboutEditView extends GetView<AboutEditController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Obx(() {
             if(controller.isLoading.value) {

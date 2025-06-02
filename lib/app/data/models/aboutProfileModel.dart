@@ -1,4 +1,3 @@
-// Setup / AboutProfileModel.dart
 class AboutProfileModel {
   final int? code;
   final String? message;
@@ -40,9 +39,7 @@ class AboutProfileModel {
 class UserProfileData {
   final String? id;
   final Affirmations? affirmations;
-  final bool? notificationsEnabled;
   final List<String>? areasToWork;
-  final String? selectedTheme;
   final List<int> heardFrom;
   final bool? reminderNotification;
   final String? name;
@@ -54,16 +51,14 @@ class UserProfileData {
   final int? gender;
   final JournalInitial? journalInitial;
   final JournalReminders? journalReminders;
-  final String? phoneCode;
-  final String? phoneNumber;
   final String? subscriptionStatus;
+  final Streak? streak;
+  final Theme? theme;
 
   UserProfileData({
     this.id,
     this.affirmations,
-    this.notificationsEnabled,
     this.areasToWork,
-    this.selectedTheme,
     required this.heardFrom,
     this.reminderNotification,
     this.name,
@@ -75,9 +70,9 @@ class UserProfileData {
     this.gender,
     this.journalInitial,
     this.journalReminders,
-    this.phoneCode,
-    this.phoneNumber,
     this.subscriptionStatus,
+    this.streak,
+    this.theme,
   });
 
   factory UserProfileData.fromJson(Map<String, dynamic> json) {
@@ -86,11 +81,9 @@ class UserProfileData {
       affirmations: json['affirmations'] != null
           ? Affirmations.fromJson(json['affirmations'])
           : null,
-      notificationsEnabled: json['notificationsEnabled'],
       areasToWork: json['areasToWork'] != null
           ? List<String>.from(json['areasToWork'])
           : null,
-      selectedTheme: json['selectedTheme'],
       heardFrom: List<int>.from(json["heardFrom"]?.map((x) => x) ?? []),
       reminderNotification: json['reminderNotification'],
       name: json['name'],
@@ -106,9 +99,9 @@ class UserProfileData {
       journalReminders: json['journalReminders'] != null
           ? JournalReminders.fromJson(json['journalReminders'])
           : null,
-      phoneCode: json['phoneCode'],
-      phoneNumber: json['phoneNumber'],
       subscriptionStatus: json['subscriptionStatus'],
+      streak: json['streak'] != null ? Streak.fromJson(json['streak']) : null,
+      theme: json['theme'] != null ? Theme.fromJson(json['theme']) : null,
     );
   }
 
@@ -118,10 +111,8 @@ class UserProfileData {
     if (affirmations != null) {
       data['affirmations'] = affirmations!.toJson();
     }
-    data['notificationsEnabled'] = notificationsEnabled;
     data['areasToWork'] = areasToWork;
-    data['selectedTheme'] = selectedTheme;
-    data['heardFrom'] = heardFrom.isNotEmpty ? heardFrom : null;
+    data['heardFrom'] = heardFrom;
     data['reminderNotification'] = reminderNotification;
     data['name'] = name;
     data['email'] = email;
@@ -136,11 +127,17 @@ class UserProfileData {
     if (journalReminders != null) {
       data['journalReminders'] = journalReminders!.toJson();
     }
-    data['phoneCode'] = phoneCode;
-    data['phoneNumber'] = phoneNumber;
     data['subscriptionStatus'] = subscriptionStatus;
+    if (streak != null) {
+      data['streak'] = streak!.toJson();
+    }
+    if (theme != null) {
+      data['theme'] = theme!.toJson();
+    }
     return data;
   }
+
+  bool get isPremium => subscriptionStatus?.toLowerCase() == "active";
 }
 
 class Affirmations {
@@ -215,6 +212,198 @@ class JournalReminders {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['startTime'] = startTime;
     data['endTime'] = endTime;
+    return data;
+  }
+}
+
+class Streak {
+  final int? status;
+  final int? current;
+  final int? longest;
+  final bool? broken;
+  final String? lastUpdated;
+  final Restore? restore;
+  final Freeze? freeze;
+  final MonthlyChallenge? monthlyChallenge;
+
+  Streak({
+    this.status,
+    this.current,
+    this.longest,
+    this.broken,
+    this.lastUpdated,
+    this.restore,
+    this.freeze,
+    this.monthlyChallenge,
+  });
+
+  factory Streak.fromJson(Map<String, dynamic> json) {
+    return Streak(
+      status: json['status'],
+      current: json['current'],
+      longest: json['longest'],
+      broken: json['broken'],
+      lastUpdated: json['lastUpdated'],
+      restore: json['restore'] != null ? Restore.fromJson(json['restore']) : null,
+      freeze: json['freeze'] != null ? Freeze.fromJson(json['freeze']) : null,
+      monthlyChallenge: json['monthlyChallenge'] != null
+          ? MonthlyChallenge.fromJson(json['monthlyChallenge'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['current'] = current;
+    data['longest'] = longest;
+    data['broken'] = broken;
+    data['lastUpdated'] = lastUpdated;
+    if (restore != null) {
+      data['restore'] = restore!.toJson();
+    }
+    if (freeze != null) {
+      data['freeze'] = freeze!.toJson();
+    }
+    if (monthlyChallenge != null) {
+      data['monthlyChallenge'] = monthlyChallenge!.toJson();
+    }
+    return data;
+  }
+}
+
+class Restore {
+  final int? totalAvailable;
+  final List<dynamic>? used;
+
+  Restore({
+    this.totalAvailable,
+    this.used,
+  });
+
+  factory Restore.fromJson(Map<String, dynamic> json) {
+    return Restore(
+      totalAvailable: json['totalAvailable'],
+      used: json['used'] != null ? List<dynamic>.from(json['used']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['totalAvailable'] = totalAvailable;
+    if (used != null) {
+      data['used'] = used;
+    }
+    return data;
+  }
+}
+
+class Freeze {
+  final int? totalAvailable;
+  final List<dynamic>? used;
+
+  Freeze({
+    this.totalAvailable,
+    this.used,
+  });
+
+  factory Freeze.fromJson(Map<String, dynamic> json) {
+    return Freeze(
+      totalAvailable: json['totalAvailable'],
+      used: json['used'] != null ? List<dynamic>.from(json['used']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['totalAvailable'] = totalAvailable;
+    if (used != null) {
+      data['used'] = used;
+    }
+    return data;
+  }
+}
+
+class MonthlyChallenge {
+  final List<dynamic>? completedDays;
+
+  MonthlyChallenge({
+    this.completedDays,
+  });
+
+  factory MonthlyChallenge.fromJson(Map<String, dynamic> json) {
+    return MonthlyChallenge(
+      completedDays: json['completedDays'] != null
+          ? List<dynamic>.from(json['completedDays'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (completedDays != null) {
+      data['completedDays'] = completedDays;
+    }
+    return data;
+  }
+}
+
+class Theme {
+  final String? id;
+  final List<String>? backgroundGradient;
+  final bool? deleted;
+  final String? name;
+  final String? primaryColor;
+  final String? secondaryColor;
+  final String? aspect;
+  final String? createdOn;
+  final String? updatedOn;
+  final int? v;
+
+  Theme({
+    this.id,
+    this.backgroundGradient,
+    this.deleted,
+    this.name,
+    this.primaryColor,
+    this.secondaryColor,
+    this.aspect,
+    this.createdOn,
+    this.updatedOn,
+    this.v,
+  });
+
+  factory Theme.fromJson(Map<String, dynamic> json) {
+    return Theme(
+      id: json['_id'],
+      backgroundGradient: json['backgroundGradient'] != null
+          ? List<String>.from(json['backgroundGradient'])
+          : null,
+      deleted: json['deleted'],
+      name: json['name'],
+      primaryColor: json['primaryColor'],
+      secondaryColor: json['secondaryColor'],
+      aspect: json['aspect'],
+      createdOn: json['createdOn'],
+      updatedOn: json['updatedOn'],
+      v: json['__v'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = id;
+    if (backgroundGradient != null) {
+      data['backgroundGradient'] = backgroundGradient;
+    }
+    data['deleted'] = deleted;
+    data['name'] = name;
+    data['primaryColor'] = primaryColor;
+    data['secondaryColor'] = secondaryColor;
+    data['aspect'] = aspect;
+    data['createdOn'] = createdOn;
+    data['updatedOn'] = updatedOn;
+    data['__v'] = v;
     return data;
   }
 }

@@ -1,6 +1,6 @@
-// profile_screen_view2.dart
 import 'dart:io';
 
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +35,13 @@ class ProfileScreenView2 extends GetView<ProfileScreenController> {
         return Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage),
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(bgImage),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          decoration: ThemeService.getBackgroundDecoration(),
           child:
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.h),

@@ -140,7 +140,7 @@ class AffirmationReminderController extends GetxController {
 
         AppConstants.showSnackbar(
           headText: 'Success',
-          content: 'Affirmation settings saved successfully',
+          content: 'Data saved successfully',
         );
       } else {
         throw Exception(response["message"]);

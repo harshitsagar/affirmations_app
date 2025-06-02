@@ -26,6 +26,8 @@ mixin ApiConstants {
   static const String userDetails = 'user/details';
   static const String editProfile = 'user/update';
   static const String home = 'user/home';
+  static const String markAsRead = 'user/markAsRead';
+  static const String guestUser = 'user/guestUser';
 
   // setup profile ....
   static const String listTheme = 'user/listTheme';
@@ -33,5 +35,11 @@ mixin ApiConstants {
   // journal .....
   static const String journalDetails = 'user/journalDetails';
   static const String addJournal = 'user/addJournal';
+
+  // streak .....
+  static const String monthlyStreakDetails = 'streak/monthlyDetails';
+  static const String freezeStreak = 'streak/freeze';
+  static const String restoreStreak = 'streak/restore';
+  static const String buyRestore = 'streak/buyRestore';
 
 }

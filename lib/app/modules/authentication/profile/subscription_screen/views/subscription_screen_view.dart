@@ -1,7 +1,7 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/subscription_screen_controller.dart';
@@ -15,12 +15,13 @@ class SubscriptionScreenView extends GetView<SubscriptionScreenController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.contain,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.contain,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 20.h),

@@ -1,10 +1,11 @@
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
 import 'package:affirmations_app/app/modules/screens/user/streak/streak_screen/controllers/streak_screen_controller.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:affirmations_app/app/data/components/images_path.dart';
@@ -16,12 +17,13 @@ class StreakScreenView extends GetView<StreakScreenController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
@@ -241,20 +243,27 @@ class StreakScreenView extends GetView<StreakScreenController> {
                             Positioned(
                               top: 45.h,
                               left: 65.w,
-                              child: Container(
-                                width: 24.w,
-                                height: 24.h,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFFF92D2),
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  '7',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (Get.find<HomeController>().isGuestUser.value) {
+                                    Get.find<HomeController>().showGuestPopup();
+                                  }
+                                },
+                                child: Container(
+                                  width: 24.w,
+                                  height: 24.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFFF92D2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '7',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -263,20 +272,27 @@ class StreakScreenView extends GetView<StreakScreenController> {
                             Positioned(
                               top: 45.h,
                               left: 130.w,
-                              child: Container(
-                                width: 24.w,
-                                height: 24.h,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFFF92D2),
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  '14',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (Get.find<HomeController>().isGuestUser.value) {
+                                    Get.find<HomeController>().showGuestPopup();
+                                  }
+                                },
+                                child: Container(
+                                  width: 24.w,
+                                  height: 24.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFFF92D2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '14',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -285,20 +301,27 @@ class StreakScreenView extends GetView<StreakScreenController> {
                             Positioned(
                               top: 45.h,
                               right: 12.w,
-                              child: Container(
-                                width: 24.w,
-                                height: 24.h,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFFF92D2),
-                                  shape: BoxShape.circle,
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  '30',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (Get.find<HomeController>().isGuestUser.value) {
+                                    Get.find<HomeController>().showGuestPopup();
+                                  }
+                                },
+                                child: Container(
+                                  width: 24.w,
+                                  height: 24.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFFFF92D2),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    '30',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -551,5 +574,6 @@ class StreakScreenView extends GetView<StreakScreenController> {
     if (controller.brokenDates.contains(date)) return Colors.brown;
     return Colors.transparent;
   }
+
 
 }

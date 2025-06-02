@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/modules/screens/common/app_settings/affirmation_types/controllers/affirmation_types_controller.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,12 +24,13 @@ class AffirmationTypesView extends GetView<AffirmationTypesController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),

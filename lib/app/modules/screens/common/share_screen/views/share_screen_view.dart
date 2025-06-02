@@ -9,14 +9,17 @@ import '../controllers/share_screen_controller.dart';
 class ShareScreenView extends GetView<ShareScreenController> {
 
   final String? affirmation;
+  final Function(bool)? onShared;
 
-  const ShareScreenView({super.key, this.affirmation});
+  const ShareScreenView({super.key, this.affirmation, this.onShared});
 
   @override
   Widget build(BuildContext context) {
 
+    Get.put(ShareScreenController());
+
     if (affirmation != null) {
-      controller.initializeContent(affirmation!);
+      controller.initializeContent(affirmation!, onSharedCallback: onShared);
     }
 
     return Container(

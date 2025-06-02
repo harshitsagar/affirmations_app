@@ -21,11 +21,19 @@ class ThemesView extends GetView<ThemesController> {
 
     return Scaffold(
       body: Obx(() {
-        final currentTheme = controller.selectedTheme.value;
+        final currentPreviewTheme = controller.selectedTheme.value ?? ThemeService.getDefaultTheme();
         return Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: ThemeService.getBackgroundDecoration(currentTheme),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: currentPreviewTheme.backgroundGradient!
+                  .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
+                  .toList(),
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +60,6 @@ class ThemesView extends GetView<ThemesController> {
 
                 // Theme Options
                 Obx(() {
-
                   if (controller.loadingStatus.value == LoadingStatus.loading) {
                     return Center(
                       child: Platform.isAndroid
@@ -67,61 +74,68 @@ class ThemesView extends GetView<ThemesController> {
                     );
                   }
 
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Wrap(
-                      spacing: 10.w,
-                      runSpacing: 10.h,
-                      alignment: WrapAlignment.center,
-                      children: controller.freeThemeList.map((theme) {
-                        bool isSelected = controller.selectedTheme.value?.sId == theme.sId;
+                  return Expanded(
+                    flex: 9,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, // 3 items per row
+                          crossAxisSpacing: 10.w,
+                          mainAxisSpacing: 10.h,
+                          childAspectRatio: 0.6, // Adjust this for item proportions
+                        ),
+                        itemCount: controller.availableThemes.length,
+                        itemBuilder: (context, index) {
+                          final theme = controller.availableThemes[index];
+                          bool isSelected = controller.selectedTheme.value?.sId == theme.sId;
 
-                        return GestureDetector(
-                          onTap: () {
-                            controller.selectTheme(theme);
-                            ThemeService.applyTheme(theme);
-                          },
-                          child: Container(
-                            height: 160.h,
-                            width: 105.w,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
-                              gradient: LinearGradient(
-                                colors: theme.backgroundGradient!
-                                    .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-                                    // .map((color) => Color(int.parse('0xFF$color')))
-                                    .toList(),
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
+                          return GestureDetector(
+                            onTap: () {
+                              controller.selectTheme(theme);
+                              ThemeService.applyTheme(theme);
+                            },
+                            child: Container(
+                              height: 160.h,
+                              width: 105.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12.r),
+                                gradient: LinearGradient(
+                                  colors: theme.backgroundGradient!
+                                      .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
+                                      .toList(),
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      "Aa",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 25.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  if (isSelected)
+                                    Positioned(
+                                      top: 5.h,
+                                      right: 8.w,
+                                      child: Image.asset(
+                                        greenTickIcon,
+                                        height: 30.h,
+                                        width: 30.w,
+                                      ),
+                                    ),
+                                ],
                               ),
                             ),
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: Text(
-                                    "Aa",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 25.sp,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                                if (isSelected)
-                                  Positioned(
-                                    top: 5.h,
-                                    right: 8.w,
-                                    child: Image.asset(
-                                      greenTickIcon,
-                                      height: 30.h,
-                                      width: 30.w,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                          );
+                        },
+                      ),
                     ),
                   );
                 }),

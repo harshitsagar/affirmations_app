@@ -1,51 +1,74 @@
-import 'package:affirmations_app/app/modules/authentication/profile/themes/controllers/themes_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:affirmations_app/app/data/models/themeListModel.dart';
+import 'package:affirmations_app/app/data/models/user_model.dart';
+import 'package:affirmations_app/app/helpers/services/local_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ThemeService {
-
-  static BoxDecoration getBackgroundDecoration(ThemeListModelData? theme) {
-    if (theme == null || theme.backgroundGradient == null) {
-      return const BoxDecoration(
-        color: Colors.white,
+  static ThemeListModelData? get currentTheme {
+    // First try to get from user data if available
+    final user = LocalStorage.getUserDetailsData();
+    if (user?.currentTheme != null) {
+      return ThemeListModelData(
+        sId: user!.currentTheme!.id,
+        backgroundGradient: user.currentTheme!.backgroundGradient,
+        name: user.currentTheme!.name,
+        aspect: user.currentTheme!.aspect,
       );
     }
 
+    // Fallback to local storage
+    final themeData = LocalStorage.prefs.read('selectedTheme');
+    if (themeData != null) return ThemeListModelData.fromJson(themeData);
+
+    // Fallback to default theme if nothing is selected
+    return getDefaultTheme();
+  }
+
+  static ThemeListModelData getDefaultTheme() {
+    return ThemeListModelData(
+      sId: "6820df0309f40900139c9e2d",
+      backgroundGradient: ["#FFF6E3", "#FFCCEA", "#CDC1FF", "#FC938F"],
+      name: "sunflower",
+      aspect: "default",
+      deleted: false,
+      primaryColor: "#123456",
+      secondaryColor: "#123456",
+    );
+  }
+
+  static BoxDecoration getBackgroundDecoration() {
+    final theme = currentTheme;
     return BoxDecoration(
       gradient: LinearGradient(
-        colors: theme.backgroundGradient!
-            .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-            .toList(),
+        colors: theme?.backgroundGradient
+            ?.map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
+            .toList() ??
+            getDefaultTheme()
+                .backgroundGradient!
+                .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
+                .toList(),
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
     );
   }
 
-  static ThemeData getThemeData(ThemeListModelData? theme) {
-
-    return ThemeData.light();
-
-    // return ThemeData(
-    //   primaryColor: Color(int.parse(theme.primaryColor!.replaceFirst('#', '0xFF'))),
-    //   colorScheme: ColorScheme.light(
-    //       primary: Color(int.parse(theme.primaryColor!.replaceFirst('#', '0xFF'))),
-    //       secondary: Color(int.parse(theme.secondaryColor!.replaceFirst('#', '0xFF')))),
-    // );
-    // // Add other theme customizations as needed
-    // // );
+  static void applyTheme(ThemeListModelData theme) {
+    // Save to local storage
+    LocalStorage.prefs.write('selectedTheme', theme.toJson());
+    Get.forceAppUpdate(); // Force UI to refresh with new theme
   }
 
-  static void applyTheme(ThemeListModelData? theme) {
-    if (theme != null) {
-      // Save to GetX for immediate access
-
-      Get.find<ThemesController>().selectedTheme(theme);
-      // Change the theme
-      // Get.changeTheme(getThemeData(theme));
-      // Force UI update
-      Get.forceAppUpdate();
+  static void updateThemeFromUserData(User user) {
+    if (user.currentTheme != null) {
+      final theme = ThemeListModelData(
+        sId: user.currentTheme!.id,
+        backgroundGradient: user.currentTheme!.backgroundGradient,
+        name: user.currentTheme!.name,
+        aspect: user.currentTheme!.aspect,
+      );
+      applyTheme(theme);
     }
   }
 }

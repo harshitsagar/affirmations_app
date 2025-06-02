@@ -1,3 +1,4 @@
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/modules/screens/user/my_List/myList/views/addNewList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +8,6 @@ import '../../../../../../data/config.dart';
 import '../../../../../../data/models/affirmation_list_model.dart';
 import '../controllers/my_list_controller.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
-import 'package:affirmations_app/app/data/components/images_path.dart';
 
 class MyListView extends GetView<MyListController> {
   const MyListView({super.key});
@@ -18,12 +18,13 @@ class MyListView extends GetView<MyListController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),

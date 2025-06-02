@@ -19,11 +19,30 @@ class AppThemesView extends GetView<AppThemesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        final currentTheme = controller.selectedTheme.value;
+        // final currentPreviewTheme = controller.selectedTheme.value;
+        final currentPreviewTheme = controller.selectedTheme.value ?? ThemeService.getDefaultTheme();
         return Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: ThemeService.getBackgroundDecoration(currentTheme),
+          // decoration: currentPreviewTheme != null
+          //     ? BoxDecoration(
+          //   gradient: LinearGradient(
+          //     colors: currentPreviewTheme.backgroundGradient!
+          //         .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
+          //         .toList(),
+          //     begin: Alignment.topLeft,
+          //     end: Alignment.bottomRight,
+          //   ),
+          // ) : ThemeService.getBackgroundDecoration(),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: currentPreviewTheme.backgroundGradient!
+                  .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
+                  .toList(),
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
@@ -71,11 +90,11 @@ class AppThemesView extends GetView<AppThemesController> {
                           mainAxisSpacing: 10.h,
                           childAspectRatio: 0.62,
                         ),
-                        itemCount: controller.themeList.length,
+                        itemCount: controller.availableThemes.length,
                         itemBuilder: (context, index) {
-                          final theme = controller.themeList[index];
+                          final theme = controller.availableThemes[index];
                           bool isSelected = controller.selectedTheme.value?.sId == theme.sId;
-                          bool isLocked = !controller.isPremium.value && theme.aspect == 'premium';
+                          bool isLocked = theme.aspect == 'premium' && !controller.isPremium.value;
 
                           return GestureDetector(
                             onTap: () {
@@ -152,7 +171,7 @@ class AppThemesView extends GetView<AppThemesController> {
 
                   // Save Button
                   Padding(
-                    padding: EdgeInsets.only(top: 16.h),
+                    padding: EdgeInsets.only(bottom: 8.h, top: 8.h),
                     child: ElevatedButton(
                       onPressed: controller.saveTheme,
                       style: ElevatedButton.styleFrom(

@@ -1,9 +1,22 @@
+import 'package:affirmations_app/app/helpers/services/purchase_service.dart';
 import 'package:affirmations_app/app/widgets/detailsPage.dart';
 import 'package:get/get.dart';
+import '../../../../../../helpers/constants/purchase_constants.dart';
 
 class PurchaseScreenController extends GetxController {
+
+  final purchaseService = Get.find<PurchaseService>();
   final String type = Get.arguments['type'] ?? 'Freeze'; // 'Freeze' or 'Restore'
   final selectedPackage = RxInt(-1); // -1 means nothing selected initially
+
+  String get productId {
+    switch (selectedPackage.value) {
+      case 0: return singlePurchaseId;
+      case 1: return bundlePurchaseId;
+      case 2: return completePurchaseId;
+      default: throw Exception('Invalid package selected');
+    }
+  }
 
   @override
   void onInit() {
@@ -19,9 +32,19 @@ class PurchaseScreenController extends GetxController {
   }
 
   void onPurchasePressed() {
-    // Handle purchase based on selected package
-    // This should integrate with your in-app purchase system
-    // For now, we'll just simulate a successful purchase
+
+    if (selectedPackage.value == -1) {
+      Get.snackbar('Error', 'Please select a package');
+      return;
+    }
+
+    purchaseService.purchaseProduct(
+      productId,
+      isFreeze: type == 'Freeze',
+      isRestore: type == 'Restore',
+    ).catchError((error) {
+      Get.snackbar('Error', 'Purchase failed: $error');
+    });
 
     final int freezeCount;
     final int restoreCount;

@@ -46,8 +46,6 @@ import '../modules/screens/common/app_settings/settings/bindings/settings_bindin
 import '../modules/screens/common/app_settings/settings/views/settings_view.dart';
 import '../modules/screens/common/share_screen/bindings/share_screen_binding.dart';
 import '../modules/screens/common/share_screen/views/share_screen_view.dart';
-import '../modules/screens/guest/bindings/guest_binding.dart';
-import '../modules/screens/guest/views/guest_view.dart';
 import '../modules/screens/onboarding/bindings/onboarding_binding.dart';
 import '../modules/screens/onboarding/views/onboarding_view.dart';
 import '../modules/screens/user/home/bindings/home_binding.dart';
@@ -152,11 +150,6 @@ class AppPages {
       name: _Paths.FAVORITES,
       page: () => const FavoritesView(),
       binding: FavoritesBinding(),
-    ),
-    GetPage(
-      name: _Paths.GUEST,
-      page: () => const GuestView(),
-      binding: GuestBinding(),
     ),
     GetPage(
       name: _Paths.SETTINGS,

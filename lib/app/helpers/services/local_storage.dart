@@ -87,6 +87,14 @@ class LocalStorage {
     return prefs.read("sleepStartTime");
   }
 
+  // Add to LocalStorage class
+  static setPremiumUser({bool value = true}) {
+    prefs.write("is_premium_user", value);
+  }
+
+  static bool isPremiumUser() {
+    return prefs.read("is_premium_user") ?? false;
+  }
 
   // Clear all data (logout)
   static clearData() {

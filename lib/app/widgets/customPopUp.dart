@@ -80,7 +80,7 @@ class CustomPopupDialog extends StatelessWidget {
                   ),
                   SizedBox(height: 12.h),
                   SizedBox(
-                    width: descriptionWidth ?? double.infinity,
+                    width: descriptionWidth ?? 280.w,
                     child: Text(
                       description,
                       textAlign: TextAlign.center,
@@ -180,7 +180,7 @@ class CustomPopupDialog extends StatelessWidget {
           ),
           if (showDivider)
             Container(
-              width: 1.5.w,
+              // width: 3.w,
               height: 44.h,
               color: Colors.grey.shade300,
             ),

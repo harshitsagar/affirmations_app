@@ -1,5 +1,6 @@
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,13 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage),
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(bgImage),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          decoration: ThemeService.getBackgroundDecoration(),
           child: NotificationListener<OverscrollIndicatorNotification>(
             onNotification: (notification) {
               notification.disallowIndicator();

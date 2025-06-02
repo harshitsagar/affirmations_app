@@ -7,9 +7,18 @@ class ShareScreenController extends GetxController {
   final RxBool isCopied = false.obs;
   final String defaultShareMessage = 'Check out this amazing app! 🌟\nhttps://yourapp.link';
   String currentContent = '';
+  Function(bool)? onShared;
 
-  void initializeContent(String content) {
+  void _handleShareSuccess() {
+    if (onShared != null) {
+      onShared!(true);
+    }
+    Get.back();
+  }
+
+  void initializeContent(String content, {Function(bool)? onSharedCallback}) {
     currentContent = content;
+    onShared = onSharedCallback;
   }
 
   String get _shareMessage {
@@ -25,6 +34,7 @@ class ShareScreenController extends GetxController {
     );
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
+      _handleShareSuccess();
     } else {
       _fallbackShare();
     }
@@ -35,6 +45,7 @@ class ShareScreenController extends GetxController {
     final uri = Uri.parse("https://wa.me/?text=${Uri.encodeComponent(_shareMessage)}");
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
+      _handleShareSuccess();
     } else {
       _fallbackShare();
     }

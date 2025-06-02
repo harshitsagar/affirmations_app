@@ -1,3 +1,5 @@
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,12 +35,13 @@ class HearAboutView extends GetView<HearAboutController> {
         return Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage),
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(bgImage),
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+          decoration: ThemeService.getBackgroundDecoration(),
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
@@ -56,7 +59,7 @@ class HearAboutView extends GetView<HearAboutController> {
                         onPressed: () => Get.back(),
                       ),
                       TextButton(
-                        onPressed: controller.saveHearAboutOptions,
+                        onPressed: () => Get.toNamed(Routes.SUBSCRIPTION_SCREEN),
                         child: Text(
                           'Skip',
                           style: GoogleFonts.inter(

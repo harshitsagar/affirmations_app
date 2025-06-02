@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/api_provider.dart';
+import 'package:affirmations_app/app/data/models/editHomeModel.dart';
 import 'package:affirmations_app/app/data/models/favList_model.dart';
 import 'package:affirmations_app/app/data/models/homeScreenModel.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
@@ -11,14 +12,19 @@ import 'package:affirmations_app/app/modules/screens/common/share_screen/views/s
 import 'package:affirmations_app/app/modules/screens/user/my_List/favorites/controllers/favorites_controller.dart';
 import 'package:affirmations_app/app/modules/screens/user/my_List/myList/controllers/my_list_controller.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
+import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
 import 'dart:math';
 
 class HomeController extends GetxController {
+
+  // for guest user ....
+  final isGuestUser = false.obs;
+  final guestAffirmations = <Affirmation>[].obs;
 
   // Affirmation data
   final currentAffirmation = Rx<Affirmation?>(null);
@@ -27,9 +33,16 @@ class HomeController extends GetxController {
   final favoriteAffirmations = <String>[].obs;
   final isLoading = false.obs;
 
+  // Add these new fields
+  final maxDailyAffirmations = 10.obs;
+  final currentPage = 1.obs;
+  final canLoadMore = true.obs;
+  final isExploring = false.obs;
+  final isGoalCompleted = false.obs;
+
   // Progress tracking
-  final currentAffirmationCount = 0.obs;
-  final dailyGoal = 10.obs;
+  final currentAffirmationCount = 1.obs;
+  final dailyGoal = 0.obs;
   final progressValue = 0.0.obs;
   final currentStreak = 0.obs;
   final streakProgress = 0.0.obs;
@@ -41,18 +54,13 @@ class HomeController extends GetxController {
 
   final likedAffirmationIds = <String>[].obs;
 
-  // Add these new fields
-  final targetCount = 0.obs;
-  final streakCount = 0.obs;
-  final journalPending = false.obs;
-
   final prefs = GetStorage();
 
   @override
   void onInit() {
     super.onInit();
     _initTts();
-    fetchAffirmations();
+    _checkGuestStatus();
     _showInitialJournalPopup();
 
     Get.lazyPut(() => AddEntryController());
@@ -60,29 +68,96 @@ class HomeController extends GetxController {
     Get.lazyPut(() => MyListController());
   }
 
-  // Update fetchAffirmations
-  Future<void> fetchAffirmations() async {
+  Future<void> _checkGuestStatus() async {
+    final accessToken = LocalStorage.getUserAccessToken();
+    if (accessToken == null || accessToken.isEmpty) {
+      isGuestUser.value = true;
+      dailyGoal.value = 10;
+      await fetchGuestAffirmations();
+    } else {
+      isGuestUser.value = false;
+      fetchAffirmations();
+    }
+  }
+
+  Future<void> fetchGuestAffirmations() async {
     try {
+      isLoading(true);
+      final response = await APIProvider().postAPICall(
+        ApiConstants.guestUser,
+        {}, // Empty body for guest user
+        {}, // No headers needed for guest
+      );
+
+      if (response.data["code"] == 100) {
+        final affirmations = (response.data["data"] as List)
+            .map((item) => Affirmation.fromJson(item))
+            .toList();
+        guestAffirmations.assignAll(affirmations);
+
+        if (guestAffirmations.isNotEmpty) {
+          currentAffirmation.value = guestAffirmations.first;
+        }
+      }
+    } catch (e) {
+      AppConstants.showSnackbar(
+        headText: "Error",
+        content: e.toString(),
+        position: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // Update fetchAffirmations
+  Future<void> fetchAffirmations({bool loadMore = false}) async {
+    try {
+      if (loadMore && !canLoadMore.value) return;
+
       isLoading(true);
       final accessToken = LocalStorage.getUserAccessToken();
 
+      // Reset goal completion state when loading new affirmations (not loadMore)
+      if (!loadMore) {
+        isGoalCompleted.value = false;
+        currentAffirmationCount.value = 1;
+      }
+
       final response = await APIProvider().postAPICall(
         ApiConstants.home,
-        {},
+        {
+          "page": loadMore ? currentPage.value + 1 : 1,
+          "limit": 10,
+        },
         {'Authorization': accessToken ?? ""},
       );
 
       if (response.data["code"] == 100) {
         final model = HomeScreenModel.fromJson(response.data);
+        dailyGoal.value = model.data.target ?? 10;
 
+        if (loadMore) {
+          affirmationsList.addAll(model.data.affirmations);
+          currentPage.value++;
+        } else {
+          affirmationsList.assignAll(model.data.affirmations);
+          currentPage.value = 1;
+        }
 
-        // Update affirmations list
-        affirmationsList.assignAll(model.data.affirmations);
+        canLoadMore.value = model.data.affirmations.isNotEmpty;
 
         if (affirmationsList.isNotEmpty) {
           currentIndex.value = 0;
           currentAffirmation.value = affirmationsList.first;
         }
+
+        // Only update streak if the value makes sense (not 0 when we expect increment)
+        if (!loadMore && (model.data.streakCount ?? 0) > 0) {
+          currentStreak.value = model.data.streakCount!;
+          streakProgress.value = min(currentStreak.value / 7.0, 1.0);
+        }
+
         await _fetchLikedAffirmations();
       }
     } catch (e) {
@@ -93,7 +168,6 @@ class HomeController extends GetxController {
       );
     } finally {
       isLoading(false);
-      _loadUserProgress();
     }
   }
 
@@ -118,31 +192,98 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> _markGoalAsRead() async {
+    try {
+      final accessToken = LocalStorage.getUserAccessToken();
+      if (accessToken == null) return;
+
+      final currentAffirmationId = currentAffirmation.value?.id;
+      if (currentAffirmationId == null) return;
+
+      final response = await APIProvider().formDataPostAPICall(
+        ApiConstants.markAsRead,
+        {
+          "affirmationRef": currentAffirmationId,
+        },
+        {'Authorization': accessToken},
+      );
+
+      print('******markAsRead response: ${response.toString()}');
+
+      if (response["code"] == 100) {
+        print('********Current streak before markAsRead: ${currentStreak.value}');
+        final model = EditHomeModel.fromJson(response);
+        print('*******Received streakCount from markAsRead: ${model.data.streakCount}');
+        // Only update streak if the new value is greater than current
+        if (model.data.streakCount != null && model.data.streakCount! > currentStreak.value) {
+          currentStreak.value = model.data.streakCount!;
+          streakProgress.value = min(currentStreak.value / 7.0, 1.0);
+        }
+        // Else keep the current streak value
+      } else {
+        throw Exception(response["message"] ?? "Failed to mark goal as read");
+      }
+    } catch (e) {
+      AppConstants.showSnackbar(
+        headText: "Error",
+        content: "Failed to update streak: ${e.toString()}",
+        position: SnackPosition.BOTTOM,
+      );
+      isGoalCompleted.value = false;
+    }
+  }
+
   // Add this new method to handle page changes
   void handlePageChange(int newIndex) {
+
+    if (isGuestUser.value && newIndex >= 1) {
+      showGuestPopup();
+      return;
+    }
+
     if (isAudioPlaying.value) {
       flutterTts.stop();
       isAudioPlaying.value = false;
     }
 
-    if (newIndex > currentIndex.value) {
-      currentAffirmationCount.value =
-          min(currentAffirmationCount.value + 1, dailyGoal.value);
+    // Load more affirmations when reaching near the end
+    if (newIndex >= affirmationsList.length - 3 && canLoadMore.value) {
+      fetchAffirmations(loadMore: true);
+    }
+
+    // Update progress only if goal isn't completed
+    if (newIndex > currentIndex.value && !isGoalCompleted.value) {
+      currentAffirmationCount.value = min(currentAffirmationCount.value + 1, dailyGoal.value);
       updateProgress();
 
-      if (currentAffirmationCount.value == dailyGoal.value) {
+      if (currentAffirmationCount.value >= dailyGoal.value) {
         _handleGoalCompletion();
       }
     }
 
     currentIndex.value = newIndex;
-    currentAffirmation.value = affirmationsList[newIndex];
+    currentAffirmation.value = isGuestUser.value
+        ? guestAffirmations[0] // Always show first affirmation for guest
+        : affirmationsList[newIndex];
   }
 
-  void _loadUserProgress() {
-    currentStreak.value = 0;
-    streakProgress.value = 0.75;
-    updateProgress();
+  void showGuestPopup() {
+    Get.dialog(
+      CustomPopupDialog(
+        title: 'Please Login or Signup',
+        description:
+        "You're currently browsing as a guest. Please login to access this feature.",
+        primaryButtonText: 'Login',
+        secondaryButtonText: 'Signup',
+        onPrimaryPressed: () {
+          Get.offAllNamed(Routes.LOGIN);
+        },
+        onSecondaryPressed: () {
+          Get.offAllNamed(Routes.SIGNUP);
+        },
+      ),
+      barrierDismissible: false,
+    );
   }
 
   void updateProgress() {
@@ -176,12 +317,19 @@ class HomeController extends GetxController {
     currentAffirmation.value = affirmationsList[currentIndex.value];
   }
 
-  void _handleGoalCompletion() {
-    currentStreak.value++;
-    updateProgress();
-    showGoalCompleteDialog();
-    _showPostGoalJournalPopup();
+  // Update the _handleGoalCompletion method
+  void _handleGoalCompletion() async {
+    if (!isExploring.value &&
+        currentAffirmationCount.value >= dailyGoal.value &&
+        !isGoalCompleted.value) {
+      isGoalCompleted.value = true;
+      // currentStreak.value++;
+      // streakProgress.value = min(currentStreak.value / 7.0, 1.0);
+      await _markGoalAsRead();
+      showGoalCompleteDialog();
+    }
   }
+
 
   void _showInitialJournalPopup() async {
     await Future.delayed(const Duration(milliseconds: 500));
@@ -206,26 +354,13 @@ class HomeController extends GetxController {
     );
   }
 
-  // In HomeController class
-  /*
-  void toggleFavorite() {
-    final current = currentAffirmation.value;
-    if (favoriteAffirmations.contains(current)) {
-      favoriteAffirmations.remove(current);
-    } else {
-      favoriteAffirmations.add(current);
+  Future<void> toggleFavorite() async {
+
+    if (isGuestUser.value) {
+      showGuestPopup();
+      return;
     }
 
-    // Update MyListController with the current favorites
-    final myListController = Get.put(MyListController());
-    myListController.favoriteAffirmations.assignAll(favoriteAffirmations);
-    myListController.update(); // Force UI update
-
-  }
-
-   */
-
-  Future<void> toggleFavorite() async {
     try {
       if (currentAffirmation.value == null) return;
       final currentId = currentAffirmation.value!.id;
@@ -340,6 +475,13 @@ class HomeController extends GetxController {
   }
 
   Future<void> toggleAudio() async {
+
+    // Check if user is guest
+    if (isGuestUser.value) {
+      showGuestPopup();
+      return;
+    }
+
     try {
       if (isAudioMuted.value) {
         // Unmute and start playing
@@ -364,53 +506,86 @@ class HomeController extends GetxController {
   }
 
   Future<void> _speakCurrentAffirmation() async {
-    if (currentAffirmation.value?.text?.isEmpty ?? true) return;
-    isAudioPlaying.value = true;
-    await flutterTts.speak(currentAffirmation.value!.text!);
-  }
 
+    // Check if user is guest
+    if (isGuestUser.value) {
+      showGuestPopup();
+      return;
+    }
+
+    if (currentAffirmation.value?.text.isEmpty ?? true) return;
+    isAudioPlaying.value = true;
+    await flutterTts.speak(currentAffirmation.value!.text);
+  }
 
   void showGoalCompleteDialog() {
     Get.dialog(
-      AlertDialog(
-        title: const Text("Daily Goal Reached!"),
-        content: const Text("You've completed your affirmations for today."),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-              dailyGoal.value += 5;
-              updateProgress();
-            },
-            child: const Text("Continue"),
-          ),
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text("Done"),
-          ),
-        ],
+      CustomPopupDialog(
+        title: 'Goal Completed!',
+        description: 'You have met your daily affirmation goal! Want to explore more? You can increase your goal to keep going, and it will be updated for your daily streak too.',
+        primaryButtonText: 'Explore More',
+        singleButtonMode: true,
+        descriptionWidth: 250.w,
+        onPrimaryPressed: () {
+          Get.back();
+          // Set exploring mode to true
+          isExploring.value = true;
+          // Load more affirmations
+          fetchAffirmations(loadMore: true);
+        },
       ),
+      barrierDismissible: false,
     );
   }
 
   // Navigation methods
   void navigateToMyList() {
+
+    if (isGuestUser.value) {
+      Get.toNamed(Routes.MY_LIST);
+      return;
+    }
+
     Get.toNamed(Routes.MY_LIST);
   }
 
   void navigateToJournalHome() {
+
+    if (isGuestUser.value) {
+      Get.toNamed(Routes.Journal_Home);
+      return;
+    }
+
     Get.toNamed(Routes.Journal_Home);
   }
 
   void navigateToSettings() {
+
+    if (isGuestUser.value) {
+      showGuestPopup();
+      return;
+    }
+
     Get.toNamed(Routes.SETTINGS);
   }
 
   void navigateToStreakScreen() {
+
+    if (isGuestUser.value) {
+      Get.toNamed(Routes.STREAK_SCREEN);
+      return;
+    }
+
     Get.toNamed(Routes.STREAK_SCREEN);
   }
 
   void showShareBottomSheet() {
+
+    if (isGuestUser.value) {
+      showGuestPopup();
+      return;
+    }
+
     Get.bottomSheet(
       ShareScreenView(),
       isScrollControlled: true,

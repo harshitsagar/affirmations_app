@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/modules/authentication/profile/affirmation_reminder/views/affirmation_reminder_view.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,12 +26,13 @@ class AffirmationsView extends GetView<AffirmationsController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),

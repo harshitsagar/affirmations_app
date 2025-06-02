@@ -71,7 +71,8 @@ class HearAboutController extends GetxController {
       );
 
       if (response["code"] == 100) {
-        await LocalStorage.setProfileCompleted();
+        // Mark profile as completed before going to subscription
+        await LocalStorage.setProfileCompleted(value: true);
         Get.toNamed(Routes.SUBSCRIPTION_SCREEN);
       } else {
         throw Exception(response["message"] ?? "Failed to save selection");

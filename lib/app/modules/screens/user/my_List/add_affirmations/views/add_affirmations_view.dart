@@ -1,5 +1,6 @@
 // add_affirmations_view.dart
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
 import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/views/addAffirmation_bottomsheet.dart';
 import 'package:affirmations_app/app/modules/screens/user/my_List/add_affirmations/views/deletePopupScreen.dart';
@@ -21,12 +22,13 @@ class AddAffirmationsView extends GetView<AddAffirmationsController> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Column(
             children: [

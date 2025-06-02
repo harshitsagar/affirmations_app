@@ -4,6 +4,7 @@ import 'package:affirmations_app/app/data/models/journalDetailsModel.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:affirmations_app/app/helpers/services/local_storage.dart';
+import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
 import 'package:affirmations_app/app/modules/screens/user/journal/filter/controllers/filter_controller.dart';
 import 'package:affirmations_app/app/modules/screens/user/journal/filter/views/filter_view.dart';
 import 'package:flutter/material.dart';
@@ -216,6 +217,12 @@ class JournalHomeController extends GetxController {
   }
 
   void selectMood(String mood) {
+
+    if (Get.find<HomeController>().isGuestUser.value) {
+      Get.find<HomeController>().showGuestPopup();
+      return;
+    }
+
     selectedMood.value = mood;
   }
 
@@ -224,6 +231,12 @@ class JournalHomeController extends GetxController {
   }
 
   Future<void> submitJournalEntry() async {
+
+    if (Get.find<HomeController>().isGuestUser.value) {
+      Get.find<HomeController>().showGuestPopup();
+      return;
+    }
+
     if (selectedDate.value == null || selectedMood.value == null) {
       AppConstants.showSnackbar(
         headText: "Error",

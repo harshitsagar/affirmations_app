@@ -1,5 +1,4 @@
 import 'package:affirmations_app/app/helpers/services/local_storage.dart';
-import 'package:affirmations_app/app/modules/screens/onboarding/views/onboarding_view.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 

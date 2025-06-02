@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:affirmations_app/app/helpers/services/social_auth.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +25,13 @@ class LoginView extends GetView<LoginController> {
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(bgImage), // Background Image
-              fit: BoxFit.cover, // Cover the full screen
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: AssetImage(bgImage), // Background Image
+          //     fit: BoxFit.cover, // Cover the full screen
+          //   ),
+          // ),
+          decoration: ThemeService.getBackgroundDecoration(),
           child: SafeArea(
             child: NotificationListener<OverscrollIndicatorNotification>(
               onNotification: (OverscrollIndicatorNotification notification) {
@@ -263,7 +265,7 @@ class LoginView extends GetView<LoginController> {
                     SizedBox(height: 24.h),
 
                     GestureDetector(
-                      onTap: () => Get.toNamed('/guest'),
+                      onTap: () => Get.offAllNamed(Routes.HOME),
                       child: Center(
                         child: Text(
                           "Continue as Guest",

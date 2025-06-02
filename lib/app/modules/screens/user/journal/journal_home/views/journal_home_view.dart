@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:affirmations_app/app/data/components/images_path.dart';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,12 +22,13 @@ class JournalHomeView extends GetView<JournalHomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgImage2),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: const BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage2),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
         child: SafeArea(
           child: Column(
             children: [
@@ -87,6 +94,21 @@ class JournalHomeView extends GetView<JournalHomeController> {
           SizedBox(
             height: 200.h,
             child: Obx(() {
+
+              // Show loader while loading
+              if (controller.loadingStatus.value == LoadingStatus.loading) {
+                return Center(
+                  child: Platform.isAndroid
+                      ? CircularProgressIndicator(
+                    strokeWidth: 4.w,
+                    color: Colors.black,
+                  )
+                      : CupertinoActivityIndicator(
+                    color: Colors.black,
+                    radius: 20.r,
+                  ),
+                );
+              }
 
               final minDate = controller.chartData.isNotEmpty
                   ? controller.chartData.first.date
@@ -343,6 +365,19 @@ class JournalHomeView extends GetView<JournalHomeController> {
           SizedBox(height: 8.h),
           TextFormField(
             controller: controller.notesController,
+            onTap: () {
+              if (Get.find<HomeController>().isGuestUser.value) {
+                Get.find<HomeController>().showGuestPopup();
+              }
+            },
+            onChanged: (value) {
+              if (Get.find<HomeController>().isGuestUser.value) {
+                Get.find<HomeController>().showGuestPopup();
+                controller.notesController.clear(); // Clear any input
+              } else {
+                controller.updateNotes(value);
+              }
+            },
             maxLines: 4,
             maxLength: 100,
             decoration: InputDecoration(
@@ -361,7 +396,6 @@ class JournalHomeView extends GetView<JournalHomeController> {
               contentPadding: EdgeInsets.all(16.r),
               counterText: '', // hides default counter
             ),
-            onChanged: (value) => controller.updateNotes(value),
           ),
           SizedBox(height: 30.h),
           Container(
