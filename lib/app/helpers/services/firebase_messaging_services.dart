@@ -46,7 +46,7 @@ class NotificationUtils {
 
     log("initializationSettingsAndroid----------------initializationSettingsAndroid");
     initializationSettingsAndroid =
-    const AndroidInitializationSettings('drawable/launcher_icon');
+    const AndroidInitializationSettings('launcher_icon');
 
     DarwinInitializationSettings initializationSettingsIOS =
     DarwinInitializationSettings(
@@ -197,9 +197,8 @@ class NotificationUtils {
     }
   }
   /// Handle notification redirection based on type
-  void handleNotificationRedirection(
-      Map<String, dynamic> data) {
-    int type = data['type'] ?? 0;
+  void handleNotificationRedirection(Map<String, dynamic> data) {
+    int type = int.tryParse(data['type'].toString()) ?? 0;
 
     switch (type) {
       case 1: // Admin Notification
@@ -220,10 +219,17 @@ class NotificationUtils {
   void notificationListeners() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       log("Foreground notification received: ${message.data}");
+
+      // Safely parse title/body
+      String title = message.notification?.title ??
+          message.data['title'] ?? 'Notification';
+      String body = message.notification?.body ??
+          message.data['text'] ?? 'You have a new notification.';
+
       displayLocalNotification(
         id: message.hashCode,
-        title: message.notification?.title ?? "Notification",
-        body: message.notification?.body ?? "You have a new notification.",
+        title: title,
+        body: body,
         data: message.data,
       );
     });
@@ -240,4 +246,5 @@ class NotificationUtils {
       }
     });
   }
+
 }

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../helpers/services/social_auth.dart';
 import '../controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
@@ -216,6 +217,8 @@ class SignupView extends GetView<SignupController> {
                                 controller: controller.passwordController,
                                 obscureText: controller.isPasswordHidden.value,
                                 maxLength: 20, // Set maximum limit to 20 characters
+                                buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null, // Hides counter
+
                                 onChanged: (value) {
                                   if (value.isNotEmpty && value.length >= 6) {
                                     controller.formKey.currentState!.validate();
@@ -452,7 +455,7 @@ class SignupView extends GetView<SignupController> {
                     SizedBox(height: 30.h),
                     _buildDivider(),
                     SizedBox(height: 10.h),
-                    _buildSocialLoginButtons(),
+                    _buildSocialLoginButtons(context),
                     SizedBox(height: 25.h),
                     _buildLoginRedirect(),
                     SizedBox(height: 20.h),
@@ -491,7 +494,7 @@ class SignupView extends GetView<SignupController> {
     );
   }
 
-  Widget _buildSocialLoginButtons() {
+  Widget _buildSocialLoginButtons(BuildContext context) {
     return
       Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -502,7 +505,9 @@ class SignupView extends GetView<SignupController> {
             icon: Image.asset(apple, height: 48.h, width: 48.w),
           ),
         IconButton(
-          onPressed: controller.loginWithGoogle,
+          onPressed: () => SignInSocialAuth.signInWithGoogle(
+            context: context,
+          ),
           icon: Image.asset(google, height: 48.h, width: 48.w),
         ),
         IconButton(

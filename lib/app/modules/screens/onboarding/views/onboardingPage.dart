@@ -16,7 +16,7 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 30.h),
+      padding: EdgeInsets.only(top: 63.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

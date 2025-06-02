@@ -25,11 +25,13 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
+        child:
+        Padding(
           padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 60.h),
           child: Column(
             children: [
               const CustomAppBar(title: ""),
+
               SizedBox(height: 30.h),
 
               // Title Section

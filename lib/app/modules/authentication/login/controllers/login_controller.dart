@@ -30,7 +30,8 @@ class LoginController extends GetxController {
     required String password,
     required BuildContext context,
   }) async {
-    // String? fcmToken = LocalStorage.getFCMToken();
+
+    String? fcmToken = LocalStorage.getFCMToken();
     try {
       loadingStatus(LoadingStatus.loading);
       final response = await APIProvider().postAPICall(
@@ -39,7 +40,7 @@ class LoginController extends GetxController {
           "email": email.toString(),
           "password": password.toString(),
           "device": Platform.isAndroid ? "android" : "ios",
-          // "fcmToken": fcmToken.toString(),
+           "fcmToken": fcmToken.toString(),
           "timeZone": timeZone,
         },
         {
@@ -56,6 +57,7 @@ class LoginController extends GetxController {
         LocalStorage.setUserDetailsData(
           userDetailsData: data.user,
         );
+        print("Token saved: ${data.accessToken}");
 
         Future.delayed(
           const Duration(seconds: 1),
@@ -197,6 +199,7 @@ class LoginController extends GetxController {
         // Process successful login and save user data
         final UserModel userModel = UserModel.fromJson(response.data);
         var data = UserData.fromJson(response.data["data"]);
+        // sharedPref.setCurrentUser(userModel); // Now prefs is initialized
 
         LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
         LocalStorage.setUserDetailsData(
@@ -207,6 +210,15 @@ class LoginController extends GetxController {
           headText: "Successful",
           content: "Signing in...",
         );
+        // 🔥 Redirect to your desired screen
+        Get.offAllNamed(Routes.PROFILE_SCREEN);
+        // or check if profile setup is needed:
+        // bool isFirstLogin = await checkIfFirstLogin();
+        // if (isFirstLogin) {
+        //   Get.offAllNamed(Routes.HOME);
+        // } else {
+        //   Get.offAllNamed(Routes.PROFILE_SCREEN);
+        // }
         // Get.offNamedUntil(
         //   Routes.BOTTOM_NAVIGATION_BAR,
         //       (route) => false,
