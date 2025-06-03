@@ -62,8 +62,12 @@ class JournalHomeController extends GetxController {
     super.onInit();
     _initializeController();
 
-    // Set initial selected date to today
-    selectedDate.value = DateTime.now();
+    // Set initial selected date to today (normalized to midnight)
+    selectedDate.value = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+    );
     // Load today's entry if exists
     loadEntryForDate(selectedDate.value!);
   }
@@ -138,8 +142,14 @@ class JournalHomeController extends GetxController {
 
     // Process graph data from API
     for (var graphItem in model.data.graph) {
+      // Normalize date to midnight
+      final normalizedDate = DateTime(
+        graphItem.date.year,
+        graphItem.date.month,
+        graphItem.date.day,
+      );
       chartData.add(ChartData(
-        graphItem.date,
+        normalizedDate,
         graphItem.morning == "Not Recorded" ? null : graphItem.morning,
         graphItem.night == "Not Recorded" ? null : graphItem.night,
         morningNotes: graphItem.morningText.isNotEmpty ? graphItem.morningText : null,
@@ -185,7 +195,10 @@ class JournalHomeController extends GetxController {
   }
 
   void loadEntryForDate(DateTime date) {
-    selectedDate.value = date;
+    // Normalize date to midnight
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    selectedDate.value = normalizedDate;
+    print('loadEntryForDate: normalizedDate=$normalizedDate');
 
     // Reset form fields when loading a new date
     selectedMood.value = null;
@@ -193,10 +206,12 @@ class JournalHomeController extends GetxController {
     notesLength.value = 0;
 
     final index = chartData.indexWhere(
-      (item) =>
-          item.date.year == date.year &&
-          item.date.month == date.month &&
-          item.date.day == date.day,
+          (item) {
+        print('Comparing chartData date: ${item.date} with $normalizedDate');
+        return item.date.year == normalizedDate.year &&
+            item.date.month == normalizedDate.month &&
+            item.date.day == normalizedDate.day;
+      },
     );
 
     if (index != -1) {
@@ -205,9 +220,10 @@ class JournalHomeController extends GetxController {
       nightMood.value = data.nightMood;
       morningNotes.value = data.morningNotes ?? '';
       nightNotes.value = data.nightNotes ?? '';
-      selectedDateHasEntry.value =
-          data.morningMood != null || data.nightMood != null;
+      selectedDateHasEntry.value = true; // Entry exists, even if moods are null
+      print('Entry found: morningMood=${data.morningMood}, nightMood=${data.nightMood}, morningNotes=${data.morningNotes}, nightNotes=${data.nightNotes}');
     } else {
+      print('No entry found for $normalizedDate');
       resetEntryDetails();
     }
     update();

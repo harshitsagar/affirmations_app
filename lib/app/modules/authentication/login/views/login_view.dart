@@ -319,12 +319,12 @@ class LoginView extends GetView<LoginController> {
                           ),
                           icon: Image.asset(google, height: 48.h, width: 48.w),
                         ),
-                        IconButton(
-                          onPressed: () => SignInSocialAuth.signInWithFacebook(
-                            context: context,
-                          ),
-                          icon: Image.asset(facebook, height: 48.h, width: 48.w),
-                        ),
+                        // IconButton(
+                        //   onPressed: () => SignInSocialAuth.signInWithFacebook(
+                        //     context: context,
+                        //   ),
+                        //   icon: Image.asset(facebook, height: 48.h, width: 48.w),
+                        // ),
                       ],
                     ),
 

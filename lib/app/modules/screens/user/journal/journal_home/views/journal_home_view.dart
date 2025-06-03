@@ -96,6 +96,8 @@ class JournalHomeView extends GetView<JournalHomeController> {
                   controller.selectedDate.value != null
                       ? controller.selectedDate.value
                       : DateTime.now();
+
+              print('selected Date ------ > ${selectedDate}');
               // Show loader while loading
               if (controller.loadingStatus.value == LoadingStatus.loading) {
                 return Center(
@@ -283,7 +285,9 @@ class JournalHomeView extends GetView<JournalHomeController> {
                         final tappedDate = DateTime.fromMillisecondsSinceEpoch(
                           args.value.toInt(),
                         );
-                        controller.onDateTapped(tappedDate);
+                        // Normalize to midnight
+                        final normalizedDate = DateTime(tappedDate.year, tappedDate.month, tappedDate.day);
+                        controller.onDateTapped(normalizedDate);
                       }
                     },
                   ),
@@ -358,14 +362,22 @@ class JournalHomeView extends GetView<JournalHomeController> {
         return _buildNewJournalEntry();
       }
 
-      // Check if selected date has any entry
-      final hasEntry = controller.chartData.any(
-        (item) =>
-            item.date.year == controller.selectedDate.value!.year &&
-            item.date.month == controller.selectedDate.value!.month &&
-            item.date.day == controller.selectedDate.value!.day &&
-            (item.morningMood != null || item.nightMood != null),
+      // Normalize selected date to midnight
+      final normalizedSelectedDate = DateTime(
+        controller.selectedDate.value!.year,
+        controller.selectedDate.value!.month,
+        controller.selectedDate.value!.day,
       );
+
+      // Check if selected date has any entry in chartData
+      final hasEntry = controller.chartData.any(
+            (item) =>
+        item.date.year == normalizedSelectedDate.year &&
+            item.date.month == normalizedSelectedDate.month &&
+            item.date.day == normalizedSelectedDate.day,
+      );
+
+      print('HasEntry value ------> $hasEntry, selectedDate=$normalizedSelectedDate');
 
       return hasEntry ? _buildJournalEntryDetails() : _buildNewJournalEntry();
     });

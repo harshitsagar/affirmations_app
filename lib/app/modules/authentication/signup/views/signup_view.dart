@@ -512,10 +512,10 @@ class SignupView extends GetView<SignupController> {
           ),
           icon: Image.asset(google, height: 48.h, width: 48.w),
         ),
-        IconButton(
-          onPressed: controller.loginWithFacebook,
-          icon: Image.asset(facebook, height: 48.h, width: 48.w),
-        ),
+        // IconButton(
+        //   onPressed: controller.loginWithFacebook,
+        //   icon: Image.asset(facebook, height: 48.h, width: 48.w),
+        // ),
       ],
     );
   }
