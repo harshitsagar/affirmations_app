@@ -52,10 +52,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
-                    children: [
-                      _buildChartSection(),
-                      _buildMoodEntrySection(),
-                    ],
+                    children: [_buildChartSection(), _buildMoodEntrySection()],
                   ),
                 ),
               ),
@@ -77,49 +74,55 @@ class JournalHomeView extends GetView<JournalHomeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
-          Obx(() => Padding(
-            padding: EdgeInsets.only(left: 40.w, right: 20.w, top: 15.h),
-            child: Text(
-              controller.dateRangeText.value,
-              style: GoogleFonts.inter(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
+          Obx(
+            () => Padding(
+              padding: EdgeInsets.only(left: 40.w, right: 20.w, top: 15.h),
+              child: Text(
+                controller.dateRangeText.value,
+                style: GoogleFonts.inter(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          )),
+          ),
 
           SizedBox(height: 16.h),
 
           SizedBox(
             height: 200.h,
             child: Obx(() {
-
+              final selectedDate =
+                  controller.selectedDate.value != null
+                      ? controller.selectedDate.value
+                      : DateTime.now();
               // Show loader while loading
               if (controller.loadingStatus.value == LoadingStatus.loading) {
                 return Center(
-                  child: Platform.isAndroid
-                      ? CircularProgressIndicator(
-                    strokeWidth: 4.w,
-                    color: Colors.black,
-                  )
-                      : CupertinoActivityIndicator(
-                    color: Colors.black,
-                    radius: 20.r,
-                  ),
+                  child:
+                      Platform.isAndroid
+                          ? CircularProgressIndicator(
+                            strokeWidth: 4.w,
+                            color: Colors.black,
+                          )
+                          : CupertinoActivityIndicator(
+                            color: Colors.black,
+                            radius: 20.r,
+                          ),
                 );
               }
 
-              final minDate = controller.chartData.isNotEmpty
-                  ? controller.chartData.first.date
-                  : DateTime.now().subtract(const Duration(days: 6));
-              final maxDate = controller.chartData.isNotEmpty
-                  ? controller.chartData.last.date
-                  : DateTime.now();
+              final minDate =
+                  controller.chartData.isNotEmpty
+                      ? controller.chartData.first.date
+                      : DateTime.now().subtract(const Duration(days: 6));
+              final maxDate =
+                  controller.chartData.isNotEmpty
+                      ? controller.chartData.last.date
+                      : DateTime.now();
 
               return Stack(
                 children: [
-
                   SfCartesianChart(
                     plotAreaBorderWidth: 0,
                     plotAreaBorderColor: Colors.transparent,
@@ -129,7 +132,10 @@ class JournalHomeView extends GetView<JournalHomeController> {
                       dateFormat: DateFormat('d'),
                       interval: 1,
                       intervalType: DateTimeIntervalType.days,
-                      axisLine: const AxisLine(width: 1.5, color: Color(0xFFC4C4C4)),
+                      axisLine: const AxisLine(
+                        width: 1.5,
+                        color: Color(0xFFC4C4C4),
+                      ),
                       majorTickLines: const MajorTickLines(size: 0),
                       majorGridLines: const MajorGridLines(width: 0),
                       labelRotation: 0,
@@ -138,18 +144,22 @@ class JournalHomeView extends GetView<JournalHomeController> {
                       minimum: minDate,
                       maximum: maxDate,
                       axisLabelFormatter: (AxisLabelRenderDetails details) {
-                        final labelDate = DateTime.fromMillisecondsSinceEpoch(details.value.toInt());
-
-                        final isSelected = controller.selectedDate.value != null &&
-                            labelDate.year == controller.selectedDate.value!.year &&
-                            labelDate.month == controller.selectedDate.value!.month &&
-                            labelDate.day == controller.selectedDate.value!.day;
+                        final labelDate = DateTime.fromMillisecondsSinceEpoch(
+                          details.value.toInt(),
+                        );
+                        print('labelDate: $labelDate');
+                        final isSelected =
+                            selectedDate != null &&
+                            labelDate.year == selectedDate.year &&
+                            labelDate.month == selectedDate.month &&
+                            labelDate.day == selectedDate.day;
 
                         return ChartAxisLabel(
                           DateFormat('d').format(labelDate),
                           GoogleFonts.inter(
                             fontSize: 12.sp,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            fontWeight:
+                                isSelected ? FontWeight.w700 : FontWeight.w500,
                             color: isSelected ? Colors.black : Colors.grey,
                           ),
                         );
@@ -164,19 +174,33 @@ class JournalHomeView extends GetView<JournalHomeController> {
                         fontSize: 12.sp,
                         color: Colors.black,
                       ),
-                      axisLine: const AxisLine(width: 1.5, color: Color(0xFFC4C4C4)),
+                      axisLine: const AxisLine(
+                        width: 1.5,
+                        color: Color(0xFFC4C4C4),
+                      ),
                       majorTickLines: const MajorTickLines(size: 0),
                       majorGridLines: const MajorGridLines(width: 0),
                       axisLabelFormatter: (axisLabelRenderArgs) {
                         final value = axisLabelRenderArgs.value.toInt();
                         String label;
                         switch (value) {
-                          case 1: label = 'Tough'; break;
-                          case 2: label = 'Not Great'; break;
-                          case 3: label = 'Okay'; break;
-                          case 4: label = 'Doing Well'; break;
-                          case 5: label = 'Amazing'; break;
-                          default: label = '';
+                          case 1:
+                            label = 'Tough';
+                            break;
+                          case 2:
+                            label = 'Not Great';
+                            break;
+                          case 3:
+                            label = 'Okay';
+                            break;
+                          case 4:
+                            label = 'Doing Well';
+                            break;
+                          case 5:
+                            label = 'Amazing';
+                            break;
+                          default:
+                            label = '';
                         }
                         return ChartAxisLabel(
                           label,
@@ -188,71 +212,95 @@ class JournalHomeView extends GetView<JournalHomeController> {
                         );
                       },
                     ),
-                    legend: Legend(
-                      isVisible: false,
-                    ),
+                    legend: Legend(isVisible: false),
                     series: <CartesianSeries<ChartData, DateTime>>[
-                      if(controller.chartData.isNotEmpty) ...[
+                      if (controller.chartData.isNotEmpty) ...[
                         LineSeries<ChartData, DateTime>(
-                          dataSource: controller.chartData,
+                          dataSource:
+                              controller.chartData
+                                  .where(
+                                    (data) =>
+                                        controller.moodToNumber(
+                                          data.morningMood,
+                                        ) !=
+                                        null,
+                                  )
+                                  .toList(),
                           xValueMapper: (data, _) => data.date,
-                          yValueMapper: (data, _) => controller.moodToNumber(data.morningMood),
+                          yValueMapper:
+                              (data, _) =>
+                                  controller.moodToNumber(data.morningMood),
                           name: 'Morning',
                           color: const Color(0xFFFF92D2),
-                          markerSettings: const MarkerSettings(
+                          markerSettings: MarkerSettings(
                             isVisible: true,
                             shape: DataMarkerType.circle,
-                            borderWidth: 3,
+                            color: Color(0xFFFF92D2),
+                            // Fill color
+                            borderColor: Color(0xFFFF92D2),
+                            // Border same as fill for no outline effect
+                            borderWidth: 1, // Small border width
                           ),
                         ),
                         LineSeries<ChartData, DateTime>(
-                          dataSource: controller.chartData,
+                          dataSource:
+                              controller.chartData
+                                  .where(
+                                    (data) =>
+                                        controller.moodToNumber(
+                                          data.nightMood,
+                                        ) !=
+                                        null,
+                                  )
+                                  .toList(),
                           xValueMapper: (data, _) => data.date,
-                          yValueMapper: (data, _) => controller.moodToNumber(data.nightMood),
+                          yValueMapper:
+                              (data, _) =>
+                                  controller.moodToNumber(data.nightMood),
                           name: 'Night',
                           color: const Color(0xFFB4A4F9),
-                          markerSettings: const MarkerSettings(
+                          markerSettings: MarkerSettings(
                             isVisible: true,
                             shape: DataMarkerType.circle,
-                            borderWidth: 2,
+                            color: Color(0xFFB4A4F9),
+                            // Fill color
+                            borderColor: Color(0xFFB4A4F9),
+                            // Border same as fill for no outline effect
+                            borderWidth: 1, // Small border width
                           ),
+                        ),
+                      ] else ...[
+                        // Empty dummy series to render axes
+                        LineSeries<ChartData, DateTime>(
+                          dataSource: const [],
+                          xValueMapper: (_, __) => DateTime.now(),
+                          yValueMapper: (_, __) => 0,
                         ),
                       ],
                     ],
                     onAxisLabelTapped: (AxisLabelTapArgs args) {
                       if (args.axisName == 'primaryXAxis') {
-                        // Calculate the tapped date based on the axis position
-                        final minDate = controller.chartData.isNotEmpty
-                            ? controller.chartData.first.date
-                            : DateTime.now().subtract(const Duration(days: 6));
-                        final maxDate = controller.chartData.isNotEmpty
-                            ? controller.chartData.last.date
-                            : DateTime.now();
-
-                        final dateRange = maxDate.difference(minDate).inDays;
-                        final tappedDay = (args.value.toInt() * dateRange).round();
-                        final tappedDate = minDate.add(Duration(days: tappedDay));
-
+                        final tappedDate = DateTime.fromMillisecondsSinceEpoch(
+                          args.value.toInt(),
+                        );
                         controller.onDateTapped(tappedDate);
                       }
                     },
                   ),
-
-                  if (controller.chartData.isEmpty) ...[
-                    Center(
-                      child: Text(
-                        'No data',
-                        style: GoogleFonts.inter(
-                          fontSize: 16.sp,
-                          color: Colors.grey,
+                  if (controller.chartData.isEmpty)
+                    Positioned.fill(
+                      child: Center(
+                        child: Text(
+                          'No data',
+                          style: GoogleFonts.inter(
+                            fontSize: 12.sp,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
-                  ],
-
                 ],
               );
-
             }),
           ),
 
@@ -311,11 +359,13 @@ class JournalHomeView extends GetView<JournalHomeController> {
       }
 
       // Check if selected date has any entry
-      final hasEntry = controller.chartData.any((item) =>
-      item.date.year == controller.selectedDate.value!.year &&
-          item.date.month == controller.selectedDate.value!.month &&
-          item.date.day == controller.selectedDate.value!.day &&
-          (item.morningMood != null || item.nightMood != null));
+      final hasEntry = controller.chartData.any(
+        (item) =>
+            item.date.year == controller.selectedDate.value!.year &&
+            item.date.month == controller.selectedDate.value!.month &&
+            item.date.day == controller.selectedDate.value!.day &&
+            (item.morningMood != null || item.nightMood != null),
+      );
 
       return hasEntry ? _buildJournalEntryDetails() : _buildNewJournalEntry();
     });
@@ -339,7 +389,8 @@ class JournalHomeView extends GetView<JournalHomeController> {
           ),
           SizedBox(height: 20.h),
           Column(
-            children: controller.moods.map((mood) => _buildMoodOption(mood)).toList(),
+            children:
+                controller.moods.map((mood) => _buildMoodOption(mood)).toList(),
           ),
           SizedBox(height: 24.h),
           Row(
@@ -436,9 +487,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.6),
             borderRadius: BorderRadius.circular(30.r),
-            border: Border.all(
-              color: Colors.white,
-            ),
+            border: Border.all(color: Colors.white),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -446,9 +495,9 @@ class JournalHomeView extends GetView<JournalHomeController> {
               Text(
                 mood,
                 style: GoogleFonts.inter(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.black,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
                 ),
               ),
               Image.asset(
@@ -504,6 +553,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
           SizedBox(height: 20.h),
 
           Container(
+            margin: EdgeInsets.only(bottom: 16.h),
             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 16.h),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.3),
@@ -513,7 +563,6 @@ class JournalHomeView extends GetView<JournalHomeController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   'Morning Writing',
                   style: GoogleFonts.inter(
@@ -522,7 +571,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
                   ),
                 ),
 
-                SizedBox(height: 16.h,),
+                SizedBox(height: 16.h),
 
                 if (controller.morningNotes.value.isNotEmpty) ...[
                   Text(
@@ -573,11 +622,9 @@ class JournalHomeView extends GetView<JournalHomeController> {
                     ),
                   ),
                 ],
-
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -596,7 +643,8 @@ class JournalHomeView extends GetView<JournalHomeController> {
         ),
         SizedBox(height: 16.h),
         Column(
-          children: controller.moods.map((mood) => _buildMoodOption(mood)).toList(),
+          children:
+              controller.moods.map((mood) => _buildMoodOption(mood)).toList(),
         ),
       ],
     );
@@ -679,24 +727,26 @@ class JournalHomeView extends GetView<JournalHomeController> {
 
   Widget _buildMoodIndicator(String time, String? mood) {
     final emoji = mood != null ? _getMoodEmoji(mood) : '';
-    return  Text(
+    return Text(
       mood != null ? '$emoji $mood' : '$emoji Not Recorded',
-      style: GoogleFonts.inter(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w500,
-      ),
+      style: GoogleFonts.inter(fontSize: 16.sp, fontWeight: FontWeight.w500),
     );
   }
 
   String _getMoodEmoji(String mood) {
     switch (mood) {
-      case 'Feeling Amazing': return '🌟';
-      case 'Doing Well': return '👍';
-      case 'Feeling Okay': return '😐';
-      case 'Not Great': return '👎';
-      case 'Having a Tough Time': return '😞';
-      default: return "";
+      case 'Feeling Amazing':
+        return '🌟';
+      case 'Doing Well':
+        return '👍';
+      case 'Feeling Okay':
+        return '😐';
+      case 'Not Great':
+        return '👎';
+      case 'Having a Tough Time':
+        return '😞';
+      default:
+        return "";
     }
   }
-
 }

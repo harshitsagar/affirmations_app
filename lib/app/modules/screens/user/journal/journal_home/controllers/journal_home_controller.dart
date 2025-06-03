@@ -18,8 +18,13 @@ class ChartData {
   final String? morningNotes;
   final String? nightNotes;
 
-  ChartData(this.date, this.morningMood, this.nightMood,
-      {this.morningNotes, this.nightNotes});
+  ChartData(
+    this.date,
+    this.morningMood,
+    this.nightMood, {
+    this.morningNotes,
+    this.nightNotes,
+  });
 }
 
 class JournalHomeController extends GetxController {
@@ -41,7 +46,6 @@ class JournalHomeController extends GetxController {
   final nightNotes = ''.obs;
 
   final selectedDate = Rx<DateTime?>(null);
-  final isEditingEntry = false.obs;
   final loadingStatus = LoadingStatus.loading.obs;
   final errorMessage = Rx<String?>(null);
 
@@ -50,7 +54,7 @@ class JournalHomeController extends GetxController {
     'Doing Well',
     'Feeling Okay',
     'Not Great',
-    'Having a Tough Time'
+    'Having a Tough Time',
   ];
 
   @override
@@ -113,7 +117,9 @@ class JournalHomeController extends GetxController {
         final model = JournalDetailModel.fromJson(response.data);
         _processJournalData(model);
       } else {
-        throw Exception(response.data["message"] ?? "Failed to fetch journal data");
+        throw Exception(
+          response.data["message"] ?? "Failed to fetch journal data",
+        );
       }
     } catch (e) {
       errorMessage.value = e.toString();
@@ -153,38 +159,45 @@ class JournalHomeController extends GetxController {
   void updateDateRangeText(DateTime fromDate, DateTime toDate) {
     if (fromDate.month != toDate.month) {
       dateRangeText.value =
-      '${DateFormat('dd MMM').format(fromDate)} - ${DateFormat('dd MMM yyyy').format(toDate)}';
+          '${DateFormat('dd MMM').format(fromDate)} - ${DateFormat('dd MMM yyyy').format(toDate)}';
     } else {
       dateRangeText.value =
-      '${DateFormat('dd').format(fromDate)} - ${DateFormat('dd MMM yyyy').format(toDate)}';
+          '${DateFormat('dd').format(fromDate)} - ${DateFormat('dd MMM yyyy').format(toDate)}';
     }
   }
 
   num? moodToNumber(String? mood) {
     if (mood == null) return null;
     switch (mood) {
-      case 'Having a Tough Time': return 1;
-      case 'Not Great': return 2;
-      case 'Feeling Okay': return 3;
-      case 'Doing Well': return 4;
-      case 'Feeling Amazing': return 5;
-      default: return null;
+      case 'Having a Tough Time':
+        return 1;
+      case 'Not Great':
+        return 2;
+      case 'Feeling Okay':
+        return 3;
+      case 'Doing Well':
+        return 4;
+      case 'Feeling Amazing':
+        return 5;
+      default:
+        return null;
     }
   }
 
   void loadEntryForDate(DateTime date) {
     selectedDate.value = date;
-    isEditingEntry.value = false;
 
     // Reset form fields when loading a new date
     selectedMood.value = null;
     notesController.clear();
     notesLength.value = 0;
 
-    final index = chartData.indexWhere((item) =>
-    item.date.year == date.year &&
-        item.date.month == date.month &&
-        item.date.day == date.day);
+    final index = chartData.indexWhere(
+      (item) =>
+          item.date.year == date.year &&
+          item.date.month == date.month &&
+          item.date.day == date.day,
+    );
 
     if (index != -1) {
       final data = chartData[index];
@@ -192,7 +205,8 @@ class JournalHomeController extends GetxController {
       nightMood.value = data.nightMood;
       morningNotes.value = data.morningNotes ?? '';
       nightNotes.value = data.nightNotes ?? '';
-      selectedDateHasEntry.value = data.morningMood != null || data.nightMood != null;
+      selectedDateHasEntry.value =
+          data.morningMood != null || data.nightMood != null;
     } else {
       resetEntryDetails();
     }
@@ -208,7 +222,6 @@ class JournalHomeController extends GetxController {
   }
 
   void generateChartDataForRange(DateTime fromDate, DateTime toDate) {
-
     // Fetch new data
     fetchJournalData(fromDate, toDate);
 
@@ -217,7 +230,6 @@ class JournalHomeController extends GetxController {
   }
 
   void selectMood(String mood) {
-
     if (Get.find<HomeController>().isGuestUser.value) {
       Get.find<HomeController>().showGuestPopup();
       return;
@@ -231,7 +243,6 @@ class JournalHomeController extends GetxController {
   }
 
   Future<void> submitJournalEntry() async {
-
     if (Get.find<HomeController>().isGuestUser.value) {
       Get.find<HomeController>().showGuestPopup();
       return;
@@ -288,7 +299,9 @@ class JournalHomeController extends GetxController {
           position: SnackPosition.BOTTOM,
         );
       } else {
-        throw Exception(response.data["message"] ?? "Failed to add journal entry");
+        throw Exception(
+          response.data["message"] ?? "Failed to add journal entry",
+        );
       }
     } catch (e) {
       AppConstants.showSnackbar(
@@ -310,5 +323,4 @@ class JournalHomeController extends GetxController {
       barrierColor: Colors.black.withOpacity(0.6),
     );
   }
-
 }
