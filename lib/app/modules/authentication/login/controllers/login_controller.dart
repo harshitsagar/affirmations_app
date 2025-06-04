@@ -12,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends GetxController {
-
   final formKey = GlobalKey<FormState>();
 
   final emailController = TextEditingController();
@@ -30,7 +29,6 @@ class LoginController extends GetxController {
     required String password,
     required BuildContext context,
   }) async {
-
     String? fcmToken = LocalStorage.getFCMToken();
     try {
       loadingStatus(LoadingStatus.loading);
@@ -40,35 +38,30 @@ class LoginController extends GetxController {
           "email": email.toString(),
           "password": password.toString(),
           "device": Platform.isAndroid ? "android" : "ios",
-           "fcmToken": fcmToken.toString(),
+          "fcmToken": fcmToken.toString(),
           "timeZone": timeZone,
         },
-        {
-          'Content-Type': 'application/json',
-        },
+        {'Content-Type': 'application/json'},
       );
       if (response.data["code"] == 100) {
         UserModel userModel = UserModel.fromJson(response.data);
         var data = userModel.data;
 
-        LocalStorage.setUserAccessToken(
-          userAccessToken: data.accessToken,
-        );
-        LocalStorage.setUserDetailsData(
-          userDetailsData: data.user,
-        );
+        LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
+        LocalStorage.setUserDetailsData(userDetailsData: data.user);
         print("Token saved: ${data.accessToken}");
 
-        Future.delayed(
-          const Duration(seconds: 1),
-              () {
-            AppConstants.showSnackbar(
-              headText: "Successful",
-              content: "Signing in...",
-            );
+        Future.delayed(const Duration(seconds: 1), () {
+          AppConstants.showSnackbar(
+            headText: "Successful",
+            content: "Signing in...",
+          );
+          if (data.user.ageGroup == null) {
             Get.offAllNamed(Routes.PROFILE_SCREEN);
-          },
-        );
+          } else {
+            Get.offNamed(Routes.HOME);
+          }
+        });
       } else if (response.data["code"] == 103) {
         Get.back();
         AppConstants.showSnackbar(
@@ -106,7 +99,7 @@ class LoginController extends GetxController {
           AppConstants.showSnackbar(
             headText: "Failed",
             content:
-            "Your account has not been verified. Kindly verify the email.",
+                "Your account has not been verified. Kindly verify the email.",
           );
         } else {
           AppConstants.showSnackbar(
@@ -123,15 +116,11 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       Get.back();
-      AppConstants.showSnackbar(
-        headText: "Failed",
-        content: e.toString(),
-      );
+      AppConstants.showSnackbar(headText: "Failed", content: e.toString());
     }
   }
 
   void login() async {
-
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
@@ -141,10 +130,9 @@ class LoginController extends GetxController {
     }
 
     // bool success = await AuthService().login(email, password);
-    bool success = true;  // for just checking the flow ....
+    bool success = true; // for just checking the flow ....
 
     if (success) {
-
       bool isFirstLogin = await checkIfFirstLogin();
 
       if (isFirstLogin) {
@@ -155,13 +143,13 @@ class LoginController extends GetxController {
     } else {
       Get.snackbar("Error", "Invalid credentials or unverified email");
     }
-
   }
 
   // if the user is new .....
   Future<bool> checkIfFirstLogin() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool("isProfileSetup") ?? false; // Default is false (means first login)
+    return prefs.getBool("isProfileSetup") ??
+        false; // Default is false (means first login)
   }
 
   // Handles Google sign-in logic
@@ -191,9 +179,7 @@ class LoginController extends GetxController {
           "fcmToken": fcmToken.toString(),
           "timeZone": timeZone,
         },
-        {
-          'Content-Type': 'application/json',
-        },
+        {'Content-Type': 'application/json'},
       );
       if (response.data['code'] == 100) {
         // Process successful login and save user data
@@ -202,9 +188,7 @@ class LoginController extends GetxController {
         // sharedPref.setCurrentUser(userModel); // Now prefs is initialized
 
         LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
-        LocalStorage.setUserDetailsData(
-          userDetailsData: data.user,
-        );
+        LocalStorage.setUserDetailsData(userDetailsData: data.user);
 
         AppConstants.showSnackbar(
           headText: "Successful",
@@ -234,10 +218,7 @@ class LoginController extends GetxController {
     } catch (e) {
       // Handle general errors during Google sign-in
       Get.back();
-      AppConstants.showSnackbar(
-        headText: "Failed",
-        content: e.toString(),
-      );
+      AppConstants.showSnackbar(headText: "Failed", content: e.toString());
     }
   }
 
@@ -267,18 +248,14 @@ class LoginController extends GetxController {
           "fcmToken": fcmToken.toString(),
           "timeZone": timeZone,
         },
-        {
-          'Content-Type': 'application/json',
-        },
+        {'Content-Type': 'application/json'},
       );
       if (response.data['code'] == 100) {
         final UserModel userModel = UserModel.fromJson(response.data);
         var data = UserData.fromJson(response.data["data"]);
 
         LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
-        LocalStorage.setUserDetailsData(
-          userDetailsData: data.user,
-        );
+        LocalStorage.setUserDetailsData(userDetailsData: data.user);
 
         AppConstants.showSnackbar(
           headText: "Successful",
@@ -297,10 +274,7 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       Get.back();
-      AppConstants.showSnackbar(
-        headText: "Failed",
-        content: e.toString(),
-      );
+      AppConstants.showSnackbar(headText: "Failed", content: e.toString());
     }
   }
 
@@ -330,9 +304,7 @@ class LoginController extends GetxController {
           "fcmToken": fcmToken,
           "timeZone": timeZone,
         },
-        {
-          'Content-Type': 'application/json',
-        },
+        {'Content-Type': 'application/json'},
       );
 
       if (response.data['code'] == 100) {
@@ -340,9 +312,7 @@ class LoginController extends GetxController {
         var data = UserData.fromJson(response.data["data"]);
 
         LocalStorage.setUserAccessToken(userAccessToken: data.accessToken);
-        LocalStorage.setUserDetailsData(
-          userDetailsData: data.user,
-        );
+        LocalStorage.setUserDetailsData(userDetailsData: data.user);
 
         AppConstants.showSnackbar(
           headText: "Successful",
@@ -373,12 +343,9 @@ class LoginController extends GetxController {
     Get.offAllNamed('/home');
   }
 
-  void loginWithApple() {
-  }
+  void loginWithApple() {}
 
-  void loginWithGoogle() {
-  }
+  void loginWithGoogle() {}
 
-  void loginWithFacebook() {
-  }
+  void loginWithFacebook() {}
 }

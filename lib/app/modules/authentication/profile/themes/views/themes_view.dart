@@ -21,19 +21,33 @@ class ThemesView extends GetView<ThemesController> {
 
     return Scaffold(
       body: Obx(() {
-        final currentPreviewTheme = controller.selectedTheme.value ?? ThemeService.getDefaultTheme();
+        final currentPreviewTheme =
+            controller.selectedTheme.value ?? ThemeService.getDefaultTheme();
         return Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: currentPreviewTheme.backgroundGradient!
-                  .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-                  .toList(),
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          decoration:
+              currentPreviewTheme.aspect == 'default'
+                  ? BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(bgImage),
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                  : BoxDecoration(
+                    gradient: LinearGradient(
+                      colors:
+                          currentPreviewTheme.backgroundGradient!
+                              .map(
+                                (color) => Color(
+                                  int.parse(color.replaceFirst('#', '0xFF')),
+                                ),
+                              )
+                              .toList(),
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -62,15 +76,16 @@ class ThemesView extends GetView<ThemesController> {
                 Obx(() {
                   if (controller.loadingStatus.value == LoadingStatus.loading) {
                     return Center(
-                      child: Platform.isAndroid
-                          ? CircularProgressIndicator(
-                        strokeWidth: 4.w,
-                        color: AppColors.black,
-                      )
-                          : CupertinoActivityIndicator(
-                        color: AppColors.black,
-                        radius: 20.r,
-                      ),
+                      child:
+                          Platform.isAndroid
+                              ? CircularProgressIndicator(
+                                strokeWidth: 4.w,
+                                color: AppColors.black,
+                              )
+                              : CupertinoActivityIndicator(
+                                color: AppColors.black,
+                                radius: 20.r,
+                              ),
                     );
                   }
 
@@ -83,12 +98,14 @@ class ThemesView extends GetView<ThemesController> {
                           crossAxisCount: 3, // 3 items per row
                           crossAxisSpacing: 10.w,
                           mainAxisSpacing: 10.h,
-                          childAspectRatio: 0.6, // Adjust this for item proportions
+                          childAspectRatio:
+                              0.6, // Adjust this for item proportions
                         ),
                         itemCount: controller.availableThemes.length,
                         itemBuilder: (context, index) {
                           final theme = controller.availableThemes[index];
-                          bool isSelected = controller.selectedTheme.value?.sId == theme.sId;
+                          bool isSelected =
+                              controller.selectedTheme.value?.sId == theme.sId;
 
                           return GestureDetector(
                             onTap: () {
@@ -98,16 +115,39 @@ class ThemesView extends GetView<ThemesController> {
                             child: Container(
                               height: 160.h,
                               width: 105.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.r),
-                                gradient: LinearGradient(
-                                  colors: theme.backgroundGradient!
-                                      .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-                                      .toList(),
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
+                              decoration:
+                                  theme.aspect == 'default'
+                                      ? BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
+                                        image: DecorationImage(
+                                          image: AssetImage(bgImage),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                      : BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
+                                        ),
+                                        gradient: LinearGradient(
+                                          colors:
+                                              theme.backgroundGradient!
+                                                  .map(
+                                                    (color) => Color(
+                                                      int.parse(
+                                                        color.replaceFirst(
+                                                          '#',
+                                                          '0xFF',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
                               child: Stack(
                                 children: [
                                   Center(
@@ -144,7 +184,10 @@ class ThemesView extends GetView<ThemesController> {
 
                 // Next Button
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 10.h,
+                  ),
                   child: ElevatedButton(
                     onPressed: () async {
                       await controller.saveSelectedTheme();

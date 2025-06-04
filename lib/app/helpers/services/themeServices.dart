@@ -1,3 +1,4 @@
+import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/data/models/themeListModel.dart';
 import 'package:affirmations_app/app/data/models/user_model.dart';
 import 'package:affirmations_app/app/helpers/services/local_storage.dart';
@@ -39,19 +40,29 @@ class ThemeService {
 
   static BoxDecoration getBackgroundDecoration() {
     final theme = currentTheme;
-    return BoxDecoration(
-      gradient: LinearGradient(
-        colors: theme?.backgroundGradient
-            ?.map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-            .toList() ??
-            getDefaultTheme()
-                .backgroundGradient!
-                .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-                .toList(),
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    );
+    return theme?.aspect == 'default'
+        ? BoxDecoration(
+          image: DecorationImage(image: AssetImage(bgImage), fit: BoxFit.cover),
+        )
+        : BoxDecoration(
+          gradient: LinearGradient(
+            colors:
+                theme?.backgroundGradient
+                    ?.map(
+                      (color) =>
+                          Color(int.parse(color.replaceFirst('#', '0xFF'))),
+                    )
+                    .toList() ??
+                getDefaultTheme().backgroundGradient!
+                    .map(
+                      (color) =>
+                          Color(int.parse(color.replaceFirst('#', '0xFF'))),
+                    )
+                    .toList(),
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        );
   }
 
   static void applyTheme(ThemeListModelData theme) {

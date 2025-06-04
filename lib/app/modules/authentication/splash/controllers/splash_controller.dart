@@ -3,7 +3,6 @@ import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {
-
   @override
   void onInit() {
     navigateTo();
@@ -20,16 +19,22 @@ class SplashController extends GetxController {
     if (!hasCompletedOnboarding) {
       // First time user - show onboarding
       Get.offNamed(Routes.ONBOARDING);
+    } else if (isLoggedIn) {
+      final profileCompleted = LocalStorage.getUserDetailsData()?.ageGroup;
+      profileCompleted != null
+          ? Get.offNamed(Routes.HOME)
+          : Get.offNamed(Routes.PROFILE_SCREEN);
     } else if (!isLoggedIn) {
       // Returning user but not logged in - go to login
       Get.offNamed(Routes.LOGIN);
-    } else if (!profileCompleted) {
-      // Logged in but profile not completed - go to profile setup
-      Get.offNamed(Routes.PROFILE_SCREEN);
-    } else {
+    }
+    // else if (!profileCompleted) {
+    //   // Logged in but profile not completed - go to profile setup
+    //   Get.offNamed(Routes.PROFILE_SCREEN);
+    // }
+    else {
       // Fully authenticated user with complete profile - go to home
       Get.offNamed(Routes.HOME);
     }
   }
-
 }

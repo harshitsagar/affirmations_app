@@ -20,7 +20,8 @@ class AppThemesView extends GetView<AppThemesController> {
     return Scaffold(
       body: Obx(() {
         // final currentPreviewTheme = controller.selectedTheme.value;
-        final currentPreviewTheme = controller.selectedTheme.value ?? ThemeService.getDefaultTheme();
+        final currentPreviewTheme =
+            controller.selectedTheme.value ?? ThemeService.getDefaultTheme();
         return Container(
           width: double.infinity,
           height: double.infinity,
@@ -34,15 +35,28 @@ class AppThemesView extends GetView<AppThemesController> {
           //     end: Alignment.bottomRight,
           //   ),
           // ) : ThemeService.getBackgroundDecoration(),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: currentPreviewTheme.backgroundGradient!
-                  .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-                  .toList(),
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
+          decoration:
+              currentPreviewTheme.aspect == 'default'
+                  ? BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(bgImage),
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                  : BoxDecoration(
+                    gradient: LinearGradient(
+                      colors:
+                          currentPreviewTheme.backgroundGradient!
+                              .map(
+                                (color) => Color(
+                                  int.parse(color.replaceFirst('#', '0xFF')),
+                                ),
+                              )
+                              .toList(),
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
           child: SafeArea(
             child: Padding(
               padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
@@ -69,17 +83,19 @@ class AppThemesView extends GetView<AppThemesController> {
                   // Theme Grid
                   Expanded(
                     child: Obx(() {
-                      if (controller.loadingStatus.value == LoadingStatus.loading) {
+                      if (controller.loadingStatus.value ==
+                          LoadingStatus.loading) {
                         return Center(
-                          child: Platform.isAndroid
-                              ? CircularProgressIndicator(
-                            strokeWidth: 4.w,
-                            color: AppColors.black,
-                          )
-                              : CupertinoActivityIndicator(
-                            color: AppColors.black,
-                            radius: 20.r,
-                          ),
+                          child:
+                              Platform.isAndroid
+                                  ? CircularProgressIndicator(
+                                    strokeWidth: 4.w,
+                                    color: AppColors.black,
+                                  )
+                                  : CupertinoActivityIndicator(
+                                    color: AppColors.black,
+                                    radius: 20.r,
+                                  ),
                         );
                       }
 
@@ -93,8 +109,11 @@ class AppThemesView extends GetView<AppThemesController> {
                         itemCount: controller.availableThemes.length,
                         itemBuilder: (context, index) {
                           final theme = controller.availableThemes[index];
-                          bool isSelected = controller.selectedTheme.value?.sId == theme.sId;
-                          bool isLocked = theme.aspect == 'premium' && !controller.isPremium.value;
+                          bool isSelected =
+                              controller.selectedTheme.value?.sId == theme.sId;
+                          bool isLocked =
+                              theme.aspect == 'premium' &&
+                              !controller.isPremium.value;
 
                           return GestureDetector(
                             onTap: () {
@@ -109,58 +128,83 @@ class AppThemesView extends GetView<AppThemesController> {
                               children: [
                                 // Theme Container
                                 Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      gradient: LinearGradient(
-                                        colors: theme.backgroundGradient!
-                                            .map((color) => Color(int.parse(color.replaceFirst('#', '0xFF'))))
-                                            .toList(),
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
+                                  decoration:
+                                      theme.aspect == 'default'
+                                          ? BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              12.r,
+                                            ),
+                                            image: DecorationImage(
+                                              image: AssetImage(bgImage),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                          : BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              12.r,
+                                            ),
+                                            gradient: LinearGradient(
+                                              colors:
+                                                  theme.backgroundGradient!
+                                                      .map(
+                                                        (color) => Color(
+                                                          int.parse(
+                                                            color.replaceFirst(
+                                                              '#',
+                                                              '0xFF',
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                          ),
+                                  child: Center(
+                                    child: Text(
+                                      "Aa",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 25.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                // Selection indicator
+                                if (isSelected)
+                                  Positioned(
+                                    top: 8.h,
+                                    right: 8.w,
+                                    child: Image.asset(
+                                      greenTickIcon,
+                                      width: 30.w,
+                                      height: 30.h,
+                                    ),
+                                  ),
+
+                                // Lock overlay for locked themes
+                                if (isLocked)
+                                  Positioned(
+                                    top: -3.h,
+                                    right: 0.w,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          12.r,
                                         ),
                                       ),
                                       child: Center(
-                                        child: Text(
-                                          "Aa",
-                                          style: GoogleFonts.inter(
-                                            fontSize: 25.sp,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black,
-                                          ),
+                                        child: Image.asset(
+                                          lockIcon,
+                                          width: 48.w,
+                                          height: 48.h,
                                         ),
                                       ),
                                     ),
-
-                                    // Selection indicator
-                                    if (isSelected)
-                                      Positioned(
-                                        top: 8.h,
-                                        right: 8.w,
-                                        child: Image.asset(
-                                          greenTickIcon,
-                                          width: 30.w,
-                                          height: 30.h,
-                                        ),
-                                      ),
-
-                                      // Lock overlay for locked themes
-                                      if (isLocked)
-                                        Positioned(
-                                          top: -3.h,
-                                          right: 0.w,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(12.r),
-                                            ),
-                                            child: Center(
-                                              child: Image.asset(
-                                                lockIcon,
-                                                width: 48.w,
-                                                height: 48.h,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                  ),
                               ],
                             ),
                           );

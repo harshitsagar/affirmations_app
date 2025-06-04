@@ -21,7 +21,12 @@ class AddEntryView extends GetView<AddEntryController> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
         child: Padding(
-          padding: EdgeInsets.only(left: 18.w, right: 18.w, bottom: 20.h, top: 15.h),
+          padding: EdgeInsets.only(
+            left: 18.w,
+            right: 18.w,
+            bottom: 20.h,
+            top: 15.h,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -37,11 +42,7 @@ class AddEntryView extends GetView<AddEntryController> {
 
               SizedBox(height: 40.h),
 
-              Image.asset(
-                  addEntryImage,
-                  height: 154.h,
-                  width: 182.h
-              ),
+              Image.asset(addEntryImage, height: 154.h, width: 182.h),
 
               SizedBox(height: 24.h),
 
@@ -73,7 +74,7 @@ class AddEntryView extends GetView<AddEntryController> {
                   onPressed: () {
                     controller.onAddEntry();
                     Get.back(); // Close sheet
-                    Get.toNamed(Routes.REMINDERS);
+                    Get.toNamed(Routes.Journal_Home);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -110,7 +111,6 @@ class AddEntryView extends GetView<AddEntryController> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
