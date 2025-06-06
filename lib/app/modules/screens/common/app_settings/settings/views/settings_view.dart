@@ -226,7 +226,7 @@ class SettingsView extends GetView<SettingsController> {
                       //DEV Server
 
                       //android
-                      'Dev v1.0 (1.0.1)',
+                      'Dev v1.0 (1.0.2)',
 
                       // Stage Server
 
