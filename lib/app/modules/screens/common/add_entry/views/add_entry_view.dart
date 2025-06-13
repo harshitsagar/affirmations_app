@@ -25,7 +25,7 @@ class AddEntryView extends GetView<AddEntryController> {
             left: 18.w,
             right: 18.w,
             bottom: 20.h,
-            top: 15.h,
+            top: 10.h,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -40,7 +40,7 @@ class AddEntryView extends GetView<AddEntryController> {
                 ),
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: 20.h),
 
               Image.asset(addEntryImage, height: 154.h, width: 182.h),
 
@@ -66,7 +66,7 @@ class AddEntryView extends GetView<AddEntryController> {
                 ),
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: 20.h),
 
               SizedBox(
                 width: double.infinity,

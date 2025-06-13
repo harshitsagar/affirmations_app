@@ -12,28 +12,42 @@ class AddEntryController extends GetxController {
   final journalAddedEvening = false.obs;
   final lastResetDate = DateTime.now().obs;
 
+  // Key constants
+  static String _getJournalAddedKey(String dateKey, bool isMorning) =>
+      "journalAdded_${dateKey}_${isMorning ? 'morning' : 'evening'}";
+
+  static String _getDontAskKey(bool isMorning) =>
+      "dontAskAgain_${isMorning ? 'morning' : 'evening'}";
+
+  static String _getJournalShownKey(String dateKey, bool isMorning) =>
+      "journalShown_${dateKey}_${isMorning ? 'morning' : 'evening'}";
+
   @override
   void onInit() {
     super.onInit();
-    _loadSettings();
+    _checkResetConditions();
   }
 
   void onAddEntry() {
     final now = DateTime.now();
     final isMorning = now.hour < 12;
-    final key = "journalAdded_${DateFormat('yyyy-MM-dd').format(now)}_${isMorning ? 'morning' : 'evening'}";
-    GetStorage().write(key, true);
+    final dateKey = DateFormat('yyyy-MM-dd').format(now);
+    final journalAddedKey = "journalAdded_${dateKey}_${isMorning ? 'morning' : 'evening'}";
 
-    Get.back(); // Close sheet
-    Get.toNamed(Routes.JOURNAL1); // Go to journal screen
+    // Mark journal as added for this time period
+    GetStorage().write(_getJournalAddedKey(dateKey, isMorning), true);
+    Get.back();
+    Get.toNamed(Routes.Journal_Home);
   }
 
   void onDontAskMeAgain() {
     final now = DateTime.now();
     final isMorning = now.hour < 12;
-    final key = "dontAskAgain_${isMorning ? 'morning' : 'evening'}";
-    GetStorage().write(key, true);
-    Get.back(); // Close sheet
+    final dontAskKey = "dontAskAgain_${isMorning ? 'morning' : 'evening'}";
+
+    // Mark as "don't ask again" for this time period
+    GetStorage().write(_getDontAskKey(isMorning), true);
+    Get.back();
   }
 
   Future<void> _loadSettings() async {
@@ -59,27 +73,37 @@ class AddEntryController extends GetxController {
 
   void _checkResetConditions() {
     final now = DateTime.now();
-    if (now.day != lastResetDate.value.day ||
-        now.month != lastResetDate.value.month ||
-        now.year != lastResetDate.value.year) {
+    final lastReset = GetStorage().read<String>('lastResetDate');
+
+    if (lastReset == null ||
+        now.day != DateTime.parse(lastReset).day ||
+        now.month != DateTime.parse(lastReset).month ||
+        now.year != DateTime.parse(lastReset).year) {
       resetDailyStates();
     }
   }
 
   Future<bool> checkShouldShowSheet() async {
     final now = DateTime.now();
-    final hour = now.hour;
-    final isMorning = hour < 12;
+    final isMorning = now.hour < 12;
+    final dateKey = DateFormat('yyyy-MM-dd').format(now);
 
+    // Check if we should show the sheet
+    final hasAddedJournal = GetStorage().read(_getJournalAddedKey(dateKey, isMorning)) ?? false;
+    final hasDontAsk = GetStorage().read(_getDontAskKey(isMorning)) ?? false;
+    final hasShown = GetStorage().read(_getJournalShownKey(dateKey, isMorning)) ?? false;
+
+    // Reset daily states if it's a new day
     _checkResetConditions();
 
-    if (isMorning) {
-      shouldShowSheet.value = !dismissedMorning.value && !journalAddedMorning.value;
-    } else {
-      shouldShowSheet.value = !dismissedEvening.value && !journalAddedEvening.value;
+    // Don't show if user has selected "Don't ask me again" or already added journal
+    if (hasDontAsk || hasAddedJournal || hasShown) {
+      return false;
     }
 
-    return shouldShowSheet.value;
+    // Mark as shown for this session
+    GetStorage().write(_getJournalShownKey(dateKey, isMorning), true);
+    return true;
   }
 
   Future<void> setJournalAdded() async {
@@ -104,12 +128,17 @@ class AddEntryController extends GetxController {
   }
 
   Future<void> resetDailyStates() async {
-    dismissedMorning.value = false;
-    dismissedEvening.value = false;
-    journalAddedMorning.value = false;
-    journalAddedEvening.value = false;
-    lastResetDate.value = DateTime.now();
-    await _saveSettings();
+    final now = DateTime.now();
+    final dateKey = DateFormat('yyyy-MM-dd').format(now);
+
+    // Clear all today's journal-related keys
+    GetStorage().remove(_getJournalAddedKey(dateKey, true));
+    GetStorage().remove(_getJournalAddedKey(dateKey, false));
+    GetStorage().remove(_getJournalShownKey(dateKey, true));
+    GetStorage().remove(_getJournalShownKey(dateKey, false));
+
+    // Update last reset date
+    GetStorage().write('lastResetDate', now.toString());
   }
 
   Future<void> enableJournalReminder() async {

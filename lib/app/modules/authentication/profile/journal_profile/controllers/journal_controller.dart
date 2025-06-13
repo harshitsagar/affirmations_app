@@ -1,5 +1,6 @@
 import 'package:affirmations_app/app/data/api_provider.dart';
 import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/data/models/user_model.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
@@ -51,7 +52,7 @@ class JournalController extends GetxController {
   bool get isMoodSelected => selectedMoodIndex.value != -1;
 
   // Convert UI index (0-4) to backend question ID (1-5)
-  int get _selectedQuestionId => selectedMoodIndex.value + 1;
+  String get _selectedQuestionId => moods[selectedMoodIndex.value];
 
   Future<void> saveJournalEntry() async {
     if (!isMoodSelected) {
@@ -95,8 +96,8 @@ class JournalController extends GetxController {
   }
 
   /// journal_reminder controller code here .....
-  final startTime = TimeOfDay(hour: 0, minute: 0).obs; // Default 12:00 AM
-  final endTime = TimeOfDay(hour: 12, minute: 0).obs;  // Default 12:00 PM
+  final startTime = TimeOfDay(hour: 9, minute: 0).obs; // Default 9:00 AM
+  final endTime = TimeOfDay(hour: 21, minute: 0).obs;  // Default 9:00 PM
 
   Future<void> selectStartTime(BuildContext context) async {
     final pickedTime = await showTimePicker(
@@ -194,6 +195,8 @@ class JournalController extends GetxController {
       );
 
       if (response["code"] == 100) {
+        final updatedUser = User.fromJson(response["data"]);
+        LocalStorage.setUserDetailsData(userDetailsData: updatedUser);
         Get.toNamed(Routes.HEAR_ABOUT);
       } else {
         throw Exception(response["message"] ?? "Failed to save journal reminder");

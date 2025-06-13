@@ -56,7 +56,7 @@ class JournalHomeController extends GetxController {
     'Not Great',
     'Having a Tough Time',
   ];
-
+  
   @override
   void onInit() {
     super.onInit();
@@ -70,6 +70,9 @@ class JournalHomeController extends GetxController {
     );
     // Load today's entry if exists
     loadEntryForDate(selectedDate.value!);
+    
+    print("*******Selected Date: ${selectedDate.value}");
+    
   }
 
   // Add this method for date tap handling
@@ -96,6 +99,10 @@ class JournalHomeController extends GetxController {
   }
 
   Future<void> fetchJournalData(DateTime fromDate, DateTime toDate) async {
+    
+    print("*******from Data : ${DateFormat('yyyy-MM-dd').format(fromDate)}");
+    print("*******to Data : ${DateFormat('yyyy-MM-dd').format(toDate)}");
+    
     try {
       loadingStatus(LoadingStatus.loading);
       errorMessage.value = null;
@@ -119,6 +126,8 @@ class JournalHomeController extends GetxController {
 
       if (response.data["code"] == 100) {
         final model = JournalDetailModel.fromJson(response.data);
+        print("*****Journal Data: ${model.data.journals.length} entries found");
+        print("*****Graph Data: ${model.data.graph.length} entries found");
         _processJournalData(model);
       } else {
         throw Exception(
@@ -134,28 +143,47 @@ class JournalHomeController extends GetxController {
       );
     } finally {
       loadingStatus(LoadingStatus.completed);
+      // Force UI update after data is loaded
+      update();
     }
   }
 
   void _processJournalData(JournalDetailModel model) {
+
     chartData.clear();
+    
+    print("Graph length : ${model.data.graph.length}");
 
     // Process graph data from API
     for (var graphItem in model.data.graph) {
       // Normalize date to midnight
+
+      DateTime parsedDate = DateTime.parse(graphItem.date);
+
       final normalizedDate = DateTime(
-        graphItem.date.year,
-        graphItem.date.month,
-        graphItem.date.day,
+        parsedDate.year,
+        parsedDate.month,
+        parsedDate.day,
       );
+
+      // Convert numeric mood values to proper mood strings
+      String? morningMood = graphItem.morning == "Not Recorded"
+          ? null
+          : _numberToMood(graphItem.morning);
+      String? nightMood = graphItem.night == "Not Recorded"
+          ? null
+          : _numberToMood(graphItem.night);
+
       chartData.add(ChartData(
         normalizedDate,
-        graphItem.morning == "Not Recorded" ? null : graphItem.morning,
-        graphItem.night == "Not Recorded" ? null : graphItem.night,
+        morningMood,
+        nightMood,
         morningNotes: graphItem.morningText.isNotEmpty ? graphItem.morningText : null,
         nightNotes: graphItem.nightText.isNotEmpty ? graphItem.nightText : null,
       ));
     }
+
+    print("Chart Data length : ${chartData.length}");
 
     // Sort by date
     chartData.sort((a, b) => a.date.compareTo(b.date));
@@ -163,6 +191,32 @@ class JournalHomeController extends GetxController {
     // Update date range text
     if (chartData.isNotEmpty) {
       updateDateRangeText(chartData.first.date, chartData.last.date);
+    }
+
+    // Force reload of the current selected date
+    if (selectedDate.value != null) {
+      loadEntryForDate(selectedDate.value!);
+    }
+
+  }
+
+  // Add this helper method to convert numbers to mood strings
+  String? _numberToMood(String? moodValue) {
+    if (moodValue == null) return null;
+
+    switch (moodValue) {
+      case '1':
+        return 'Having a Tough Time';
+      case '2':
+        return 'Not Great';
+      case '3':
+        return 'Feeling Okay';
+      case '4':
+        return 'Doing Well';
+      case '5':
+        return 'Feeling Amazing';
+      default:
+        return moodValue; // Return as-is if not a number
     }
   }
 
@@ -217,6 +271,7 @@ class JournalHomeController extends GetxController {
     if (index != -1) {
       final data = chartData[index];
       morningMood.value = data.morningMood;
+      print('*****Found morningMood: ${data.morningMood}');
       nightMood.value = data.nightMood;
       morningNotes.value = data.morningNotes ?? '';
       nightNotes.value = data.nightNotes ?? '';
@@ -266,7 +321,7 @@ class JournalHomeController extends GetxController {
 
     if (selectedDate.value == null || selectedMood.value == null) {
       AppConstants.showSnackbar(
-        headText: "Error",
+        headText: "Failed",
         content: "Please select a mood",
         position: SnackPosition.BOTTOM,
       );
@@ -299,11 +354,16 @@ class JournalHomeController extends GetxController {
 
       if (response.data["code"] == 100) {
         // Refresh data after successful submission
-        await fetchJournalData(
-          selectedDate.value!.subtract(const Duration(days: 3)),
-          selectedDate.value!.add(const Duration(days: 3)),
-        );
+        // await fetchJournalData(
+        //   selectedDate.value!.subtract(const Duration(days: 3)),
+        //   selectedDate.value!.add(const Duration(days: 3)),
+        // );
 
+        await fetchJournalData(
+          selectedDate.value!.subtract(const Duration(days: 6)),
+          selectedDate.value!,
+        );
+        
         // Reset form
         selectedMood.value = null;
         notesController.clear();
@@ -321,7 +381,7 @@ class JournalHomeController extends GetxController {
       }
     } catch (e) {
       AppConstants.showSnackbar(
-        headText: "Error",
+        headText: "Failed",
         content: e.toString(),
         position: SnackPosition.BOTTOM,
       );

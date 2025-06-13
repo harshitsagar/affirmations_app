@@ -10,8 +10,14 @@ class ShareScreenView extends GetView<ShareScreenController> {
 
   final String? affirmation;
   final Function(bool)? onShared;
+  final bool onlyAppLink;
 
-  const ShareScreenView({super.key, this.affirmation, this.onShared});
+  const ShareScreenView({
+    super.key,
+    this.affirmation,
+    this.onShared,
+    this.onlyAppLink = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,17 @@ class ShareScreenView extends GetView<ShareScreenController> {
     Get.put(ShareScreenController());
 
     if (affirmation != null) {
-      controller.initializeContent(affirmation!, onSharedCallback: onShared);
+      controller.initializeContent(
+        affirmation!,
+        onSharedCallback: onShared,
+        onlyAppLink: onlyAppLink,
+      );
+    } else {
+      controller.initializeContent(
+        '',
+        onSharedCallback: onShared,
+        onlyAppLink: onlyAppLink,
+      );
     }
 
     return Container(
@@ -82,7 +98,10 @@ class ShareScreenView extends GetView<ShareScreenController> {
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 60.w, top: 10.h, bottom: 30.h),
                   child: GestureDetector(
-                    onTap: controller.shareToMessage,
+                    onTap: () {
+                      controller.shareToMessage();
+                      Get.back(); // Close the bottomsheet after sharing
+                    },
                     child: Column(
                       children: [
                         Image.asset(
@@ -105,7 +124,10 @@ class ShareScreenView extends GetView<ShareScreenController> {
                 Padding(
                   padding: EdgeInsets.only(top: 10.h, bottom: 30.h),
                   child: GestureDetector(
-                    onTap: controller.shareToWhatsapp,
+                    onTap: () {
+                      controller.shareToWhatsapp();
+                      Get.back(); // Close the bottomsheet after sharing
+                    },
                     child: Column(
                       children: [
                         Image.asset(

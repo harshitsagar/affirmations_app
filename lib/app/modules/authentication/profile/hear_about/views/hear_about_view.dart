@@ -1,3 +1,5 @@
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
 import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
@@ -17,76 +19,77 @@ class HearAboutView extends GetView<HearAboutController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(
-            child: Platform.isAndroid
-                ? CircularProgressIndicator(
-              strokeWidth: 4.w,
-              color: Colors.black,
-            )
-                : CupertinoActivityIndicator(
-              color: Colors.black,
-              radius: 20.r,
-            ),
-          );
-        }
-
-        return Container(
-          width: double.infinity,
-          height: double.infinity,
-          // decoration: BoxDecoration(
-          //   image: DecorationImage(
-          //     image: AssetImage(bgImage),
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-          decoration: ThemeService.getBackgroundDecoration(),
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.black87,
-                        ),
-                        onPressed: () => Get.back(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.black87,
                       ),
-                      TextButton(
-                        onPressed: () => Get.toNamed(Routes.SUBSCRIPTION_SCREEN),
-                        child: Text(
-                          'Skip',
-                          style: GoogleFonts.inter(
-                            fontSize: 16.sp,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 30.h),
-
-                  Text(
-                    'How did you hear about the app?',
-                    style: GoogleFonts.inter(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
+                      onPressed: () => Get.back(),
                     ),
+                    TextButton(
+                      onPressed: () => Get.toNamed(Routes.SUBSCRIPTION_SCREEN),
+                      child: Text(
+                        'Skip',
+                        style: GoogleFonts.inter(
+                          fontSize: 16.sp,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 30.h),
+
+                Text(
+                  'How did you hear about the app?',
+                  style: GoogleFonts.inter(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
+                ),
 
-                  SizedBox(height: 20.h),
+                SizedBox(height: 20.h),
 
-                  Expanded(
-                    child: ListView.builder(
+                Expanded(
+                  child: Obx(() {
+
+                    if (controller.loadingStatus.value == LoadingStatus.loading) {
+                      return Center(
+                        child: Platform.isAndroid
+                            ? CircularProgressIndicator(
+                          strokeWidth: 4.w,
+                          color: AppColors.black,
+                        )
+                            : CupertinoActivityIndicator(
+                          color: AppColors.black,
+                          radius: 20.r,
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       itemCount: controller.options.length,
                       itemBuilder: (context, index) {
@@ -96,53 +99,42 @@ class HearAboutView extends GetView<HearAboutController> {
                           return _buildOptionItem(option, isSelected);
                         });
                       },
-                    ),
-                  ),
+                    );
 
-                  SizedBox(height: 20.h),
+                  }),
+                ),
 
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10.h),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: controller.isLoading.value
-                            ? null
-                            : controller.saveHearAboutOptions,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                SizedBox(height: 20.h),
+
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10.h),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: controller.saveHearAboutOptions,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        child: controller.isLoading.value
-                            ? Platform.isAndroid
-                            ? CircularProgressIndicator(
-                          strokeWidth: 2.w,
-                          color: Colors.white,
-                        )
-                            : CupertinoActivityIndicator(
-                          color: Colors.white,
-                          radius: 10.r,
-                        )
-                            : Text(
-                          'Next',
-                          style: GoogleFonts.inter(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
+                      child: Text(
+                        'Next',
+                        style: GoogleFonts.inter(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      )
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        );
-      }),
+        ),
+      )
     );
   }
 

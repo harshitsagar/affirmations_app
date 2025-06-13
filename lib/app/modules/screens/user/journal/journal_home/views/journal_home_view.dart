@@ -123,6 +123,14 @@ class JournalHomeView extends GetView<JournalHomeController> {
                       ? controller.chartData.last.date
                       : DateTime.now();
 
+              // Check if selected date has any mood data
+              final hasMoodDataForDate = controller.selectedDate.value != null &&
+                  controller.chartData.any((item) =>
+                  item.date.year == controller.selectedDate.value!.year &&
+                      item.date.month == controller.selectedDate.value!.month &&
+                      item.date.day == controller.selectedDate.value!.day &&
+                      (item.morningMood != null || item.nightMood != null));
+
               return Stack(
                 children: [
                   SfCartesianChart(
@@ -215,7 +223,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
                       },
                     ),
                     legend: Legend(isVisible: false),
-                    series: <CartesianSeries<ChartData, DateTime>>[
+                    series: hasMoodDataForDate ? <CartesianSeries<ChartData, DateTime>>[
                       if (controller.chartData.isNotEmpty) ...[
                         LineSeries<ChartData, DateTime>(
                           dataSource:
@@ -279,7 +287,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
                           yValueMapper: (_, __) => 0,
                         ),
                       ],
-                    ],
+                    ] : <CartesianSeries<ChartData, DateTime>>[],
                     onAxisLabelTapped: (AxisLabelTapArgs args) {
                       if (args.axisName == 'primaryXAxis') {
                         final tappedDate = DateTime.fromMillisecondsSinceEpoch(
@@ -291,14 +299,19 @@ class JournalHomeView extends GetView<JournalHomeController> {
                       }
                     },
                   ),
-                  if (controller.chartData.isEmpty)
-                    Positioned.fill(
+                  // Show "No Data" when selected date has no mood data
+                  if (controller.selectedDate.value != null && !hasMoodDataForDate)
+                    Positioned(
+                      top: 70.h,
+                      left: 38.w,
+                      right: 0,
                       child: Center(
                         child: Text(
-                          'No data',
+                          'No Data',
                           style: GoogleFonts.inter(
-                            fontSize: 12.sp,
-                            color: Colors.grey,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFFA9A9A9),
                           ),
                         ),
                       ),
@@ -356,6 +369,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
     );
   }
 
+  /*
   Widget _buildMoodEntrySection() {
     return Obx(() {
       if (controller.selectedDate.value == null) {
@@ -380,6 +394,116 @@ class JournalHomeView extends GetView<JournalHomeController> {
       print('HasEntry value ------> $hasEntry, selectedDate=$normalizedSelectedDate');
 
       return hasEntry ? _buildJournalEntryDetails() : _buildNewJournalEntry();
+    });
+  }
+
+   */
+
+  /*.....
+  Widget _buildMoodEntrySection() {
+    return Obx(() {
+
+      if (controller.selectedDate.value == null) {
+        return _buildNewJournalEntry();
+      }
+
+      // Normalize selected date to midnight
+      final normalizedSelectedDate = DateTime(
+        controller.selectedDate.value!.year,
+        controller.selectedDate.value!.month,
+        controller.selectedDate.value!.day,
+      );
+
+      // Check if selected date has any entry in chartData
+      final hasEntry = controller.chartData.any(
+            (item) {
+          final normalizedItemDate = DateTime(
+            item.date.year,
+            item.date.month,
+            item.date.day,
+          );
+          return normalizedItemDate == normalizedSelectedDate &&
+              (item.morningMood != null ||
+                  item.nightMood != null ||
+                  item.morningNotes != null ||
+                  item.nightNotes != null);
+        },
+      );
+
+      print('HasEntry value ------> $hasEntry, selectedDate=$normalizedSelectedDate');
+
+      return hasEntry ? _buildJournalEntryDetails() : _buildNewJournalEntry();
+    });
+  }
+
+   */
+
+  // Widget _buildMoodEntrySection() {
+  //   return Obx(() {
+  //     if (controller.selectedDate.value == null) {
+  //       return SizedBox.shrink(); // Don't show anything if no date is selected
+  //     }
+  //
+  //     // Normalize dates for comparison
+  //     final normalizedSelectedDate = DateTime(
+  //       controller.selectedDate.value!.year,
+  //       controller.selectedDate.value!.month,
+  //       controller.selectedDate.value!.day,
+  //     );
+  //     final normalizedToday = DateTime(
+  //       DateTime.now().year,
+  //       DateTime.now().month,
+  //       DateTime.now().day,
+  //     );
+  //
+  //     // Check if selected date has any entry in chartData
+  //     final hasEntry = controller.chartData.any(
+  //           (item) {
+  //         final normalizedItemDate = DateTime(
+  //           item.date.year,
+  //           item.date.month,
+  //           item.date.day,
+  //         );
+  //         return normalizedItemDate == normalizedSelectedDate &&
+  //             (item.morningMood != null ||
+  //                 item.nightMood != null ||
+  //                 item.morningNotes != null ||
+  //                 item.nightNotes != null);
+  //       },
+  //     );
+  //
+  //     // Show entry details if exists for any date
+  //     if (hasEntry) {
+  //       return _buildJournalEntryDetails();
+  //     }
+  //     // Show new entry form only if it's today AND no entry exists
+  //     else if (normalizedSelectedDate == normalizedToday) {
+  //       return _buildNewJournalEntry();
+  //     }
+  //     // For all other cases (previous dates with no data), show nothing
+  //     else {
+  //       return SizedBox.shrink();
+  //     }
+  //   });
+  // }
+
+  Widget _buildMoodEntrySection() {
+    return Obx(() {
+      if (controller.selectedDate.value == null) return SizedBox.shrink();
+
+      final isToday = controller.selectedDate.value!.year == DateTime.now().year &&
+          controller.selectedDate.value!.month == DateTime.now().month &&
+          controller.selectedDate.value!.day == DateTime.now().day;
+
+      final hasEntry = controller.chartData.any((item) =>
+      item.date.year == controller.selectedDate.value!.year &&
+          item.date.month == controller.selectedDate.value!.month &&
+          item.date.day == controller.selectedDate.value!.day &&
+          (item.morningMood != null || item.nightMood != null));
+
+      if (hasEntry) return _buildJournalEntryDetails();
+      if (isToday) return _buildNewJournalEntry();
+      return SizedBox.shrink();
     });
   }
 
@@ -539,7 +663,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
           ),
           SizedBox(height: 20.h),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.6),
               borderRadius: BorderRadius.circular(22.r),
@@ -549,7 +673,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildMoodIndicator('Morning', controller.morningMood.value),
-                SizedBox(width: 16.w),
+                // SizedBox(width: .w),
                 _buildMoodIndicator('Night', controller.nightMood.value),
               ],
             ),
@@ -642,109 +766,71 @@ class JournalHomeView extends GetView<JournalHomeController> {
     );
   }
 
-  Widget _buildMoodSelection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'How do you feel right now?',
-          style: GoogleFonts.inter(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        SizedBox(height: 16.h),
-        Column(
-          children:
-              controller.moods.map((mood) => _buildMoodOption(mood)).toList(),
-        ),
-      ],
+  /*
+  Widget _buildMoodIndicator(String time, String? mood) {
+    final emoji = mood != null ? _getMoodEmoji(mood) : '';
+    return Text(
+      mood != null ? '$emoji $mood' : '$emoji Not Recorded',
+      style: GoogleFonts.inter(fontSize: 14.sp, fontWeight: FontWeight.w500),
+      overflow: TextOverflow.ellipsis,
     );
   }
 
-  Widget _buildNotesField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+   */
+
+  Widget _buildMoodIndicator(String time, String? mood) {
+    final emojiImage = mood != null ? _getMoodImage(mood) : null;
+    return Flexible(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'Why do you feel this way?',
-              style: GoogleFonts.inter(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
+            if (emojiImage != null)
+              Padding(
+                padding: EdgeInsets.only(right: 4.w),
+                child: Image.asset(
+                  emojiImage,
+                  width: 20.w,
+                  height: 20.h,
+                ),
               ),
-            ),
-            Text(
-              '(${controller.notesLength.value}/100)',
-              style: GoogleFonts.inter(
-                fontSize: 12.sp,
-                color: Color(0xFFA9A9A9),
-                fontWeight: FontWeight.w500,
+            Flexible(
+              child: Text(
+                mood != null ? mood : 'Not Recorded',
+                style: GoogleFonts.inter(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500
+                ),
+                overflow: TextOverflow.ellipsis,
+                // maxLines: 1,
               ),
             ),
           ],
-        ),
-        SizedBox(height: 8.h),
-        TextFormField(
-          controller: controller.notesController,
-          maxLines: 4,
-          maxLength: 100,
-          decoration: InputDecoration(
-            hintText: 'Add notes here...',
-            hintStyle: GoogleFonts.inter(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-              color: Color(0xffA9A9A9),
-            ),
-            filled: true,
-            fillColor: Colors.white.withOpacity(0.9),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide.none,
-            ),
-            contentPadding: EdgeInsets.all(16.r),
-            counterText: '',
-          ),
-          onChanged: (value) => controller.updateNotes(value),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSubmitButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () => controller.submitJournalEntry(),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.r),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 12.h),
-        ),
-        child: Text(
-          'Submit',
-          style: GoogleFonts.inter(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-          ),
         ),
       ),
     );
   }
 
-  Widget _buildMoodIndicator(String time, String? mood) {
-    final emoji = mood != null ? _getMoodEmoji(mood) : '';
-    return Text(
-      mood != null ? '$emoji $mood' : '$emoji Not Recorded',
-      style: GoogleFonts.inter(fontSize: 16.sp, fontWeight: FontWeight.w500),
-    );
+  String _getMoodImage(String mood) {
+    switch (mood) {
+      case 'Feeling Amazing':
+        return feelingAmazing;
+
+      case 'Doing Well':
+        return doingWell;
+      case 'Feeling Okay':
+        return feelingOkay;
+      case 'Not Great':
+        return notGreat;
+      case 'Having a Tough Time':
+        return toughTime;
+      default:
+        return "";
+    }
   }
 
+  /*
   String _getMoodEmoji(String mood) {
     switch (mood) {
       case 'Feeling Amazing':
@@ -761,4 +847,7 @@ class JournalHomeView extends GetView<JournalHomeController> {
         return "";
     }
   }
+
+   */
+
 }

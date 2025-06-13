@@ -16,22 +16,28 @@ class RemindersController extends GetxController {
 
   // Affirmations Reminder
   final affirmationCount = 10.obs;
-  final affirmationStartTime = TimeOfDay(hour: 0, minute: 0).obs; // Default 12:00 AM
-  final affirmationEndTime = TimeOfDay(hour: 0, minute: 0).obs;   // Default 12:00 AM
+  final affirmationStartTime = TimeOfDay(hour: 9, minute: 0).obs; // Default 12:00 AM
+  final affirmationEndTime = TimeOfDay(hour: 21, minute: 0).obs;   // Default 12:00 AM
 
   // Journal Reminder
-  final journalStartTime = TimeOfDay(hour: 10, minute: 30).obs;
-  final journalEndTime = TimeOfDay(hour: 22, minute: 30).obs;
+  final journalStartTime = TimeOfDay(hour: 9, minute: 0).obs;
+  final journalEndTime = TimeOfDay(hour: 21, minute: 0).obs;
   final isJournalReminderActive = true.obs;
 
   final minAffirmations = 1;
   final maxAffirmations = 20;
   final minTimeSpan = 5; // in hours - same as affirmation_reminder_controller
 
+  // In reminders_controller.dart
   @override
   void onInit() {
     super.onInit();
     _loadUserReminderSettings();
+    ever(loadingStatus, (status) {
+      if (status == LoadingStatus.completed) {
+        update(); // Force UI update after loading
+      }
+    });
   }
 
   Future<void> _loadUserReminderSettings() async {
@@ -40,52 +46,28 @@ class RemindersController extends GetxController {
 
       final userData = LocalStorage.getUserDetailsData();
       if (userData != null) {
-        // Load affirmation settings - same format as affirmation_reminder_controller
+        // Load affirmation settings
         if (userData.affirmations != null) {
           affirmationCount.value = userData.affirmations!.countPerDay ?? 10;
 
-          if (userData.affirmations!.startTime != null) {
-            final startParts = userData.affirmations!.startTime!.split(':');
-            affirmationStartTime.value = TimeOfDay(
-              hour: int.parse(startParts[0]),
-              minute: int.parse(startParts[1]),
-            );
-          } else {
-            affirmationStartTime.value = TimeOfDay(hour: 0, minute: 0); // Default 12:00 AM
-          }
+          affirmationStartTime.value = userData.affirmations!.startTime != null
+              ? _parseTimeString(userData.affirmations!.startTime!)
+              : TimeOfDay(hour: 9, minute: 0); // Default to 9:00 AM
 
-          if (userData.affirmations!.endTime != null) {
-            final endParts = userData.affirmations!.endTime!.split(':');
-            affirmationEndTime.value = TimeOfDay(
-              hour: int.parse(endParts[0]),
-              minute: int.parse(endParts[1]),
-            );
-          } else {
-            affirmationEndTime.value = TimeOfDay(hour: 0, minute: 0); // Default 12:00 AM
-          }
+          affirmationEndTime.value = userData.affirmations!.endTime != null
+              ? _parseTimeString(userData.affirmations!.endTime!)
+              : TimeOfDay(hour: 21, minute: 0); // Default to 9:00 PM
         }
 
-        // Load journal settings - same format as journal_controller
+        // Load journal settings
         if (userData.journalReminders != null) {
-          if (userData.journalReminders!.startTime != null) {
-            final startParts = userData.journalReminders!.startTime!.split(':');
-            journalStartTime.value = TimeOfDay(
-              hour: int.parse(startParts[0]),
-              minute: int.parse(startParts[1]),
-            );
-          } else {
-            journalStartTime.value = TimeOfDay(hour: 0, minute: 0); // Default 12:00 AM
-          }
+          journalStartTime.value = userData.journalReminders!.startTime != null
+              ? _parseTimeString(userData.journalReminders!.startTime!)
+              : TimeOfDay(hour: 9, minute: 0); // Default to 9:00 AM
 
-          if (userData.journalReminders!.endTime != null) {
-            final endParts = userData.journalReminders!.endTime!.split(':');
-            journalEndTime.value = TimeOfDay(
-              hour: int.parse(endParts[0]),
-              minute: int.parse(endParts[1]),
-            );
-          } else {
-            journalEndTime.value = TimeOfDay(hour: 12, minute: 0); // Default 12:00 PM
-          }
+          journalEndTime.value = userData.journalReminders!.endTime != null
+              ? _parseTimeString(userData.journalReminders!.endTime!)
+              : TimeOfDay(hour: 21, minute: 0); // Default to 9:00 PM
         }
 
         isJournalReminderActive.value = userData.reminderNotification ?? true;
@@ -98,6 +80,15 @@ class RemindersController extends GetxController {
     } finally {
       loadingStatus(LoadingStatus.completed);
     }
+  }
+
+  // Helper method to parse time string
+  TimeOfDay _parseTimeString(String time) {
+    final parts = time.split(':');
+    return TimeOfDay(
+      hour: int.parse(parts[0]),
+      minute: int.parse(parts[1]),
+    );
   }
 
   void incrementAffirmations() {
@@ -243,6 +234,7 @@ class RemindersController extends GetxController {
           "affirmationsEndTime": _formatTimeOfDay(affirmationEndTime.value),
           "journalReminderStartTime": _formatTimeOfDay(journalStartTime.value),
           "journalReminderEndTime": _formatTimeOfDay(journalEndTime.value),
+          "reminderNotification": isJournalReminderActive.value,
         },
         {
           'Authorization': accessToken ?? "",

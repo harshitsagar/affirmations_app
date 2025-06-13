@@ -26,7 +26,7 @@ class AffirmationsController extends GetxController {
       final accessToken = LocalStorage.getUserAccessToken();
 
       final response = await APIProvider().postAPICall(
-        ApiConstants.affirmationTypes,
+        ApiConstants.affirmationCatergoryList, // Make sure this constant is defined
         {},
         {
           'Authorization': accessToken,

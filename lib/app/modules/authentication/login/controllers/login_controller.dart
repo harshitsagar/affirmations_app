@@ -59,7 +59,7 @@ class LoginController extends GetxController {
           if (data.user.ageGroup == null) {
             Get.offAllNamed(Routes.PROFILE_SCREEN);
           } else {
-            Get.offNamed(Routes.HOME);
+            Get.offAllNamed(Routes.HOME);
           }
         });
       } else if (response.data["code"] == 103) {
@@ -195,18 +195,11 @@ class LoginController extends GetxController {
           content: "Signing in...",
         );
         // 🔥 Redirect to your desired screen
-        Get.offAllNamed(Routes.PROFILE_SCREEN);
-        // or check if profile setup is needed:
-        // bool isFirstLogin = await checkIfFirstLogin();
-        // if (isFirstLogin) {
-        //   Get.offAllNamed(Routes.HOME);
-        // } else {
-        //   Get.offAllNamed(Routes.PROFILE_SCREEN);
-        // }
-        // Get.offNamedUntil(
-        //   Routes.BOTTOM_NAVIGATION_BAR,
-        //       (route) => false,
-        // );
+        if (data.user.ageGroup == null) {
+          Get.offAllNamed(Routes.PROFILE_SCREEN);
+        } else {
+          Get.offAllNamed(Routes.HOME);
+        }
       } else {
         // Handle specific error scenarios
         Get.back();

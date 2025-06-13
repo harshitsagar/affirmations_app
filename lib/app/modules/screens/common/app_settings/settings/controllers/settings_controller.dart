@@ -144,9 +144,8 @@ class SettingsController extends GetxController {
         Get.toNamed(Routes.APP_THEMES);
         break;
       case 'Refer a Friend':
-        Get.lazyPut(() => ShareScreenController());
         Get.bottomSheet(
-          ShareScreenView(),
+          ShareScreenView(onlyAppLink: true), // Add this parameter
           isScrollControlled: true,
           backgroundColor: Colors.transparent, // Makes the blur visible
           barrierColor: Colors.black.withOpacity(0.5), // Optional: slight dim background

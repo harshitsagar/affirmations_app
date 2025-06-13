@@ -8,6 +8,7 @@ import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/modules/screens/common/share_screen/views/share_screen_view.dart';
 import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,6 +47,48 @@ class StreakScreenController extends GetxController {
     super.onInit();
     initializeUser();
     fetchMonthlyStreakDetails();
+  }
+
+  // Add these methods to StreakScreenController
+  bool canFreezeStreak(DateTime date) {
+    return freezeStreaksAvailable.value > 0 &&
+        (date.isAfter(DateTime.now()) || isSameDay(date, DateTime.now())) &&
+        currentStreak.value > 0;
+  }
+
+  bool canRestoreStreak(DateTime date) {
+    // Can restore if:
+    // 1. User has restore streaks available
+    // 2. Date is in past
+    // 3. Date is not already completed/frozen/restored
+    // 4. User has at least one previous streak (current streak > 0)
+    // 5. Date is not today (can't restore today's streak)
+    return restoreStreaksAvailable.value > 0 &&
+        date.isBefore(DateTime.now()) &&
+        !isSameDay(date, DateTime.now()) && // Add this line
+        !completedDates.contains(date) &&
+        !freezedDates.contains(date) &&
+        !restoredDates.contains(date) &&
+        currentStreak.value > 0;
+  }
+
+  // Add this method to StreakScreenController
+  bool isMonthAccessible(DateTime date) {
+    final now = DateTime.now();
+    final currentMonth = DateTime(now.year, now.month);
+    final lastMonth = DateTime(now.year, now.month - 1);
+
+    // Guest users can only access current month
+    if (Get.find<HomeController>().isGuestUser.value) {
+      return date.year == currentMonth.year && date.month == currentMonth.month;
+    }
+
+    // Premium users can access all months
+    if (isPremiumUser.value) return true;
+
+    // Free users can only access current month and last month
+    return (date.year == currentMonth.year && date.month == currentMonth.month) ||
+        (date.year == lastMonth.year && date.month == lastMonth.month);
   }
 
   Future<void> fetchMonthlyStreakDetails() async {
@@ -216,12 +259,82 @@ class StreakScreenController extends GetxController {
 
   void initializeUser() {
     final user = LocalStorage.getUserDetailsData();
-    // Check subscription status to determine if user is premium
-    isPremiumUser.value = user?.subscriptionStatus == 'active'; // Adjust based on your actual subscription field
-    freezeStreaksAvailable.value = isPremiumUser.value ? 3 : 1;
-    restoreStreaksAvailable.value = isPremiumUser.value ? 3 : 1;
+    print('******User data: ${user?.toJson()}'); // Add this for debugging
+    print('*****Freeze streaks: ${user?.streak?.freeze?.totalAvailable}'); // Add this
+    isPremiumUser.value = user?.subscriptionStatus == 'active';
+    freezeStreaksAvailable.value = user?.streak.freeze.totalAvailable ?? 0; // Add this
+    restoreStreaksAvailable.value = user?.streak.restore.totalAvailable ?? 0; // Add this
+    update(); // Add this to trigger UI update
   }
 
+  //3
+  void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (Get.find<HomeController>().isGuestUser.value) {
+      Get.find<HomeController>().showGuestPopup();
+      return;
+    }
+
+    // Check if trying to view restricted months as free user
+    if (!isMonthAccessible(selectedDay)) {
+      Get.toNamed(Routes.SUBSCRIPTION_SCREEN);
+      return;
+    }
+
+    selectedDate.value = selectedDay;
+    this.focusedDay.value = focusedDay;
+
+    // Check freeze/restore conditions
+    if (canFreezeStreak(selectedDay)) {
+      showFreezeStreakOption();
+    }
+    else if (canRestoreStreak(selectedDay)) {
+      showRestoreStreakOption();
+    }
+    else {
+      // Show purchase dialog when no streaks are available
+      if (selectedDay.isAfter(DateTime.now())) {
+        // Future date - show freeze purchase option
+        if (freezeStreaksAvailable.value <= 0) {
+          showPurchaseStreakDialog('Freeze');
+        }
+      }
+      else if (selectedDay.isBefore(DateTime.now())) {
+        // Past date - show restore purchase option
+        if (restoreStreaksAvailable.value <= 0) {
+          showPurchaseStreakDialog('Restore');
+        }
+      }
+    }
+  }
+
+  //2
+  /*
+  void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (Get.find<HomeController>().isGuestUser.value) {
+      Get.find<HomeController>().showGuestPopup();
+      return;
+    }
+
+    // Check if trying to view restricted months as free user
+    if (!isMonthAccessible(selectedDay)) {
+      Get.toNamed(Routes.SUBSCRIPTION_SCREEN);
+      return;
+    }
+
+    selectedDate.value = selectedDay;
+    this.focusedDay.value = focusedDay;
+
+    // Check freeze/restore conditions
+    if (canFreezeStreak(selectedDay)) {
+      showFreezeStreakOption();
+    } else if (canRestoreStreak(selectedDay)) {
+      showRestoreStreakOption();
+    }
+  }
+  */
+
+  //1
+  /*
   void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
 
     if (Get.find<HomeController>().isGuestUser.value) {
@@ -247,7 +360,7 @@ class StreakScreenController extends GetxController {
         showPurchaseStreakDialog('Restore');
       }
     }
-  }
+  }*/
 
   void showFreezeStreakOption() {
 

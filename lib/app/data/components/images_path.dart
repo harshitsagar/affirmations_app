@@ -109,6 +109,11 @@ const restoreIcon = 'assets/streak/restoreIcon.svg';
 const freezeStreakIcon = 'assets/purchase_screen/freezeStreakIcon.svg';
 const restoreStreakIcon = 'assets/purchase_screen/restoreStreakIcon.svg';
 
-
+// emoji images .....
+const feelingAmazing = 'assets/emojis/feelingAmazing.png';
+const doingWell = 'assets/emojis/doingWell.png';
+const feelingOkay = 'assets/emojis/feelingOkay.png';
+const notGreat = 'assets/emojis/notGreat.png';
+const toughTime = 'assets/emojis/toughTime.png';
 
 

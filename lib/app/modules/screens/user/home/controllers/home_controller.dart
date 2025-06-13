@@ -20,6 +20,8 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+
 class HomeController extends GetxController {
 
   // for guest user ....
@@ -192,23 +194,71 @@ class HomeController extends GetxController {
     }
   }
 
+  // Add this new method to handle marking affirmations as seen
+  Future<void> _markAffirmationAsSeen() async {
+    try {
+      final accessToken = LocalStorage.getUserAccessToken();
+      if (accessToken == null || isGuestUser.value) return;
+
+      final currentAffirmationId = currentAffirmation.value?.id;
+      if (currentAffirmationId == null) return;
+
+      final categoryRef = currentAffirmation.value?.categoryRef;
+      if (categoryRef == null || categoryRef.isEmpty) return;
+
+      final response = await APIProvider().formDataPostAPICall(
+        ApiConstants.markAsRead,
+        {
+          "affirmationRef": currentAffirmationId,
+          "categoryRef": categoryRef,
+        },
+        {'Authorization': accessToken},
+      );
+
+      print("*****MarkAsSeen : ${response.toString()}");
+
+      if (response["code"] == 100) {
+        final model = EditHomeModel.fromJson(response);
+        // Update streak if needed
+        if (model.data.streakCount != null && model.data.streakCount! > currentStreak.value) {
+          currentStreak.value = model.data.streakCount!;
+          streakProgress.value = min(currentStreak.value / 7.0, 1.0);
+        }
+      } else if (response["code"] == 500) {
+
+        // If the affirmation is already marked as seen, we can silently fail or show a message
+        print("******Affirmation already marked as seen");
+        // AppConstants.showSnackbar(
+        //     headText: "",
+        //     content: "Affirmation already marked as seen",
+        // );
+      }
+    } catch (e) {
+      print('Error marking affirmation as seen: $e');
+      // Silently fail - we don't want to disrupt the user experience
+    }
+  }
+
   Future<void> _markGoalAsRead() async {
     try {
       final accessToken = LocalStorage.getUserAccessToken();
       if (accessToken == null) return;
 
       final currentAffirmationId = currentAffirmation.value?.id;
+      final categoryRef = currentAffirmation.value?.categoryRef;
+
       if (currentAffirmationId == null) return;
 
       final response = await APIProvider().formDataPostAPICall(
         ApiConstants.markAsRead,
         {
           "affirmationRef": currentAffirmationId,
+          "categoryRef": categoryRef
         },
         {'Authorization': accessToken},
       );
 
-      print('******markAsRead response: ${response.toString()}');
+      // print('******markAsRead response: ${response.toString()}');
 
       if (response["code"] == 100) {
         print('********Current streak before markAsRead: ${currentStreak.value}');
@@ -247,7 +297,7 @@ class HomeController extends GetxController {
     }
 
     // Load more affirmations when reaching near the end
-    if (newIndex >= affirmationsList.length - 3 && canLoadMore.value) {
+    if (newIndex >= affirmationsList.length - 1 && canLoadMore.value) {
       fetchAffirmations(loadMore: true);
     }
 
@@ -255,6 +305,9 @@ class HomeController extends GetxController {
     if (newIndex > currentIndex.value && !isGoalCompleted.value) {
       currentAffirmationCount.value = min(currentAffirmationCount.value + 1, dailyGoal.value);
       updateProgress();
+
+      // Mark the affirmation as seen when swiping to a new one
+      _markAffirmationAsSeen();
 
       if (currentAffirmationCount.value >= dailyGoal.value) {
         _handleGoalCompletion();
@@ -332,6 +385,10 @@ class HomeController extends GetxController {
 
 
   void _showInitialJournalPopup() async {
+
+    // Don't show for guest users
+    if (isGuestUser.value) return;
+
     await Future.delayed(const Duration(milliseconds: 500));
     if (await Get.find<AddEntryController>().checkShouldShowSheet()) {
       _showJournalPopup();
@@ -340,8 +397,16 @@ class HomeController extends GetxController {
 
   void _showPostGoalJournalPopup() async {
     await Future.delayed(const Duration(milliseconds: 500));
-    if (await Get.find<AddEntryController>().checkShouldShowSheet()) {
+    final addEntryController = Get.find<AddEntryController>();
+
+    // Only show if conditions are met and we haven't shown it already for this goal completion
+    if (await addEntryController.checkShouldShowSheet()) {
       _showJournalPopup();
+      // Mark as shown for this session
+      final now = DateTime.now();
+      final isMorning = now.hour < 12;
+      final key = "journalShown_${DateFormat('yyyy-MM-dd').format(now)}_${isMorning ? 'morning' : 'evening'}";
+      GetStorage().write(key, true);
     }
   }
 
@@ -580,14 +645,20 @@ class HomeController extends GetxController {
   }
 
   void showShareBottomSheet() {
-
     if (isGuestUser.value) {
       showGuestPopup();
       return;
     }
 
+    if (currentAffirmation.value == null || currentAffirmation.value!.text == null) {
+      Get.snackbar("Error", "No affirmation to share");
+      return;
+    }
+
+    final affirmationText = currentAffirmation.value!.text!;
+
     Get.bottomSheet(
-      ShareScreenView(),
+      ShareScreenView(affirmation: affirmationText),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withOpacity(0.5),

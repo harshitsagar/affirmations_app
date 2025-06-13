@@ -1,4 +1,7 @@
+import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
+import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/modules/screens/user/journal/journal_home/controllers/journal_home_controller.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -8,14 +11,14 @@ class FilterController extends GetxController {
   final toDate = Rx<DateTime?>(null);
   final errorMessage = Rx<String?>(null);
 
-  @override
-  void onInit() {
-    super.onInit();
-    // Initialize with default dates (last 7 days)
-    final now = DateTime.now();
-    toDate.value = now;
-    fromDate.value = now.subtract(const Duration(days: 6));
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   // Initialize with default dates (last 7 days)
+  //   final now = DateTime.now();
+  //   toDate.value = now;
+  //   fromDate.value = now.subtract(const Duration(days: 6));
+  // }
 
   Future<void> selectFromDate(BuildContext context) async {
     final selected = await showDatePicker(
@@ -46,11 +49,21 @@ class FilterController extends GetxController {
   }
 
   void _validateDates() {
+
+    errorMessage.value = null; // Reset error message
+
+    if (fromDate.value == null || toDate.value == null) {
+      errorMessage.value = 'Please select both dates';
+      return;
+    }
+
     if (fromDate.value != null && toDate.value != null) {
       if (fromDate.value!.isAfter(toDate.value!)) {
         errorMessage.value = 'From date cannot be after To date';
-      } else if (toDate.value!.difference(fromDate.value!).inDays > 30) {
-        errorMessage.value = 'Maximum range of 30 days is allowed';
+      } else if (toDate.value!.difference(fromDate.value!).inDays < 1) {
+        errorMessage.value = 'Minimum range of 2 days is required';
+      } else if (toDate.value!.difference(fromDate.value!).inDays > 6) {
+        errorMessage.value = 'Maximum range of 7 days is allowed';
       } else {
         errorMessage.value = null;
       }
@@ -61,10 +74,17 @@ class FilterController extends GetxController {
     _validateDates();
 
     if (errorMessage.value != null) {
-      Get.snackbar('Error', errorMessage.value!,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+      AppConstants.showSnackbar(
+        headText: "Failed",
+        content: errorMessage.value!,
+        position: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    // Check if user is trying to view previous months and is not premium
+    if (!LocalStorage.isPremiumUser() && _isViewingPreviousMonths()) {
+      Get.toNamed(Routes.SUBSCRIPTION_SCREEN);
       return;
     }
 
@@ -75,6 +95,18 @@ class FilterController extends GetxController {
 
     Get.back();
   }
+
+  bool _isViewingPreviousMonths() {
+    final now = DateTime.now();
+    final currentMonth = DateTime(now.year, now.month);
+
+    if (fromDate.value == null || toDate.value == null) return false;
+
+    // Check if either date is before the current month
+    return fromDate.value!.isBefore(currentMonth) ||
+        toDate.value!.isBefore(currentMonth);
+  }
+
 }
 
 /*import 'package:affirmations_app/app/modules/screens/user/journal/journal_home/controllers/journal_home_controller.dart';

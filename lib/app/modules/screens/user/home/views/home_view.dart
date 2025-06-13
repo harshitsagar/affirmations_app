@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:affirmations_app/app/data/components/images_path.dart';
 import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,20 +17,6 @@ class HomeView extends GetView<HomeController> {
     
     return Scaffold(
       body: Obx(() {
-
-        if (controller.isLoading.value) {
-          return Center(
-            child: Platform.isAndroid
-                ? CircularProgressIndicator(
-              strokeWidth: 4.w,
-              color: Colors.black,
-            )
-                : CupertinoActivityIndicator(
-              color: Colors.black,
-              radius: 20.r,
-            ),
-          );
-        }
 
         final affirmations = controller.isGuestUser.value
             ? controller.guestAffirmations
@@ -160,29 +147,53 @@ class HomeView extends GetView<HomeController> {
                       ),
 
                       // Premium icon
-                      Container(
-                        width: 45.w,
-                        height: 40.h,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            premiumIcon1,
-                            width: 24.w,
-                            height: 24.h,
+                      GestureDetector(
+                        onTap: () {
+                          if (controller.isGuestUser.value) {
+                            controller.showGuestPopup();
+                            return;
+                          }
+                          // Existing premium functionality for logged-in users
+                          Get.toNamed(Routes.SUBSCRIPTION_SCREEN); // Or whatever your premium route is
+                        },
+                        child: Container(
+                          width: 45.w,
+                          height: 40.h,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              premiumIcon1,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
                           ),
                         ),
                       ),
+
                     ],
                   ),
                 ),
 
                 // Affirmation text with loading/empty state handling
                 // Replace the PageView.builder section with this:
+                // Affirmation text with loading/empty state handling
                 Expanded(
-                  child: affirmations.isEmpty
+                  child: controller.isLoading.value
+                      ? Center(
+                    child: Platform.isAndroid
+                        ? CircularProgressIndicator(
+                      strokeWidth: 4.w,
+                      color: Colors.black,
+                    )
+                        : CupertinoActivityIndicator(
+                      color: Colors.black,
+                      radius: 20.r,
+                    ),
+                  )
+                      : affirmations.isEmpty
                       ? Center(child: Text('No affirmations available'))
                       : Obx(() => PageView.builder(
                     controller: PageController(
@@ -196,7 +207,8 @@ class HomeView extends GetView<HomeController> {
                       controller.handlePageChange(index);
                     },
                     itemBuilder: (context, index) {
-                      final affirmation = controller.isGuestUser.value
+                      final affirmation =
+                      controller.isGuestUser.value
                           ? controller.guestAffirmations[index]
                           : controller.affirmationsList[index];
                       return Padding(
@@ -213,7 +225,7 @@ class HomeView extends GetView<HomeController> {
                         ),
                       );
                     },
-                  ),),
+                  )),
                 ),
 
                 // Affirmation text
@@ -248,7 +260,7 @@ class HomeView extends GetView<HomeController> {
 
                 // Bottom buttons
                 Padding(
-                  padding: EdgeInsets.only(left: 90.w, right: 100.w, bottom: 100.h),
+                  padding: EdgeInsets.only(left: 100.w, right: 100.w, bottom: 100.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

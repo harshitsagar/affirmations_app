@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/helpers/services/themeServices.dart';
+import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
 import 'package:affirmations_app/app/modules/screens/user/my_List/myList/views/addNewList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -78,6 +79,10 @@ class MyListView extends GetView<MyListController> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
+                      if (Get.find<HomeController>().isGuestUser.value) {
+                        Get.find<HomeController>().showGuestPopup();
+                        return;
+                      }
                       Get.bottomSheet(
                         AddNewList(),
                         isScrollControlled: true,

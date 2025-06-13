@@ -61,7 +61,7 @@ class JournalDetailModelData {
 }
 
 class Graph {
-  DateTime date;
+  String date;
   String morning;
   String night;
   String morningText;
@@ -76,7 +76,7 @@ class Graph {
   });
 
   factory Graph.fromJson(Map<String, dynamic> json) => Graph(
-    date: DateTime.parse(json["date"]),
+    date: json["date"],
     morning: json["morning"],
     night: json["night"],
     morningText: json["morningText"],
@@ -84,7 +84,7 @@ class Graph {
   );
 
   Map<String, dynamic> toJson() => {
-    "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "date": date,
     "morning": morning,
     "night": night,
     "morningText": morningText,

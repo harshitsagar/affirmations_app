@@ -178,11 +178,11 @@ class JournalView2 extends GetView<JournalController> {
                   color: Colors.black,
                 ),
               ),
-              SvgPicture.asset(
-                isSelected ? checkedIcon : uncheckedIcon,
+              Image.asset(
+                isSelected ? selectedIcon : unselectedIcon,
                 width: 14.w,
                 height: 14.h,
-              ),
+              )
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/api_provider.dart';
+import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:affirmations_app/app/helpers/services/local_storage.dart';
@@ -30,7 +31,13 @@ class HearAboutController extends GetxController {
   ].obs;
 
   final selectedOptions = <String>[].obs;
-  final isLoading = false.obs;
+  final loadingStatus = LoadingStatus.loading.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadingStatus(LoadingStatus.completed);
+  }
 
   void toggleOptionSelection(String option) {
     if (selectedOptions.contains(option)) {
@@ -57,7 +64,7 @@ class HearAboutController extends GetxController {
     }
 
     try {
-      isLoading(true);
+      loadingStatus(LoadingStatus.loading);
       final accessToken = LocalStorage.getUserAccessToken();
 
       final response = await APIProvider().formDataPostAPICall(
@@ -84,7 +91,7 @@ class HearAboutController extends GetxController {
         position: SnackPosition.BOTTOM,
       );
     } finally {
-      isLoading(false);
+      loadingStatus(LoadingStatus.completed);
     }
   }
 }

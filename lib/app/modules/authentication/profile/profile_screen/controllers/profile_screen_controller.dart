@@ -1,4 +1,5 @@
 import 'package:affirmations_app/app/data/api_provider.dart';
+import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/data/models/user_model.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
@@ -9,7 +10,13 @@ class ProfileScreenController extends GetxController {
 
   RxString selectedAgeGroup = ''.obs;
   RxString selectedGender = ''.obs;
-  final isLoading = false.obs;
+  final loadingStatus = LoadingStatus.loading.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadingStatus(LoadingStatus.completed);
+  }
 
   void selectAgeGroup(String age) {
     selectedAgeGroup.value = age;
@@ -44,7 +51,7 @@ class ProfileScreenController extends GetxController {
 
   Future<void> updateProfile() async {
     try {
-      isLoading(true);
+      loadingStatus(LoadingStatus.loading);
 
       var accessToken = LocalStorage.getUserAccessToken();
 
@@ -71,8 +78,6 @@ class ProfileScreenController extends GetxController {
           content: "Profile updated successfully",
           position: SnackPosition.BOTTOM,
         );
-      } else {
-        throw Exception(response.data["message"]);
       }
     } catch (e) {
       AppConstants.showSnackbar(
@@ -81,7 +86,7 @@ class ProfileScreenController extends GetxController {
         position: SnackPosition.BOTTOM,
       );
     } finally {
-      isLoading(false);
+      loadingStatus(LoadingStatus.completed);
     }
   }
 

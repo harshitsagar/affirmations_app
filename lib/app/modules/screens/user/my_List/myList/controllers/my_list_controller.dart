@@ -48,6 +48,13 @@ class MyListController extends GetxController {
   }
 
   Future<void> fetchListsFromBackend() async {
+
+    // Skip API call for guest users
+    if (Get.find<HomeController>().isGuestUser.value) {
+      loadingStatus.value = LoadingStatus.completed;
+      return;
+    }
+
     loadingStatus.value = LoadingStatus.loading; // Set loading status
 
     try {
@@ -120,9 +127,6 @@ class MyListController extends GetxController {
     }
   }
 
-
-
-
   void updateFavorites(List<String> favorites) {
     favoriteAffirmations.assignAll(favorites);
     update();
@@ -182,10 +186,6 @@ class MyListController extends GetxController {
   void _saveFavorites() {
     _storage.write('favorites', favoriteAffirmations.toList());
   }
-
-
-
-
 
   Future<void> deleteList(String listName) async {
     final myListRef = listNameToIdMap[listName];

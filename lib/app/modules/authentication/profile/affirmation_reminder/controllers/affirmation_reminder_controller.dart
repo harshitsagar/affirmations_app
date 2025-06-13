@@ -7,15 +7,14 @@ import 'package:affirmations_app/app/helpers/services/local_storage.dart';
 import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customPopUp.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class AffirmationReminderController extends GetxController {
 
   final affirmationCount = 10.obs;
-  final startTime = TimeOfDay(hour: 0, minute: 0).obs;
-  final endTime = TimeOfDay(hour: 0, minute: 0).obs;
+  final startTime = TimeOfDay(hour: 9, minute: 0).obs; // Changed to 9 AM
+  final endTime = TimeOfDay(hour: 21, minute: 0).obs; // Changed to 9 PM (21 in 24-hour format)
   final minAffirmations = 1;
   final maxAffirmations = 20;
   final minTimeSpan = 5; // in hours
@@ -25,6 +24,7 @@ class AffirmationReminderController extends GetxController {
   void onInit() {
     super.onInit();
     _loadExistingSettings();
+    loadingStatus(LoadingStatus.completed);
   }
 
   void _loadExistingSettings() {
@@ -131,12 +131,8 @@ class AffirmationReminderController extends GetxController {
       );
 
       if (response["code"] == 100) {
-        // Update local storage with new data
-        // AboutProfileModel updatedUser = AboutProfileModel.fromJson(response);
-        // var data = updatedUser.data;
-        // LocalStorage.setUserDetailsData(
-        //   userDetailsData: ;
-        // );
+        final updatedUser = User.fromJson(response["data"]);
+        LocalStorage.setUserDetailsData(userDetailsData: updatedUser);
 
         AppConstants.showSnackbar(
           headText: 'Success',
@@ -155,36 +151,6 @@ class AffirmationReminderController extends GetxController {
       loadingStatus(LoadingStatus.completed);
     }
   }
-
-  // Future<void> scheduleAffirmationNotifications() async {
-  //   tz.initializeTimeZones();
-  //
-  //   final startHour = startTime.value.hour;
-  //   final endHour = endTime.value.hour;
-  //   final interval = (endHour - startHour) ~/ affirmationCount.value;
-  //
-  //   for (int i = 0; i < affirmationCount.value; i++) {
-  //     final notificationTime = tz.TZDateTime.now(tz.local).add(
-  //       Duration(hours: startHour + (interval * i), minutes: startTime.value.minute),
-  //     );
-  //
-  //     // await flutterLocalNotificationsPlugin.zonedSchedule(
-  //     //   i, // Unique ID for each notification
-  //     //   'Affirmation Reminder',
-  //     //   'Time for your affirmation!',
-  //     //   notificationTime,
-  //     //   const NotificationDetails(
-  //     //     android: AndroidNotificationDetails(
-  //     //       'affirmation_channel',
-  //     //       'Affirmation Reminders',
-  //     //       importance: Importance.high,
-  //     //     ),
-  //     //   ),
-  //     //   androidAllowWhileIdle: true,
-  //     //   uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-  //     // );
-  //   }
-  // }
 
   Future<bool> _updateNotificationPermission(bool enabled) async {
     try {

@@ -46,9 +46,6 @@ class AddAffirmationsController extends GetxController {
     }
   }
 
-
-
-
   void addAffirmation(String text) async {
     if (text.trim().isEmpty) {
       Get.snackbar("Error", "Affirmation text cannot be empty.");
@@ -221,14 +218,18 @@ class AddAffirmationsController extends GetxController {
   }
 
   void shareAffirmation(String affirmation) {
-    Get.lazyPut(() => ShareScreenController());
 
     Get.bottomSheet(
       ShareScreenView(affirmation: affirmation),
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.5),
+      // barrierColor: Colors.black.withOpacity(0.5),
     );
+
+    print("*****Sharing affirmation: $affirmation");
+    // Initialize controller after showing bottomsheet
+    final shareController = Get.put(ShareScreenController());
+    shareController.initializeContent(affirmation);
   }
 
   bool isAffirmationFavorite(String affirmation) {

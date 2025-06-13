@@ -1,7 +1,9 @@
 // profile_screen_view1.dart
 import 'dart:io';
 
+import 'package:affirmations_app/app/data/config.dart';
 import 'package:affirmations_app/app/helpers/constants/api_constants.dart';
+import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
 import 'package:affirmations_app/app/helpers/constants/app_constants.dart';
 import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/modules/authentication/profile/profile_screen/views/profile_screen_view2.dart';
@@ -19,77 +21,77 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(() {
-
-        if (controller.isLoading.value) {
-          return Center(
-            child: Platform.isAndroid
-                ? CircularProgressIndicator(
-              strokeWidth: 4.w,
-              color: Colors.black,
-            )
-                : CupertinoActivityIndicator(
-              color: Colors.black,
-              radius: 20.r,
-            ),
-          );
-        }
-
-        return Container(
-          width: double.infinity,
-          height: double.infinity,
-          // decoration: BoxDecoration(
-          //   image: DecorationImage(
-          //     image: AssetImage(bgImage),
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-          decoration: ThemeService.getBackgroundDecoration(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Skip button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 60.h),
-                    child: TextButton(
-                      onPressed: () {
-                        controller.selectAgeGroup("");
-                        Get.to(() => ProfileScreenView2());
-                      },
-                      child: Text(
-                        'Skip',
-                        style: GoogleFonts.inter(
-                          fontSize: 16.sp,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage(bgImage),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        decoration: ThemeService.getBackgroundDecoration(),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Skip button
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 60.h),
+                  child: TextButton(
+                    onPressed: () {
+                      controller.selectAgeGroup("");
+                      Get.to(() => ProfileScreenView2());
+                    },
+                    child: Text(
+                      'Skip',
+                      style: GoogleFonts.inter(
+                        fontSize: 16.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ),
+              ),
 
-                // Title
-                Padding(
-                  padding: EdgeInsets.only(top: 20.h),
-                  child: Text(
-                    'How old are you?',
-                    style: GoogleFonts.inter(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
+              // Title
+              Padding(
+                padding: EdgeInsets.only(top: 20.h),
+                child: Text(
+                  'How old are you?',
+                  style: GoogleFonts.inter(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
                   ),
                 ),
+              ),
 
-                SizedBox(height: 30.h),
+              SizedBox(height: 30.h),
 
-                // Age options
-                Expanded(
-                  child: SingleChildScrollView(
+              // Age options
+              Expanded(
+                child: Obx(() {
+
+                  if (controller.loadingStatus.value == LoadingStatus.loading) {
+                    return Center(
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator(
+                        strokeWidth: 4.w,
+                        color: AppColors.black,
+                      )
+                          : CupertinoActivityIndicator(
+                        color: AppColors.black,
+                        radius: 20.r,
+                      ),
+                    );
+                  }
+
+                  return SingleChildScrollView(
                     child: Column(
                       children: [
                         _buildAgeOption('18 or Under'),
@@ -107,52 +109,52 @@ class ProfileScreenView1 extends GetView<ProfileScreenController> {
                         _buildAgeOption('65 or Older'),
                       ],
                     ),
-                  ),
-                ),
+                  );
 
-                // Next button
-                Padding(
-                  padding: EdgeInsets.only(bottom: 40.h),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (controller.selectedAgeGroup.isNotEmpty) {
-                          await controller.updateProfile();
-                          Get.to(() => const ProfileScreenView2());
-                        }
-                        else{
-                          AppConstants.showSnackbar(
-                              headText: 'Note',
-                              content: 'Please select an age group',
+                },
+              )),
 
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
+              // Next button
+              Padding(
+                padding: EdgeInsets.only(bottom: 40.h),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (controller.selectedAgeGroup.isNotEmpty) {
+                        await controller.updateProfile();
+                        Get.to(() => const ProfileScreenView2());
+                      }
+                      else{
+                        AppConstants.showSnackbar(
+                          headText: 'Note',
+                          content: 'Please select an age group',
+
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      child: Text(
-                        'Next',
-                        style: GoogleFonts.inter(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Text(
+                      'Next',
+                      style: GoogleFonts.inter(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-
-      }),
+        ),
+      )
     );
   }
 

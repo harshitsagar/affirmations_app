@@ -92,7 +92,7 @@ class FilterView extends GetView<FilterController> {
             ],
           ),
 
-          SizedBox(height: 220.h),
+          SizedBox(height: 120.h),
 
           SizedBox(
             width: double.infinity,
@@ -123,7 +123,7 @@ class FilterView extends GetView<FilterController> {
             child: TextButton(
               onPressed: () => Get.back(),
               style: TextButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
+                padding: EdgeInsets.symmetric(vertical: 5.h),
                 textStyle: const TextStyle(decoration: TextDecoration.underline),
               ),
               child: Text(

@@ -1,5 +1,9 @@
+import 'dart:io';
+import 'package:affirmations_app/app/data/config.dart';
+import 'package:affirmations_app/app/helpers/constants/app_colors.dart';
 import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -69,81 +73,105 @@ class AffirmationReminderView extends GetView<AffirmationReminderController> {
 
               SizedBox(height: 32.h),
 
-              // Affirmation Counter
-              Obx(() => Container(
-                width: double.infinity,
-                height: 50.h,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: SvgPicture.asset(
-                          minusIcon,
-                          width: 24.w,
-                          height: 24.h,
-                        ),
-                        onPressed: controller.decrementAffirmations,
-                        padding: EdgeInsets.zero,
-                      ),
-                      Text(
-                        controller.affirmationCount.value.toString(),
-                        style: GoogleFonts.inter(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                        ),
-                      ),
-                      IconButton(
-                        icon: SvgPicture.asset(
-                          plusIcon,
-                          width: 24.w,
-                          height: 24.h,
-                        ),
-                        onPressed: controller.incrementAffirmations,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  ),
-                ),
-              )),
+              Obx(() {
 
-              SizedBox(height: 30.h),
+                if (controller.loadingStatus.value == LoadingStatus.loading) {
+                  return Center(
+                    child: Platform.isAndroid
+                        ? CircularProgressIndicator(
+                      strokeWidth: 4.w,
+                      color: AppColors.black,
+                    )
+                        : CupertinoActivityIndicator(
+                      color: AppColors.black,
+                      radius: 20.r,
+                    ),
+                  );
+                }
 
-              // Time Selection Container
-              Container(
-                width: double.infinity,
-                height: 208.h,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 16.h, bottom: 16.h),
-                child: Column(
+                return Column(
                   children: [
-                    _buildTimeSelector(
-                      context,
-                      'Start At',
-                      "am",
-                      controller.startTime,
-                          () => controller.selectStartTime(context),
+
+                    // Affirmation Counter
+                    Obx(() => Container(
+                      width: double.infinity,
+                      height: 50.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: SvgPicture.asset(
+                                minusIcon,
+                                width: 24.w,
+                                height: 24.h,
+                              ),
+                              onPressed: controller.decrementAffirmations,
+                              padding: EdgeInsets.zero,
+                            ),
+                            Text(
+                              controller.affirmationCount.value.toString(),
+                              style: GoogleFonts.inter(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                            ),
+                            IconButton(
+                              icon: SvgPicture.asset(
+                                plusIcon,
+                                width: 24.w,
+                                height: 24.h,
+                              ),
+                              onPressed: controller.incrementAffirmations,
+                              padding: EdgeInsets.zero,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+
+                    SizedBox(height: 30.h),
+
+                    // Time Selection Container
+                    Container(
+                      width: double.infinity,
+                      height: 208.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                      padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 16.h, bottom: 16.h),
+                      child: Column(
+                        children: [
+                          _buildTimeSelector(
+                            context,
+                            'Start At',
+                            "am",
+                            controller.startTime,
+                                () => controller.selectStartTime(context),
+                          ),
+                          SizedBox(height: 20.h),
+                          _buildTimeSelector(
+                            context,
+                            'End At',
+                            "pm",
+                            controller.endTime,
+                                () => controller.selectEndTime(context),
+                          ),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 20.h),
-                    _buildTimeSelector(
-                      context,
-                      'End At',
-                      "pm",
-                      controller.endTime,
-                          () => controller.selectEndTime(context),
-                    ),
+
                   ],
-                ),
-              ),
+                );
+
+              }),
 
               const Spacer(),
 

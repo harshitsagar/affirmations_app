@@ -1,6 +1,7 @@
 import 'package:affirmations_app/app/helpers/services/themeServices.dart';
 import 'package:affirmations_app/app/modules/screens/user/home/controllers/home_controller.dart';
 import 'package:affirmations_app/app/modules/screens/user/streak/streak_screen/controllers/streak_screen_controller.dart';
+import 'package:affirmations_app/app/routes/app_pages.dart';
 import 'package:affirmations_app/app/widgets/customAppbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -132,11 +133,50 @@ class StreakScreenView extends GetView<StreakScreenController> {
 
                               SizedBox(height: 16.h),
 
+                              /*
                               // Action buttons row (Freeze/Restore)
                               Obx(() {
 
                                 final canFreeze = controller.freezeStreaksAvailable.value > 0;
                                 final canRestore = controller.restoreStreaksAvailable.value > 0;
+
+                                if (canFreeze || canRestore) {
+                                  return Row(
+                                    children: [
+                                      if (canFreeze)
+                                        Expanded(
+                                          child: _buildActionButton(
+                                            icon: freezeIcon,
+                                            label: 'Freeze',
+                                            count: controller.freezeStreaksAvailable.value,
+                                            color: Color(0xFF3B82F6),
+                                            check: canFreeze,
+                                            onTap: () => controller.showFreezeStreakOption(),
+                                          ),
+                                        ),
+                                      if (canFreeze && canRestore) SizedBox(width: 15.w),
+                                      if (canRestore)
+                                        Expanded(
+                                          child: _buildActionButton(
+                                            icon: restoreIcon,
+                                            label: 'Restore',
+                                            count: controller.restoreStreaksAvailable.value,
+                                            color: Color(0xFF84CC16),
+                                            check: canRestore,
+                                            onTap: () => controller.showRestoreStreakOption(),
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                }
+                                return SizedBox.shrink();
+                              }),
+                              */
+
+                              // Replace the Obx widget with this updated version
+                              Obx(() {
+                                final canFreeze = controller.canFreezeStreak(controller.selectedDate.value);
+                                final canRestore = controller.canRestoreStreak(controller.selectedDate.value);
 
                                 if (canFreeze || canRestore) {
                                   return Row(
@@ -341,14 +381,30 @@ class StreakScreenView extends GetView<StreakScreenController> {
                             borderRadius: BorderRadius.circular(16.r),
                           ),
                           child: Obx(() => TableCalendar(
-                            firstDay: DateTime(2025, 1, 1),
-                            lastDay: DateTime(2025, 12, 31),
+                            firstDay: DateTime.now().subtract(Duration(days: 60)),
+                            lastDay: DateTime.now().add(Duration(days: 365)),
+                            enabledDayPredicate: (day) {
+                              // Only allow navigation to accessible months
+                              return controller.isMonthAccessible(day);
+                            },
                             focusedDay: controller.focusedDay.value,
                             calendarFormat: controller.calendarFormat.value,
                             selectedDayPredicate: (day) => isSameDay(day, controller.selectedDate.value),
                             onDaySelected: controller.onDaySelected,
                             onFormatChanged: (format) => controller.calendarFormat.value = format,
-                            onPageChanged: (focusedDay) => controller.focusedDay.value = focusedDay,
+                            onPageChanged: (focusedDay) {
+                              if (!controller.isMonthAccessible(focusedDay)) {
+                                // If user tries to navigate to restricted month, bounce back
+                                controller.focusedDay.value = DateTime.now();
+                                if (Get.find<HomeController>().isGuestUser.value) {
+                                  Get.find<HomeController>().showGuestPopup();
+                                } else {
+                                  Get.toNamed(Routes.SUBSCRIPTION_SCREEN);
+                                }
+                              } else {
+                                controller.focusedDay.value = focusedDay;
+                              }
+                            },
                             calendarStyle: CalendarStyle(
                               defaultTextStyle: GoogleFonts.inter(
                                 fontSize: 16.sp,
