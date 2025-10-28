@@ -9,7 +9,7 @@ class AppTheme {
   static final ThemeData light = ThemeData(
     primaryColor: AppColors.white,
     canvasColor: AppColors.white,
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: AppColors.white,
     ),
     primaryColorDark: AppColors.white,
@@ -93,7 +93,7 @@ class AppTheme {
   static final ThemeData dark = ThemeData(
     primaryColor: Colors.black12,
     canvasColor: AppColors.black,
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: AppColors.black,
     ),
     primaryColorDark: AppColors.black,
